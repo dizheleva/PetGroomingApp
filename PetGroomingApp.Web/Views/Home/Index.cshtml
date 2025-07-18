@@ -1,8 +1,36 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hero Banner Section -->
+<section class="banner-area" style="background: url('/img/banner/bradcam.png'); background-size: cover; background-position: center; padding: 140px 0 0;position: relative;">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Left side: text content -->
+            <div class="col-lg-6 col-md-12">
+                <div class="banner-content">
+                    <h1 style="font-size: 64px; font-weight: 300; color: white; line-height: 1.2;">We Groom</h1>
+                    <h1 style="font-size: 64px; font-weight: 800; color: white; margin-bottom: 20px;">Your Pets</h1>
+                    <p style="color: white; font-size: 18px; margin-bottom: 30px;">
+                        Give your pets the love and care they deserve.
+                    </p>
+                    
+                    <a class="btn rounded-pill" style="background-color: white; color: #e73827; font-weight: 600; padding: 12px 30px;" asp-controller="Appointments" asp-action="Create">Book Now</a>
+                </div>
+            </div>
+
+            <!-- Right side: dog image -->
+            <div class="col-lg-6 col-md-12 text-center mt-4 mt-lg-0">
+                <img src="~/img/banner/dog.png" alt="Cute Dog" class="img-fluid" style="height: 100%;" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional wave shape -->
+    <div style="position:absolute; bottom:0; left:0; width:100%;">
+        <img src="~/img/banner/shape-bottom.png" alt="" class="img-fluid" />
+    </div>
+</section>
+
+<!-- Add remaining sections here -->
