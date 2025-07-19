@@ -1,7 +1,5 @@
 ﻿namespace PetGroomingApp.Data.Common
 {
-    using static System.Net.Mime.MediaTypeNames;
-
     public static class EntityConstansts
     {
         public static class PetConstants
@@ -44,6 +42,37 @@
             public const string NotesMaxLengthErrorMessage = "Notes cannot exceed 1000 characters.";
 
             public const string ImageUrlMaxLengthErrorMessage = "Image URL cannot exceed 2048 characters.";
+        }
+
+        public static class AppointmentConstants
+        {
+            public const int NotesMaxLength = 1000;
+            public const int NotesMinLength = 0;
+        }
+
+        public static class GroomerConstants
+        {
+            public const int FirstNameMaxLength = 50;
+            public const int FirstNameMinLength = 2;
+
+            public const int LastNameMaxLength = 50;
+            public const int LastNameMinLength = 2;
+
+            public const int DescriptionMaxLength = 1000;
+            public const int DescriptionMinLength = 0;
+
+            public const int PhoneNumberMaxLength = 50;
+            public const int PhoneNumberMinLength = 0;
+        }
+
+        public static class ServiceConstants
+        {
+            public const int ServiceNameMaxLength = 100;
+
+            public const int ServiceDescriptionMaxLength = 1000;
+            public const int ServiceDescriptionMinLength = 0;
+
+            public const string ServicePriceSqlColumnType = "decimal(18,2)";
         }
     }
 }

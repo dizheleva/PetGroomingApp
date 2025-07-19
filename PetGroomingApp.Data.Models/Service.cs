@@ -12,13 +12,16 @@
         public required string Name { get; set; }
 
         [Comment("Service description")]
-        public required string Description { get; set; }
+        public string? Description { get; set; }
 
         [Comment("Service duration")]
         public required TimeSpan Duration { get; set; }
 
         [Comment("Service price")]
         public decimal Price { get; set; }
+
+        [Comment("Shows if Service is deleted")]
+        public bool IsDeleted { get; set; } = false;
 
         // Navigation
         public virtual ICollection<AppointmentService> AppointmentServices { get; set; } = new HashSet<AppointmentService>();
