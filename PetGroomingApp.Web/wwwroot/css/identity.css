@@ -1,0 +1,56 @@
+﻿/* register and login css */
+
+.auth-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center content */
+}
+
+    .auth-container h2 {
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .auth-container form {
+        text-align: left; /* Inputs and labels left aligned */
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    .auth-container .form-group {
+        margin-bottom: 20px;
+    }
+
+    .auth-container .form-control {
+        border-radius: 8px;
+        padding: 10px 12px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .auth-container .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        width: 100%;
+        background-color: #ff5e5e;
+        color: white;
+        font-weight: bold;
+        border: none;
+    }
+
+    .auth-container .form-check {
+        margin-bottom: 20px;
+    }
+
+    .auth-container .form-text,
+    .auth-container a {
+        font-size: 0.9rem;
+        color: #888;
+        display: block;
+        margin-top: 10px;
+    }
