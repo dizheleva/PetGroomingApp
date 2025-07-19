@@ -414,17 +414,23 @@ h3 {
 
 /* line 49, ../../Arafath/CL/january 2020/240. Animal/HTML/scss/_btn.scss */
 .boxed-btn4 {
-  background: #fff;
-  font-size: 16px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  color: #ff3500;
-  padding: 17px 50px;
-  font-family: "Poppins", sans-serif;
-  display: inline-block;
-  -webkit-border-radius: 30px;
-  -moz-border-radius: 30px;
-  border-radius: 30px;
+    background: #fff;
+    font-size: 16px;
+    text-align: center;
+    text-transform: uppercase;
+    outline: none;
+    overflow: hidden;
+    max-width: fit-content;
+    font-weight: 700;
+    border: 1px solid transparent;
+    color: #ff3500;
+    padding: 17px 50px;
+    font-family: "Poppins", sans-serif;
+    display: block;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.20);
 }
 
 /* line 59, ../../Arafath/CL/january 2020/240. Animal/HTML/scss/_btn.scss */
@@ -1665,8 +1671,10 @@ h3 {
     position: absolute;
     right: 0;
     bottom: 0;
-    border-top: 15px solid #ffffff;
-    border-left: 15px solid #ffffff;
+    border-top: 15px solid
+ #ffffff;
+    border-left: 15px solid
+ #ffffff;
     top: auto;
     width: 50%;
     height: 60%;

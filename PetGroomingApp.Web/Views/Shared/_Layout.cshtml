@@ -21,8 +21,8 @@
     <!-- <link rel="stylesheet" href="css/responsive.css"> -->
 </head>
 <body>
-    <!-- Navbar -->
-    @Html.Partial("_Navbar")
+    <!-- Header -->
+    <partial name="_Header"/>
 
     <!-- Main Content -->
     <main role="main">
@@ -30,7 +30,7 @@
     </main>
 
     <!-- Footer -->
-    @Html.Partial("_Footer")
+    <partial name="_Footer"/>
 
     <!-- Scripts -->
     <script src="~/js/vendor/modernizr-3.5.0.min.js"></script>
@@ -52,6 +52,8 @@
     <script src="~/js/plugins.js"></script>
     <script src="~/js/gijgo.min.js"></script>
     <script src="~/js/main.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
 </body>
 </html>

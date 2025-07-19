@@ -4,33 +4,235 @@
 }
 
 <!-- Hero Banner Section -->
-<section class="banner-area" style="background: url('/img/banner/bradcam.png'); background-size: cover; background-position: center; padding: 140px 0 0;position: relative;">
-    <div class="container">
-        <div class="row align-items-center">
-            <!-- Left side: text content -->
-            <div class="col-lg-6 col-md-12">
-                <div class="banner-content">
-                    <h1 style="font-size: 64px; font-weight: 300; color: white; line-height: 1.2;">We Groom</h1>
-                    <h1 style="font-size: 64px; font-weight: 800; color: white; margin-bottom: 20px;">Your Pets</h1>
-                    <p style="color: white; font-size: 18px; margin-bottom: 30px;">
-                        Give your pets the love and care they deserve.
-                    </p>
-                    
-                    <a class="btn rounded-pill" style="background-color: white; color: #e73827; font-weight: 600; padding: 12px 30px;" asp-controller="Appointments" asp-action="Create">Book Now</a>
+<section class="banner-area">
+    <div class="slider_area">
+        <div class="single_slider slider_bg_1 d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5 col-md-6">
+                        <div class="slider_text">
+                            <h3>We Groom <br> <span>Your Pets</span></h3>
+                            <p>Give your precious pets <br> the love and care they deserve</p>
+                            <a asp-controller="Appointments" asp-action="Create" class="boxed-btn4">Book Now</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Right side: dog image -->
-            <div class="col-lg-6 col-md-12 text-center mt-4 mt-lg-0">
-                <img src="~/img/banner/dog.png" alt="Cute Dog" class="img-fluid" style="height: 100%;" />
+            <div class="dog_thumb d-none d-lg-block">
+                <img src="img/banner/dog.png" alt="">
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Optional wave shape -->
-    <div style="position:absolute; bottom:0; left:0; width:100%;">
-        <img src="~/img/banner/shape-bottom.png" alt="" class="img-fluid" />
+<!-- About Section  -->
+<section class="about_area">
+    <div class="pet_care_area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-md-6">
+                    <div class="pet_thumb">
+                        <img src="img/about/pet_care.png" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 offset-lg-1 col-md-6">
+                    <div class="pet_info">
+                        <div class="section_title">
+                            <h3>
+                                <span>We care your pet </span> <br>
+                                As you care
+                            </h3>
+                            <p>
+                                Here at our <em>Pet Groomong Salon</em>, we pride ourselves on offering the best possible service available to both you and your pet and we begin this on your very first visit with our complimentary consultation.
+                            </p>
+                            <p>The consultation allows us to understand your dog’s personality, find out more about their grooming history and allows us to form a relationship of trust with the owner. We know that no two dogs are the same and animals react differently to their surroundings and to the stress that grooming can place on them, especially if they haven’t been groomed before. This first visit allows us to put them at ease.</p>
+                            
+                            <a href="appointment.html" class="boxed-btn3">Appointment</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- Service Section  -->
+<div class="service_area">
+    <div class="container">
+        <div class="row justify-content-center ">
+            <div class="col-lg-7 col-md-10">
+                <div class="section_title text-center mb-95">
+                    <h3>Services for every pet</h3>
+                    <p>Here your pet will always be treated with love, gentleness and in a non-aggressive manner. We take precaution to ensure your pet is completely comfortable to make their visit as enjoyable as possible.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="single_service">
+                    <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
+                        <div class="service_icon">
+                            <img src="img/service/service_icon_1.png" alt="">
+                        </div>
+                    </div>
+                    <div class="service_content text-center">
+                        <h3>Ear cleaning</h3>
+                        <p>And plucking, if necessary. Your dog's ears will be cleaned by removing the build-up of wax and debris, reducing the risk of infections.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single_service active">
+                    <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
+                        <div class="service_icon">
+                            <img src="img/service/service_icon_2.png" alt="">
+                        </div>
+                    </div>
+                    <div class="service_content text-center">
+                        <h3>Bath</h3>
+                        <p>Bathing your pet in a natural, eco-friendly pH shampoo. The procedure includes brushing before bathing and blow drying with specialized dryers.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single_service">
+                    <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
+                        <div class="service_icon">
+                            <img src="img/service/service_icon_3.png" alt="">
+                        </div>
+                    </div>
+                    <div class="service_content text-center">
+                        <h3>Trim</h3>
+                        <p>Hair is trimmed short on the needed areas. The trim can be on the hole body, hygiene trim around sanitary parts or only pad trim.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section  -->
+<div class="team_area">
+    <div class="container">
+        <div class="row justify-content-center ">
+            <div class="col-lg-6 col-md-10">
+                <div class="section_title text-center mb-95">
+                    <h3>Our Team</h3>
+                    <p>Our team includes top grooming specialists. Meet them and you can find your pet's new best friend!'</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="single_team">
+                    <div class="thumb">
+                        <img src="img/team/1.png" alt="">
+                    </div>
+                    <div class="member_name text-center">
+                        <div class="mamber_inner">
+                            <h4>Rala Emaia</h4>
+                            <p>Groomer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single_team">
+                    <div class="thumb">
+                        <img src="img/team/2.png" alt="">
+                    </div>
+                    <div class="member_name text-center">
+                        <div class="mamber_inner">
+                            <h4>jhon Smith</h4>
+                            <p>Manager, Groomer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single_team">
+                    <div class="thumb">
+                        <img src="img/team/3.png" alt="">
+                    </div>
+                    <div class="member_name text-center">
+                        <div class="mamber_inner">
+                            <h4>Rala Emaia</h4>
+                            <p>Groomer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testmonial Section  -->
+<div class="testmonial_area">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="textmonial_active owl-carousel">
+                    <div class="testmonial_wrap">
+                        <div class="single_testmonial d-flex align-items-center">
+                            <div class="test_thumb">
+                                <img src="img/testmonial/1.png" alt="">
+                            </div>
+                            <div class="test_content">
+                                <h4>Jhon Walker</h4>
+                                <span>Client</span>
+                                <p>Here my dog had his best experiance with taking a bath! He enjoyed the procedure and I was happy with him.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testmonial_wrap">
+                        <div class="single_testmonial d-flex align-items-center">
+                            <div class="test_thumb">
+                                <img src="img/testmonial/1.png" alt="">
+                            </div>
+                            <div class="test_content">
+                                <h4>Jhon Walker</h4>
+                                <span>Client</span>
+                                <p>Very good customer service! I recomment. They even gave me good advices for home care!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testmonial_wrap">
+                        <div class="single_testmonial d-flex align-items-center">
+                            <div class="test_thumb">
+                                <img src="img/testmonial/1.png" alt="">
+                            </div>
+                            <div class="test_content">
+                                <h4>Jhon Walker</h4>
+                                <span>Client</span>
+                                <p>We experianced very gentle nail clipping. As a plus they do not use sedation. I recommend!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--  Apeal Section  -->
+<div class="contact_anipat anipat_bg_1">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact_text text-center">
+                    <div class="section_title text-center">
+                        <h3>Why go with our Pet Grooming salon?</h3>
+                        <p>Because we know that even the best care is only as good as the people behind it. Our team is always here to support your pet.</p>
+                    </div>
+                    <div class="contact_btn d-flex align-items-center justify-content-center">
+                        <a href="contact.html" class="boxed-btn4">Contact Us</a>
+                        <p>Or  <a href="#"> +359 88 123 4567</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Add remaining sections here -->
