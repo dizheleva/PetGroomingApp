@@ -17,8 +17,13 @@
 
             builder.HasOne(aps => aps.Service)
                 .WithMany(s => s.AppointmentServices)
-                .HasForeignKey(s => s.ServiceId)
+                .HasForeignKey(aps => aps.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(aps => aps.AppointmentId);
+            builder.HasIndex(aps => aps.ServiceId);
+
+            builder.ToTable(t => t.HasComment("Join table mapping appointments to services"));
         }
     }
 }

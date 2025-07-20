@@ -20,8 +20,8 @@
         public string? Notes { get; set; }
 
         [Comment("Foreign key to the pet for the appointment")]
-        public Guid PetId { get; set; }
-        public virtual required Pet Pet { get; set; }
+        public Guid? PetId { get; set; }
+        public virtual Pet? Pet { get; set; }
 
         [Comment("Foreign key to the user for the appointment")]
         public required string UserId { get; set; }

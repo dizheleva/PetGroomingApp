@@ -26,6 +26,8 @@
                 .HasMaxLength(DescriptionMaxLength);
 
             builder.HasIndex(g => new { g.FirstName, g.LastName });
+
+            builder.HasQueryFilter(g => g.IsDeleted ==  false);
         }
     }
 }

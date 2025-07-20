@@ -23,6 +23,9 @@
         [Comment("Any description of the Groomer ")]
         public string? Description { get; set; } // Optional bio or specialization
 
+        [Comment("Shows if Groomer is no longer working")]
+        public bool IsDeleted { get; set; } = false;
+
         public ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();
     }
 

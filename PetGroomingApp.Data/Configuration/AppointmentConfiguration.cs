@@ -28,7 +28,7 @@
             builder.HasOne(a => a.Pet)
                 .WithMany(p => p.Appointments)
                 .HasForeignKey(a => a.PetId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(a => a.User)
                 .WithMany() 

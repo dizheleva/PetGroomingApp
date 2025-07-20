@@ -33,9 +33,6 @@
             builder.HasIndex(s => s.Name);
             builder.HasIndex(s => s.Price);
 
-            builder
-                .HasQueryFilter(s => s.IsDeleted == false);
-
             builder.ToTable(t => t.HasComment("Service entity representing available grooming services"));
         }
     }
