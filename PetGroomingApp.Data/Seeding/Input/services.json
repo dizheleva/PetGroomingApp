@@ -2,19 +2,29 @@
   {
     "name": "Hair Trim",
     "description": "Full body grooming and trim",
+    "imageUrl": "img/service/grooming.png",
     "duration": "00:30:00",
     "price": 25.00
   },
   {
     "name": "Nail Clip",
     "description": "Claw trimming and smoothing",
+    "imageUrl": "img/service/nail-file.png",
     "duration": "00:15:00",
     "price": 15.00
   },
   {
     "name": "Ear Clean",
-    "description": "Cleanning the ears",
+    "description": "Carefully cleanning the ears",
+    "imageUrl": "img/service/ear-cleaning-cat.png",
     "duration": "00:15:00",
     "price": 10.00
+  },
+  {
+    "name": "Bath",
+    "description": "Bathing with organic shampoo",
+    "imageUrl": "img/service/bath-dog.png",
+    "duration": "00:30:00",
+    "price": 25.00
   }
 ]

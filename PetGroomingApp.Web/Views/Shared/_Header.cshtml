@@ -1,4 +1,5 @@
-﻿<header>
+﻿
+<header>
     <div class="header-area ">
         <div class="header-top_area">
             <div class="container">
@@ -47,8 +48,9 @@
                                     <li><a asp-controller="Home" asp-action="Index">Home</a></li>
                                     <li><a asp-controller="Home" asp-action="About">About</a></li>
                                     <li>
-                                        <a <a asp-controller="Services" asp-action="Index">Services <i class="ti-angle-down"></i></a>
-                                        <ul class="submenu">
+                                        <a asp-controller="Service" asp-action="Index">Services <i class="ti-angle-down"></i></a>
+                                        <ul class="submenu">                 
+                                            <li><a href="#">Hair trimming</a></li>
                                             <li><a href="#">Bathing</a></li>
                                             <li><a href="#">Nail clipping</a></li>
                                             <li><a href="#">Ear cleaning</a></li>
@@ -57,7 +59,7 @@
                                     <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
                                     @if (User?.Identity?.IsAuthenticated ?? false)
                                     {
-                                        <li><a asp-controller="Appointments" asp-action="Index">Appointments</a></li>
+                                        <li><a asp-controller="Appointment" asp-action="Index">Appointments</a></li>
                                     }
                                     <partial name="_LoginPartial" />
                                 </ul>                                

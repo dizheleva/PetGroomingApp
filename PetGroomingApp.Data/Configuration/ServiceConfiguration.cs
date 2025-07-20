@@ -3,6 +3,7 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using PetGroomingApp.Data.Models;
+    using PetGroomingApp.Data.Seeding;
 
     using static PetGroomingApp.Data.Common.EntityConstansts.ServiceConstants;
 
@@ -34,6 +35,8 @@
             builder.HasIndex(s => s.Price);
 
             builder.ToTable(t => t.HasComment("Service entity representing available grooming services"));
+
+            builder.HasData(DbSeeder.SeedServices());
         }
     }
 }

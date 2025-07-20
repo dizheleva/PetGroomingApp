@@ -1,16 +1,19 @@
 namespace PetGroomingApp.Web.Controllers
 {
     using System.Diagnostics;
-
-    using ViewModels;
-
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using PetGroomingApp.Data;
+    using PetGroomingApp.Web.ViewModels.Service;
+    using ViewModels;
 
     public class HomeController : Controller
     {
-        public HomeController(ILogger<HomeController> logger)
-        {
+        private readonly ApplicationDbContext _context;
 
+        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
+        {
+            _context = context;
         }
 
         public IActionResult Index()
@@ -21,6 +24,23 @@ namespace PetGroomingApp.Web.Controllers
         public IActionResult About()
         {
             return View();
+        }
+
+        public async Task<IActionResult>? Details()
+        {
+            var services = await _context.Services
+                .Select(s => new AllServicesIndexViewModel
+                {
+                    Id = s.Id.ToString(),
+                    Name = s.Name,
+                    ImageUrl = s.ImageUrl,
+                    Description = s.Description,
+                    Duration = s.Duration,
+                    Price = s.Price,
+                })
+                .ToListAsync();
+
+            return View(services);
         }
 
         public IActionResult Privacy()

@@ -11,6 +11,9 @@
         [Comment("Service name")]
         public required string Name { get; set; }
 
+        [Comment("Service image")]
+        public required string ImageUrl { get; set; }
+
         [Comment("Service description")]
         public string? Description { get; set; }
 

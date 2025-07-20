@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetGroomingApp.Data;
 
@@ -11,9 +12,11 @@ using PetGroomingApp.Data;
 namespace PetGroomingApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720200937_SeedServicesAndGroomers")]
+    partial class SeedServicesAndGroomers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,15 +146,15 @@ namespace PetGroomingApp.Data.Migrations
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "734146c6-905d-488a-9c7a-909d1868c5f7",
+                            ConcurrencyStamp = "279a2b8d-622d-4317-94ea-f19f4fe08786",
                             Email = "user1@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@MAIL.COM",
                             NormalizedUserName = "USER1@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG80iWSKXMc5Ts7/jyk4vPxU3evD0F8C5D/tAE9QrbCDTjLAR4aEBZCGocum1UuPyw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDzKb80L+Lw676XkTeRcuRBjrdU+bWp2J6lOM3YQQJOBjA4elyR8JCVtgnG10NFfbw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3ccc37f0-21fa-4a2d-ae99-6b01c46da615",
+                            SecurityStamp = "415a1f9d-3288-44f3-a17b-5539f79a7427",
                             TwoFactorEnabled = false,
                             UserName = "user1@mail.com"
                         },
@@ -159,15 +162,15 @@ namespace PetGroomingApp.Data.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8943f39c-9693-418d-b38c-1520b1472eb4",
+                            ConcurrencyStamp = "0967bd24-5e5c-4713-9c6e-68045a91dbcb",
                             Email = "user2@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@MAIL.COM",
                             NormalizedUserName = "USER2@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEP7uatgAc13pqLFNxQn8REtRB0uWOGvpCg9n83mJkRTte8KpKyt7FbsCpdCYu2BUjg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEm0uEBzkBUJO0AAdNN4W6NtnpTFrvuo9tt0e53qhq516RZklAOv7m+DEAe4Ekb2Hg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "958ac02f-ae2c-48b5-931b-e7d3c59fd461",
+                            SecurityStamp = "b3548c66-504f-4723-9aa6-2c082f2dec90",
                             TwoFactorEnabled = false,
                             UserName = "user2@mail.com"
                         });
@@ -491,48 +494,6 @@ namespace PetGroomingApp.Data.Migrations
                     b.ToTable("Services", t =>
                         {
                             t.HasComment("Service entity representing available grooming services");
-                        });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e0ff5435-515d-4105-b8b9-e9863f9ea48a"),
-                            Description = "Full body grooming and trim",
-                            Duration = "00:30:00",
-                            ImageUrl = "img/service/grooming.png",
-                            IsDeleted = false,
-                            Name = "Hair Trim",
-                            Price = 25.00m
-                        },
-                        new
-                        {
-                            Id = new Guid("a3ea0072-20a5-4c6e-9ee8-b3cf9b90fde1"),
-                            Description = "Claw trimming and smoothing",
-                            Duration = "00:15:00",
-                            ImageUrl = "img/service/nail-file.png",
-                            IsDeleted = false,
-                            Name = "Nail Clip",
-                            Price = 15.00m
-                        },
-                        new
-                        {
-                            Id = new Guid("8dba4287-5e2b-416d-801d-4078f07eed4c"),
-                            Description = "Carefully cleanning the ears",
-                            Duration = "00:15:00",
-                            ImageUrl = "img/service/ear-cleaning-cat.png",
-                            IsDeleted = false,
-                            Name = "Ear Clean",
-                            Price = 10.00m
-                        },
-                        new
-                        {
-                            Id = new Guid("51a30835-1f37-461a-9d72-af5090f39d26"),
-                            Description = "Bathing with organic shampoo.Drying and perfuming",
-                            Duration = "00:30:00",
-                            ImageUrl = "img/service/bath-dog.png",
-                            IsDeleted = false,
-                            Name = "Bath",
-                            Price = 25.00m
                         });
                 });
 
