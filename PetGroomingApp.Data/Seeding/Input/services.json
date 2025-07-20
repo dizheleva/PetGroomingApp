@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Hair Trim",
+    "description": "Full body grooming and trim",
+    "duration": "00:30:00",
+    "price": 25.00
+  },
+  {
+    "name": "Nail Clip",
+    "description": "Claw trimming and smoothing",
+    "duration": "00:15:00",
+    "price": 15.00
+  },
+  {
+    "name": "Ear Clean",
+    "description": "Cleanning the ears",
+    "duration": "00:15:00",
+    "price": 10.00
+  }
+]

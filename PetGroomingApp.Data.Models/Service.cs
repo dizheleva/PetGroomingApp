@@ -15,7 +15,7 @@
         public string? Description { get; set; }
 
         [Comment("Service duration")]
-        public required TimeSpan Duration { get; set; }
+        public required string Duration { get; set; }
 
         [Comment("Service price")]
         public decimal Price { get; set; }

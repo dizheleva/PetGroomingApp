@@ -1,0 +1,23 @@
+﻿[
+  {
+    "id": "5ae6c761-1363-4a23-9965-171c70f935de",
+    "firstName": "Tom",
+    "lastName": "Brown",
+    "phoneNumber": "555-5678",
+    "description": "Salon manager. Great with large dogs"
+  },
+  {
+    "id": "f4c3e429-0e36-47af-99a2-0c7581a7fc67",
+    "firstName": "Lara",
+    "lastName": "Smith",
+    "phoneNumber": "555-1234",
+    "description": "Expert in poodles"
+  },
+  {
+    "id": "be80d2e4-1c91-4e86-9b73-12ef08c9c3d2",
+    "firstName": "Eli",
+    "lastName": "Simpson",
+    "phoneNumber": "555-9012",
+    "description": "Great with dogs and cats"
+  }
+]

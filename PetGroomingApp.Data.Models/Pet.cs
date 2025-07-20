@@ -50,7 +50,7 @@
 
         [Comment("Foreign key to the owner of the pet")]
         public required string OwnerId { get; set; }
-        public virtual required IdentityUser Owner { get; set; }
+        public virtual IdentityUser Owner { get; set; } = null!;
 
         [Comment("Collection of appointments of the pet")]
         public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();

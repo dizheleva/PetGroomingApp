@@ -3,9 +3,9 @@
     public class AppointmentService
     {
         public Guid AppointmentId { get; set; }
-        public virtual required Appointment Appointment { get; set; }
+        public virtual Appointment Appointment { get; set; } = null!;
 
         public Guid ServiceId { get; set; }
-        public virtual required Service Service { get; set; }
+        public virtual Service Service { get; set; } = null!;
     }
 }

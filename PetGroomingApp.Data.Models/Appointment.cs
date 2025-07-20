@@ -25,7 +25,7 @@
 
         [Comment("Foreign key to the user for the appointment")]
         public required string UserId { get; set; }
-        public virtual required IdentityUser User { get; set; }
+        public virtual IdentityUser User { get; set; } = null!;
 
         [Comment("Foreign key to the groomer for the appointment")]
         public Guid? GroomerId { get; set; }

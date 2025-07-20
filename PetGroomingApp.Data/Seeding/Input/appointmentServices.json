@@ -1,0 +1,10 @@
+[
+  {
+    "appointmentId": "appointment-guid-1",
+    "serviceId": "service-guid-1"
+  },
+  {
+    "appointmentId": "appointment-guid-1",
+    "serviceId": "service-guid-2"
+  }
+]
