@@ -1,14 +1,16 @@
 ﻿namespace PetGroomingApp.Services.Core.Services
 {
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.VisualBasic;
     using PetGroomingApp.Data;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
 
-    public class ServiceService : IServiceInterface
+    public class ServiceService : IServiceService
     {
         private readonly ApplicationDbContext _context;
 
@@ -68,6 +70,40 @@
                 Duration = service.Duration,
                 Price = service.Price
             };
+        }
+
+        public async Task<ServiceFormViewModel?> GetForEditByIdAsync(string id)
+        {
+            return await _context.Services
+                .Where(s => s.Id.ToString() == id && !s.IsDeleted)
+                .Select(s => new ServiceFormViewModel
+                {
+                    Id = s.Id.ToString(),
+                    Name = s.Name,
+                    ImageUrl = s.ImageUrl,
+                    Description = s.Description,
+                    Duration = s.Duration,
+                    Price = s.Price
+                })
+                .FirstOrDefaultAsync();
+        }
+        public async Task EditAsync(string id, ServiceFormViewModel model)
+        {
+            var service = await _context.Services
+                .FirstOrDefaultAsync(m => m.Id.ToString() == id);
+
+            if (service == null)
+            {
+                return;
+            }
+
+            service.Name = model.Name;
+            service.ImageUrl = model.ImageUrl;
+            service.Description = model.Description;
+            service.Duration = model.Duration;
+            service.Price = model.Price;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,12 +1,8 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using PetGroomingApp.Data;
 namespace PetGroomingApp.Web
 {
-    using Data;
-
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using PetGroomingApp.Data;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Services.Core.Services;
 
@@ -36,7 +32,7 @@ namespace PetGroomingApp.Web
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             
-            builder.Services.AddScoped<IServiceInterface, ServiceService>();
+            builder.Services.AddScoped<IServiceService, ServiceService>();
 
             builder.Services.AddControllersWithViews();
 

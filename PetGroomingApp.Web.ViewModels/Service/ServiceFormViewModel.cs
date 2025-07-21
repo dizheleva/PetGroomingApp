@@ -6,6 +6,8 @@
 
     public class ServiceFormViewModel
     {
+        public string Id { get; set; } = string.Empty;
+
         [Required(ErrorMessage = NameRequiredMessage)]
         [MinLength(NameMinLength, ErrorMessage = NameMinLengthMessage)]
         [MaxLength(NameMaxLength, ErrorMessage = NameMaxLengthMessage)]

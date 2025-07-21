@@ -6,9 +6,9 @@
 
     public class ServiceController : Controller
     {
-        private readonly IServiceInterface _serviceService;
+        private readonly IServiceService _serviceService;
 
-        public ServiceController(IServiceInterface serviceService)
+        public ServiceController(IServiceService serviceService)
         {
             _serviceService = serviceService;
         }
@@ -38,6 +38,7 @@
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
             var service = await _serviceService.GetByIdAsync(id);
@@ -48,6 +49,32 @@
             }
 
             return View(service);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var model = await _serviceService.GetForEditByIdAsync(id);
+
+            if (model == null)  
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, ServiceFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await _serviceService.EditAsync(id, model);
+
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 }
