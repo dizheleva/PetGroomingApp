@@ -7,6 +7,8 @@ namespace PetGroomingApp.Web
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using PetGroomingApp.Services.Core.Interfaces;
+    using PetGroomingApp.Services.Core.Services;
 
     public class Program
     {
@@ -33,6 +35,9 @@ namespace PetGroomingApp.Web
                     options.Password.RequiredLength = 3;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            
+            builder.Services.AddScoped<IServiceInterface, ServiceService>();
+
             builder.Services.AddControllersWithViews();
 
             WebApplication? app = builder.Build();

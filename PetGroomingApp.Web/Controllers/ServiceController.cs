@@ -1,32 +1,20 @@
 ﻿namespace PetGroomingApp.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using PetGroomingApp.Data;
-    using PetGroomingApp.Web.ViewModels.Service;
+    using PetGroomingApp.Services.Core.Interfaces;
 
     public class ServiceController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IServiceInterface _serviceService;
 
-        public ServiceController(ApplicationDbContext context)
+        public ServiceController(IServiceInterface serviceService)
         {
-            _context = context;
+            _serviceService = serviceService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var services =await _context.Services
-                .Select(s => new AllServicesIndexViewModel
-                {
-                    Id = s.Id.ToString(),
-                    Name = s.Name,
-                    ImageUrl = s.ImageUrl,
-                    Description = s.Description,
-                    Duration = s.Duration,
-                    Price = s.Price,
-                })
-                .ToListAsync();
+            var services = await _serviceService.GetAllAsync();
 
             return View(services);
         }
