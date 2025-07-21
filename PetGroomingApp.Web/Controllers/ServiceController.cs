@@ -37,5 +37,17 @@
             await _serviceService.AddAsync(model);
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            var service = await _serviceService.GetByIdAsync(id);
+
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            return View(service);
+        }
     }
 }

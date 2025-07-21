@@ -47,5 +47,27 @@
             await _context.Services.AddAsync(service);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<ServiceDetailsViewModel> GetByIdAsync(string id)
+        {
+            var service = await _context.Services
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id.ToString() == id && !s.IsDeleted);
+
+            if (service == null)
+            {
+                return null;    
+            }
+
+            return new ServiceDetailsViewModel
+            {
+                Id = service.Id.ToString(),
+                Name = service.Name,
+                ImageUrl = service.ImageUrl,
+                Description = service.Description,
+                Duration = service.Duration,
+                Price = service.Price
+            };
+        }
     }
 }

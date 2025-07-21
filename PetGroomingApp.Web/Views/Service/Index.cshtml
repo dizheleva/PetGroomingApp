@@ -8,8 +8,8 @@
 <div class="bradcam_area breadcam_bg">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="bradcam_text text-center">
+            <div class="col text-center">
+                <div class="bradcam_text">
                     <h3>@ViewData["Title"]</h3>
                 </div>
             </div>
@@ -17,30 +17,32 @@
     </div>
 </div>
 
-<!-- Service Section  -->
-<div class="service_area">
+<!-- Services Section -->
+<section class="service_area py-5 bg-light">
     <div class="container">
-        <div class="row justify-content-center ">
-            <div class="col-lg-7 col-md-10">
-                <div class="section_title text-center mb-95">
-                    <h3>Services for every pet</h3>
-                    <p>Here your pet will always be treated with love, gentleness and in a non-aggressive manner. We take precaution to ensure your pet is completely comfortable to make their visit as enjoyable as possible.</p>
-                </div>
-            </div>
+        <div class="text-center mb-5">
+            <h2 class="display-5">Services for Every Pet</h2>
+            <p class="text-muted">
+                Here your pet will always be treated with love, gentleness, and care.
+                We make every visit as enjoyable and stress-free as possible.
+            </p>
         </div>
+
         <div class="row justify-content-center">
             @foreach (var service in Model)
             {
-                <div class="col-lg-4 col-md-6">
-                    <div class="single_service">
-                        <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
-                            <div class="service_icon">
-                                <img src="@service.ImageUrl" alt="@service.Name">
+                <div class="col-lg-4 col-md-6 d-flex align-items-stretch mb-4">
+                    <div class="single_service shadow-sm d-flex flex-column w-100">
+                        <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center" style="height: 160px;">
+                            <div class="service_icon" style="max-width: 100px; max-height: 100px;">
+                                <img src="@service.ImageUrl" alt="@service.Name" class="img-fluid" />
                             </div>
                         </div>
-                        <div class="service_content text-center">
-                            <h3>@service.Name</h3>
-                            <p style="margin-bottom: 30px">@service.Description</p>
+                        <div class="service_content text-center p-3 d-flex flex-column flex-grow-1 justify-content-between">
+                            <div>
+                                <h5 class="fw-bold">@service.Name</h5>
+                                <p class="text-muted mb-3">@service.Description</p>
+                            </div>
                             <a asp-controller="Service" asp-action="Details" asp-route-id="@service.Id" class="boxed-btn3">Details</a>
                         </div>
                     </div>
@@ -48,4 +50,30 @@
             }
         </div>
     </div>
-</div>
+</section>
+
+<style>
+    .object-fit-cover {
+        object-fit: cover;
+    }
+
+    .service-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-detail-btn {
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        font-weight: 500;
+    }
+
+        .custom-detail-btn:hover {
+            background-color: #0056b3; /* darker blue */
+            transform: translateY(-2px);
+        }
+</style>

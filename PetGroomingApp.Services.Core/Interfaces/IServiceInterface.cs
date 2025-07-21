@@ -6,5 +6,7 @@
     {
         Task<IEnumerable<AllServicesIndexViewModel>> GetAllAsync();
         Task AddAsync(ServiceFormViewModel model);
+
+        Task<ServiceDetailsViewModel> GetByIdAsync(string id);
     }
 }
