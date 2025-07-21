@@ -76,5 +76,25 @@
 
             return RedirectToAction(nameof(Details), new { id });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var service = await _serviceService.GetByIdAsync(id);
+
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            return View(service);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            await _serviceService.SoftDeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

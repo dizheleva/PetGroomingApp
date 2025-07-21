@@ -1,10 +1,8 @@
 ﻿namespace PetGroomingApp.Services.Core.Services
 {
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.VisualBasic;
     using PetGroomingApp.Data;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Services.Core.Interfaces;
@@ -104,6 +102,29 @@
             service.Price = model.Price;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task SoftDeleteAsync(string id)
+        {
+            var service = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id.ToString() == id);
+
+            if (service != null && !service.IsDeleted)
+            {
+                service.IsDeleted = true;
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task HardDeleteAsync(string id)
+        {
+            var service = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id.ToString() == id);
+
+            if (service != null)
+            {
+                _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

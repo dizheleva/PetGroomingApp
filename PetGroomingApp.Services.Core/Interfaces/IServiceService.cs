@@ -9,5 +9,7 @@
         Task<ServiceDetailsViewModel> GetByIdAsync(string id);
         Task<ServiceFormViewModel> GetForEditByIdAsync(string id);
         Task EditAsync(string id, ServiceFormViewModel model);
+        Task SoftDeleteAsync(string id);
+        Task HardDeleteAsync(string id);
     }
 }
