@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
+    using PetGroomingApp.Data.Models;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
 
@@ -26,11 +27,25 @@
                     Id = s.Id.ToString(),
                     Name = s.Name,
                     ImageUrl = s.ImageUrl,
-                    Description = s.Description,
-                    Duration = s.Duration,
-                    Price = s.Price,
+                    Description = s.Description
                 })
                 .ToListAsync();
+        }
+
+        public async Task AddAsync(ServiceFormViewModel model)
+        {
+            var service = new Service
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Name,
+                ImageUrl = model.ImageUrl,
+                Description = model.Description,
+                Duration = model.Duration,
+                Price = model.Price,
+            };
+
+            await _context.Services.AddAsync(service);
+            await _context.SaveChangesAsync();
         }
     }
 }

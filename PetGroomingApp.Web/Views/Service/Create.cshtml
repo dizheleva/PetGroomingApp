@@ -1,0 +1,59 @@
+﻿@model PetGroomingApp.Web.ViewModels.Service.ServiceFormViewModel
+
+@{
+    ViewData["Title"] = "Create new service";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-warning fw-bold">Create New Service</h2>
+    <hr class="mb-4">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post" class="anipat_bg_1 text-light p-4 rounded shadow-lg">
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold">Service Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter Service Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Duration" class="form-label fw-bold">Duration</label>
+                    <input asp-for="Duration" class="form-control" placeholder="Enter duration in format hh:mm">
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-bold">Description (optional)</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea> 
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label fw-bold">Image URL</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="Enter image URL">
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label fw-bold">Price</label>
+                    <input asp-for="Price" class="form-control" placeholder="Enter price in format 00.00">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success fw-bold px-4">
+                        <i class="bi bi-plus-circle"></i> Create Service
+                    </button>
+                    <a asp-action="Manage" class="btn btn-outline-light ms-2">
+                        <i class="bi bi-arrow-left"></i> Back to All Services
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

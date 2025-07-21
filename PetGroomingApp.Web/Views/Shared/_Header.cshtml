@@ -60,6 +60,7 @@
                                     @if (User?.Identity?.IsAuthenticated ?? false)
                                     {
                                         <li><a asp-controller="Appointment" asp-action="Index">Appointments</a></li>
+                                        <li><a asp-area="" asp-controller="Service" asp-action="Create">Create Service</a></li>
                                     }
                                     <partial name="_LoginPartial" />
                                 </ul>                                

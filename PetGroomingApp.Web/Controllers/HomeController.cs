@@ -26,22 +26,6 @@ namespace PetGroomingApp.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult>? Details()
-        {
-            var services = await _context.Services
-                .Select(s => new AllServicesIndexViewModel
-                {
-                    Id = s.Id.ToString(),
-                    Name = s.Name,
-                    ImageUrl = s.ImageUrl,
-                    Description = s.Description,
-                    Duration = s.Duration,
-                    Price = s.Price,
-                })
-                .ToListAsync();
-
-            return View(services);
-        }
 
         public IActionResult Privacy()
         {

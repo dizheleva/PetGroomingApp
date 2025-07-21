@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
+    using PetGroomingApp.Web.ViewModels.Service;
 
     public class ServiceController : Controller
     {
@@ -17,6 +18,24 @@
             var services = await _serviceService.GetAllAsync();
 
             return View(services);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ServiceFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await _serviceService.AddAsync(model);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

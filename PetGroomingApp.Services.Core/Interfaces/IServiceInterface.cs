@@ -5,5 +5,6 @@
     public interface IServiceInterface
     {
         Task<IEnumerable<AllServicesIndexViewModel>> GetAllAsync();
+        Task AddAsync(ServiceFormViewModel model);
     }
 }
