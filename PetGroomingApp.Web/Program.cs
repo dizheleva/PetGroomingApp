@@ -3,6 +3,8 @@ namespace PetGroomingApp.Web
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
+    using PetGroomingApp.Data.Repository;
+    using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Services.Core.Services;
 
@@ -31,7 +33,10 @@ namespace PetGroomingApp.Web
                     options.Password.RequiredLength = 3;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+
+            builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+            builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
+
             builder.Services.AddScoped<IServiceService, ServiceService>();
             builder.Services.AddScoped<IFavoritesService, FavoritesService>();
 

@@ -6,21 +6,22 @@
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
     using PetGroomingApp.Data.Models;
+    using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Favorites;
 
     public class FavoritesService : IFavoritesService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IFavoritesRepository _favoritesRepository;
 
-        public FavoritesService(ApplicationDbContext context)
+        public FavoritesService(IFavoritesRepository favoritesRepository)
         {
-            _context = context;
+            _favoritesRepository = favoritesRepository;
         }
 
         public async Task<IEnumerable<FavoritesViewModel>> GetUserFavoritesAsync(string userId)
         {
-            return await _context.UserServices
+            return await _favoritesRepository.GetAllAttached()
                 .Where(us => us.UserId == userId)
                 .Select(us => new FavoritesViewModel
                 {
@@ -33,7 +34,7 @@
 
         public async Task<bool> IsServiceInFavoritesAsync(string userId, Guid serviceId)
         {
-            return await _context.UserServices
+            return await _favoritesRepository.GetAllAttached()
                 .AnyAsync(us => us.UserId == userId && us.ServiceId == serviceId);
         }
 
@@ -45,18 +46,18 @@
                 ServiceId = Guid.Parse(serviceId)
             };
 
-            await _context.UserServices.AddAsync(userService);
-            await _context.SaveChangesAsync();
+            await _favoritesRepository.AddAsync(userService);
+            await _favoritesRepository.SaveChangesAsync();
         }
         public async Task RemoveFromFavoritesAsync(string userId, string serviceId)
         {
-            var userService = await _context.UserServices
+            var userService = await _favoritesRepository.GetAllAttached()
                 .FirstOrDefaultAsync(us => us.UserId == userId && us.ServiceId == Guid.Parse(serviceId));
 
             if (userService != null)
             {
-                _context.UserServices.Remove(userService);
-                await _context.SaveChangesAsync();
+                _favoritesRepository.Delete(userService);
+                await _favoritesRepository.SaveChangesAsync();
             }
         }
     }

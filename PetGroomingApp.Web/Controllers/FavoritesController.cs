@@ -2,7 +2,6 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
-    using PetGroomingApp.Web.ViewModels.Favorites;
 
     public class FavoritesController : BaseController
     {
@@ -60,7 +59,7 @@
             var serviceGuid = Guid.Parse(serviceId);
             var isInFavorites = _favoritesService.IsServiceInFavoritesAsync(userId, serviceGuid).Result;
 
-            if (!isInFavorites)
+            if (isInFavorites)
             {
                 _favoritesService.RemoveFromFavoritesAsync(userId, serviceId).Wait();
             }

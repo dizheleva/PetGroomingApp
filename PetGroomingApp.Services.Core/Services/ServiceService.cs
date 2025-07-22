@@ -3,23 +3,23 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
-    using PetGroomingApp.Data;
     using PetGroomingApp.Data.Models;
+    using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
 
     public class ServiceService : IServiceService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IServiceRepository _serviceRepository;
 
-        public ServiceService(ApplicationDbContext context)
+        public ServiceService(IServiceRepository serviceRepository)
         {
-            _context = context;
+            _serviceRepository = serviceRepository;
         }
 
         public async Task<IEnumerable<AllServicesIndexViewModel>> GetAllAsync()
         {
-            return await _context.Services
+            return await _serviceRepository.GetAllAttached()
                 .Where(s => !s.IsDeleted)
                 .AsNoTracking() // improves performance when the results will only be read, not updated
                 .Select(s => new AllServicesIndexViewModel
@@ -44,13 +44,13 @@
                 Price = model.Price,
             };
 
-            await _context.Services.AddAsync(service);
-            await _context.SaveChangesAsync();
+            await _serviceRepository.AddAsync(service);
+            await _serviceRepository.SaveChangesAsync();
         }
 
         public async Task<ServiceDetailsViewModel> GetByIdAsync(string id)
         {
-            var service = await _context.Services
+            var service = await _serviceRepository.GetAllAttached()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id.ToString() == id && !s.IsDeleted);
 
@@ -72,7 +72,7 @@
 
         public async Task<ServiceFormViewModel?> GetForEditByIdAsync(string id)
         {
-            return await _context.Services
+            return await _serviceRepository.GetAllAttached()
                 .Where(s => s.Id.ToString() == id && !s.IsDeleted)
                 .Select(s => new ServiceFormViewModel
                 {
@@ -87,7 +87,7 @@
         }
         public async Task EditAsync(string id, ServiceFormViewModel model)
         {
-            var service = await _context.Services
+            var service = await _serviceRepository.GetAllAttached()
                 .FirstOrDefaultAsync(m => m.Id.ToString() == id);
 
             if (service == null)
@@ -101,29 +101,29 @@
             service.Duration = model.Duration;
             service.Price = model.Price;
 
-            await _context.SaveChangesAsync();
+            await _serviceRepository.SaveChangesAsync();
         }
 
         public async Task SoftDeleteAsync(string id)
         {
-            var service = await _context.Services
+            var service = await _serviceRepository.GetAllAttached()
                 .FirstOrDefaultAsync(s => s.Id.ToString() == id);
 
             if (service != null && !service.IsDeleted)
             {
                 service.IsDeleted = true;
-                await _context.SaveChangesAsync();
+                await _serviceRepository.SaveChangesAsync();
             }
         }
         public async Task HardDeleteAsync(string id)
         {
-            var service = await _context.Services
+            var service = await _serviceRepository.GetAllAttached()
                 .FirstOrDefaultAsync(s => s.Id.ToString() == id);
 
             if (service != null)
             {
-                _context.Services.Remove(service);
-                await _context.SaveChangesAsync();
+                _serviceRepository.Delete(service);
+                await _serviceRepository.SaveChangesAsync();
             }
         }
     }
