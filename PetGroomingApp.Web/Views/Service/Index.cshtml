@@ -46,9 +46,15 @@
                             <div style="margin-bottom: 20px">
                                 <a asp-controller="Service" asp-action="Details" asp-route-id="@service.Id" class="boxed-btn3">Details</a>
                             </div>
-                            <div>
-                                <a asp-controller="Favorites" asp-action="Add" asp-route-id="@service.Id" class="boxed-btn3 btn-outline-warning">Add to favorites</a>
-                            </div>
+                            @if (User?.Identity?.IsAuthenticated ?? false)
+                            {
+                                <form asp-controller="Favorites" asp-action="Add" asp-route-id="@service.Id" method="post" class="d-inline">
+                                    <input type="hidden" name="serviceId" value="@service.Id" />
+                                    <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill px-4 fw-bold">
+                                        <i class="fa fa-bookmark"></i> Add to favorites
+                                    </button>
+                                </form>
+                            }
                         </div>
                     </div>
                 </div>

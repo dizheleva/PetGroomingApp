@@ -1,10 +1,11 @@
 ﻿namespace PetGroomingApp.Web.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
 
-    public class ServiceController : Controller
+    public class ServiceController : BaseController
     {
         private readonly IServiceService _serviceService;
 
@@ -13,11 +14,26 @@
             _serviceService = serviceService;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var services = await _serviceService.GetAllAsync();
 
             return View(services);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            var service = await _serviceService.GetByIdAsync(id);
+
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            return View(service);
         }
 
         [HttpGet]
@@ -36,19 +52,6 @@
 
             await _serviceService.AddAsync(model);
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(string id)
-        {
-            var service = await _serviceService.GetByIdAsync(id);
-
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            return View(service);
         }
 
         [HttpGet]

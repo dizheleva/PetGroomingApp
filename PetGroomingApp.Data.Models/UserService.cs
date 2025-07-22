@@ -4,9 +4,9 @@
 
     public class UserService
     {
-        public required string UserId { get; set; }
-        public virtual required IdentityUser User { get; set; }
+        public string UserId { get; set; } = null!; 
+        public virtual IdentityUser User { get; set; } = null!;
         public Guid ServiceId { get; set; }
-        public virtual required Service Service { get; set; }
+        public virtual Service Service { get; set; } = null!;
     }
 }

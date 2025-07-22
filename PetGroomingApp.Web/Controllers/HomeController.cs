@@ -1,13 +1,12 @@
 namespace PetGroomingApp.Web.Controllers
 {
     using System.Diagnostics;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
-    using PetGroomingApp.Web.ViewModels.Service;
     using ViewModels;
 
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
@@ -16,17 +15,19 @@ namespace PetGroomingApp.Web.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult About()
         {
             return View();
         }
 
-
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();

@@ -33,6 +33,7 @@ namespace PetGroomingApp.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             
             builder.Services.AddScoped<IServiceService, ServiceService>();
+            builder.Services.AddScoped<IFavoritesService, FavoritesService>();
 
             builder.Services.AddControllersWithViews();
 
