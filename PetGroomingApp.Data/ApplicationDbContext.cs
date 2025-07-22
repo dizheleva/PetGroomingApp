@@ -13,6 +13,7 @@
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<AppointmentService> AppointmentServices { get; set; }
+        public virtual DbSet<UserService> UserServices { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
