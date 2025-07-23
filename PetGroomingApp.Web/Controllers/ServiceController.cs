@@ -14,6 +14,7 @@
             _serviceService = serviceService;
         }
 
+        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -21,19 +22,28 @@
 
             return View(services);
         }
-
-        [AllowAnonymous]
+                
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
-            var service = await _serviceService.GetByIdAsync(id);
-
-            if (service == null)
+            try
             {
-                return NotFound();
-            }
+                var service = await _serviceService.GetByIdAsync(id);
 
-            return View(service);
+                if (service == null)
+                {
+                    return NotFound();
+                }
+
+                return View(service);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the service details: {ex.Message}");
+                return View(nameof(Index));
+            }
         }
 
         [HttpGet]
@@ -50,21 +60,40 @@
                 return View(model);
             }
 
-            await _serviceService.AddAsync(model);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _serviceService.AddAsync(model);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {                
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError(string.Empty, $"An error occurred while creating the service: {ex.Message}");
+                return View(model);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var model = await _serviceService.GetForEditByIdAsync(id);
-
-            if (model == null)  
+            try
             {
-                return NotFound();
-            }
+                var model = await _serviceService.GetForEditByIdAsync(id);
 
-            return View(model);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the service for editing: {ex.Message}");
+
+                return this.RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]
@@ -74,30 +103,56 @@
             {
                 return View(model);
             }
+            try
+            {
+                bool editSuccess = await _serviceService.EditAsync(id, model);
+                if (!editSuccess)
+                {
+                    return NotFound();
+                }
 
-            await _serviceService.EditAsync(id, model);
-
-            return RedirectToAction(nameof(Details), new { id });
+                return this.RedirectToAction(nameof(Details), new { id = model.Id });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            var service = await _serviceService.GetByIdAsync(id);
-
-            if (service == null)
+            try
             {
-                return NotFound();
+                var service = await _serviceService.GetByIdAsync(id);
+                if (service == null)
+                {
+                    return NotFound();
+                }
+                return View(service);
             }
-
-            return View(service);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await _serviceService.SoftDeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _serviceService.SoftDeleteAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.RedirectToAction(nameof(Index));
+            }
+            
         }
     }
 }

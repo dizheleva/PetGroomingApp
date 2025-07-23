@@ -47,7 +47,6 @@
             };
 
             await _favoritesRepository.AddAsync(userService);
-            await _favoritesRepository.SaveChangesAsync();
         }
         public async Task RemoveFromFavoritesAsync(string userId, string serviceId)
         {
@@ -56,8 +55,7 @@
 
             if (userService != null)
             {
-                _favoritesRepository.Delete(userService);
-                await _favoritesRepository.SaveChangesAsync();
+                await _favoritesRepository.HardDeleteAsync(userService);
             }
         }
     }

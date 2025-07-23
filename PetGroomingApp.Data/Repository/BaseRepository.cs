@@ -80,20 +80,16 @@
             await _context.SaveChangesAsync();
         }
 
-        public bool Delete(TType entity)
+        public bool SoftDelete(TType entity)
         {
-            _dbSet.Remove(entity);
-            _context.SaveChanges();
-
-            return true;
+            this.PerformSoftDelete(entity);
+            return this.Update(entity);
         }
 
-        public async Task<bool> DeleteAsync(TType entity)
+        public async Task<bool> SoftDeleteAsync(TType entity)
         {
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
-
-            return true;
+            this.PerformSoftDelete(entity);
+            return await this.UpdateAsync(entity);
         }
 
         public bool HardDelete(TType entity)
@@ -150,6 +146,19 @@
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        private void PerformSoftDelete(TType entity)
+        {
+            PropertyInfo? isDeletedProperty = typeof(TType).GetProperties()
+                .FirstOrDefault(pi => pi.PropertyType == typeof(bool) && pi.Name == "IsDeleted");
+            
+            if (isDeletedProperty == null)
+            {
+                throw new InvalidOperationException("Cannot perform soft delete!");
+            }
+            
+            isDeletedProperty.SetValue(entity, true);
         }
     }
 }

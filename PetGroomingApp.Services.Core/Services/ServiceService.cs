@@ -45,10 +45,9 @@
             };
 
             await _serviceRepository.AddAsync(service);
-            await _serviceRepository.SaveChangesAsync();
         }
 
-        public async Task<ServiceDetailsViewModel> GetByIdAsync(string id)
+        public async Task<ServiceDetailsViewModel?> GetByIdAsync(string? id)
         {
             var service = await _serviceRepository.GetAllAttached()
                 .AsNoTracking()
@@ -70,9 +69,15 @@
             };
         }
 
-        public async Task<ServiceFormViewModel?> GetForEditByIdAsync(string id)
+        public async Task<ServiceFormViewModel?> GetForEditByIdAsync(string? id)
         {
-            return await _serviceRepository.GetAllAttached()
+            ServiceFormViewModel? service = null;
+
+            bool isGuidValid = Guid.TryParse(id, out Guid serviceGuid);
+            
+            if (isGuidValid)
+            {
+                service = await _serviceRepository.GetAllAttached()
                 .Where(s => s.Id.ToString() == id && !s.IsDeleted)
                 .Select(s => new ServiceFormViewModel
                 {
@@ -83,16 +88,24 @@
                     Duration = s.Duration,
                     Price = s.Price
                 })
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
+            }
+            
+            return service;
         }
-        public async Task EditAsync(string id, ServiceFormViewModel model)
+        public async Task<bool> EditAsync(string? id, ServiceFormViewModel? model)
         {
-            var service = await _serviceRepository.GetAllAttached()
-                .FirstOrDefaultAsync(m => m.Id.ToString() == id);
+            bool isGuidValid = Guid.TryParse(id, out Guid serviceGuid);
+            Service? service = null;
 
-            if (service == null)
+            if (isGuidValid)
             {
-                return;
+                service = await _serviceRepository.GetByIdAsync(serviceGuid);
+            }
+                
+            if (service == null || model == null)
+            {
+                return false;
             }
 
             service.Name = model.Name;
@@ -101,30 +114,32 @@
             service.Duration = model.Duration;
             service.Price = model.Price;
 
-            await _serviceRepository.SaveChangesAsync();
+            return await _serviceRepository.UpdateAsync(service);
         }
 
-        public async Task SoftDeleteAsync(string id)
+        public async Task<bool> SoftDeleteAsync(string? id)
         {
             var service = await _serviceRepository.GetAllAttached()
                 .FirstOrDefaultAsync(s => s.Id.ToString() == id);
 
-            if (service != null && !service.IsDeleted)
+            if (service == null)
             {
-                service.IsDeleted = true;
-                await _serviceRepository.SaveChangesAsync();
+                return false;
             }
+
+            return await _serviceRepository.SoftDeleteAsync(service);
         }
-        public async Task HardDeleteAsync(string id)
+        public async Task<bool> HardDeleteAsync(string? id)
         {
             var service = await _serviceRepository.GetAllAttached()
                 .FirstOrDefaultAsync(s => s.Id.ToString() == id);
 
-            if (service != null)
+            if (service == null)
             {
-                _serviceRepository.Delete(service);
-                await _serviceRepository.SaveChangesAsync();
+                return false;
             }
+
+            return await _serviceRepository.HardDeleteAsync(service);
         }
     }
 }

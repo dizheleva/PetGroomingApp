@@ -26,9 +26,9 @@
 
         Task AddRangeAsync(TType[] items);
 
-        bool Delete(TType entity);
+        bool SoftDelete(TType entity);
 
-        Task<bool> DeleteAsync(TType entity);
+        Task<bool> SoftDeleteAsync(TType entity);
 
         bool HardDelete(TType entity);
 
