@@ -18,7 +18,7 @@
         public required string LastName { get; set; }
 
         [Comment("Groomer phone number")]
-        public string? PhoneNumber { get; set; }
+        public required string PhoneNumber { get; set; }
 
         [Comment("Any description of the Groomer ")]
         public string? Description { get; set; } // Optional bio or specialization

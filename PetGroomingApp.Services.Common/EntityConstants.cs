@@ -29,5 +29,33 @@
             public const string PriceRequiredMessage = "Price is required.";
             public const string PriceRangeMessage = "Price must be between {1:C} and {2:C}.";
         }
+
+        public static class  Groomer
+        {
+            public const int FirstNameMinLength = 3;
+            public const int FirstNameMaxLength = 50;
+            public const string FirstNameRequiredMessage = "Groomer first name is required.";
+            public const string FirstNameMinLengthMessage = "Groomer first name must be at least {1} characters long.";
+            public const string FirstNameMaxLengthMessage = "Groomer first name cannot exceed {1} characters.";
+
+            public const int LastNameMinLength = 3;
+            public const int LastNameMaxLength = 50;
+            public const string LastNameRequiredMessage = "Groomer last name is required.";
+            public const string LastNameMinLengthMessage = "Groomer last name must be at least {1} characters long.";
+            public const string LastNameMaxLengthMessage = "Groomer last name cannot exceed {1} characters.";
+
+            public const int ImageUrlMaxLength = 2048;
+            public const string ImageUrlRequiredMessage = "Image URL is required.";
+            public const string ImageUrlMaxLengthMessage = "Image URL cannot exceed {1} characters.";
+
+            public const int DescriptionMinLength = 10;
+            public const int DescriptionMaxLength = 500;
+            public const string DescriptionMinLengthMessage = "Description must be at least {1} characters long.";
+            public const string DescriptionMaxLengthMessage = "Description cannot exceed {1} characters.";
+
+            public const string PhoneNumberRequiredMessage = "Phone number is required.";
+            public const string PhoneNumberPattern = @"^\+?[0-9]{10,15}$"; // Example pattern for international phone numbers
+            public const string PhoneNumberInvalidMessage = "Phone number must be between 10 and 15 digits long and can start with a '+' sign.";
+        }
     }
 }
