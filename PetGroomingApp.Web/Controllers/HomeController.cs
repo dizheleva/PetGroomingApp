@@ -28,6 +28,12 @@ namespace PetGroomingApp.Web.Controllers
         }
 
         [AllowAnonymous]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();

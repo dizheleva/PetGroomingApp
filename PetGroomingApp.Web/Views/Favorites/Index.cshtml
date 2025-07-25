@@ -5,17 +5,7 @@
     ViewData["Title"] = "My Favorites";
 }
 
-<div class="bradcam_area breadcam_bg">
-    <div class="container">
-        <div class="row">
-            <div class="col text-center">
-                <div class="bradcam_text">
-                    <h3>@ViewData["Title"]</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_PageTitle" />
 
 <div class="container my-5">
     @if (!Model.Any())

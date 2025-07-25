@@ -8,7 +8,7 @@
                         <div class="short_contact_list">
                             <ul>
                                 <li><a href="#"><i class="fa fa-phone"></i> +359 88 123 4567</a></li>
-                                <li><a href="#"><i class="fa-solid fa-calendar-times-o"></i> Mon - Sat  10:00 - 18:00</a></li>
+                                <li><a href="#"><i class="fa fa-calendar"></i> Mon - Sat  10:00 - 18:00</a></li>
                             </ul>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                                             <li><a href="#">Ear cleaning</a></li>
                                         </ul>
                                     </li>
-                                    <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                                     @if (User?.Identity?.IsAuthenticated ?? false)
                                     {
                                         <li><a asp-controller="Favorites" asp-action="Index">Favorites</a></li>
