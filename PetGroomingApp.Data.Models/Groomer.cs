@@ -7,22 +7,28 @@
     public class Groomer
     {
         [Comment("Groomer identifier")]
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
 
         [Comment("Groomer first name")]
         [Required]
-        public required string FirstName { get; set; }
+        public string FirstName { get; set; } = null!;
 
         [Comment("Groomer last name")]
         [Required]
-        public required string LastName { get; set; }
+        public string LastName { get; set; } = null!;
+
+        [Comment("Groomer job title")]
+        [Required]
+        public string JobTitle { get; set; } = null!;
 
         [Comment("Groomer image URL")]
         [Required]
-        public required string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = null!;
 
         [Comment("Groomer phone number")]
-        public required string PhoneNumber { get; set; }
+        [Required]
+        [Phone]
+        public string PhoneNumber { get; set; } = null!; 
 
         [Comment("Any description of the Groomer ")]
         public string? Description { get; set; } // Optional bio or specialization

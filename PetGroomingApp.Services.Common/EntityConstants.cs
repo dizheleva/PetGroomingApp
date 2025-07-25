@@ -44,6 +44,10 @@
             public const string LastNameMinLengthMessage = "Groomer last name must be at least {1} characters long.";
             public const string LastNameMaxLengthMessage = "Groomer last name cannot exceed {1} characters.";
 
+            public const int JobTitleMaxLength = 100;
+            public const string JobTitleRequiredMessage = "Job title is required.";
+            public const string JobTitleMaxLengthMessage = "Job title cannot exceed {1} characters.";
+
             public const int ImageUrlMaxLength = 2048;
             public const string ImageUrlRequiredMessage = "Image URL is required.";
             public const string ImageUrlMaxLengthMessage = "Image URL cannot exceed {1} characters.";

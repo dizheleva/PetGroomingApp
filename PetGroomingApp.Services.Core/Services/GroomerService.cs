@@ -27,6 +27,7 @@
                     Id = g.Id.ToString(),
                     FirstName = g.FirstName,
                     LastName = g.LastName,
+                    JobTitle = g.JobTitle,
                     ImageUrl = g.ImageUrl                    
                 })
                 .ToListAsync();
@@ -39,6 +40,7 @@
                 Id = Guid.NewGuid(),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
+                JobTitle = model.JobTitle,
                 ImageUrl = model.ImageUrl,
                 Description = model.Description,
                 PhoneNumber = model.PhoneNumber
@@ -63,7 +65,9 @@
                 Id = groomer.Id.ToString(),
                 FirstName = groomer.FirstName,
                 LastName = groomer.LastName,
+                JobTitle = groomer.JobTitle,
                 ImageUrl = groomer.ImageUrl,
+                PhoneNumber = groomer.PhoneNumber,
                 Description = groomer.Description
             };
         }
@@ -83,6 +87,7 @@
                     Id = g.Id.ToString(),
                     FirstName = g.FirstName,
                     LastName = g.LastName,
+                    JobTitle = g.JobTitle,
                     ImageUrl = g.ImageUrl,
                     Description = g.Description,
                     PhoneNumber = g.PhoneNumber,
@@ -109,6 +114,7 @@
 
             groomer.FirstName = model.FirstName;
             groomer.LastName = model.LastName;
+            groomer.JobTitle = model.JobTitle;
             groomer.ImageUrl = model.ImageUrl;
             groomer.Description = model.Description;
             groomer.PhoneNumber = model.PhoneNumber;

@@ -13,7 +13,6 @@
         <div class="row justify-content-center ">
             <div class="col-lg-6 col-md-10">
                 <div class="section_title text-center mb-95">
-                    <h3>@ViewData["Title"]</h3>
                     <p>Our team includes top grooming specialists. Meet them and you can find your pet's new best friend!'</p>
                 </div>
             </div>
@@ -29,7 +28,8 @@
                         <div class="member_name text-center">
                             <div class="mamber_inner">
                                 <h4>@groomer.FirstName @groomer.LastName</h4>
-                                <p>Groomer</p>
+                                <p>@groomer.JobTitle</p>
+                                <a asp-controller="Groomer" asp-action="Details" asp-route-id="@groomer.Id" class="boxed-btn3">More...</a>
                             </div>
                         </div>
                     </div>

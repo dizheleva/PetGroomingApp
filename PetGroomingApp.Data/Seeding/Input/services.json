@@ -1,5 +1,6 @@
 [
   {
+    "id": "57b2b212-fab4-4fce-9bb8-2d6b2f9b6ab5",
     "name": "Hair Trim",
     "description": "Full body grooming and trim",
     "imageUrl": "img/service/grooming.png",
@@ -7,6 +8,7 @@
     "price": 25.00
   },
   {
+    "id": "7a4152ef-22ba-4d14-b621-da300be177b2",
     "name": "Nail Clip",
     "description": "Claw trimming and smoothing",
     "imageUrl": "img/service/nail-file.png",
@@ -14,17 +16,43 @@
     "price": 15.00
   },
   {
+    "id": "a1b2c3d4-e5f6-4a8b-9c0d-e1f2a3b4c5d6",
     "name": "Ear Clean",
-    "description": "Carefully cleanning the ears",
+    "description": "Carefully cleaning the ears",
     "imageUrl": "img/service/ear-cleaning-cat.png",
     "duration": "00:15:00",
     "price": 10.00
   },
   {
+    "id": "19780568-cccc-4186-9a7e-eec6067fff1c",
     "name": "Bath",
     "description": "Bathing with organic shampoo",
     "imageUrl": "img/service/bath-dog.png",
     "duration": "00:30:00",
     "price": 25.00
+  },
+  {
+    "id": "da876cd4-8c8a-4979-9a53-3d16bc1394fd",
+    "name": "Full Grooming Package",
+    "description": "Includes hair trim, nail clip, ear clean, and bath",
+    "imageUrl": "img/service/full-grooming.png",
+    "duration": "01:30:00",
+    "price": 70.00
+  },
+  {
+    "id": "f3f8a9ef-6dc0-4c8b-a9b1-9bd250d4e8e6",
+    "name": "De-shedding Treatment",
+    "description": "Reduces shedding and improves coat health",
+    "imageUrl": "img/service/deshedding.png",
+    "duration": "00:45:00",
+    "price": 40.00
+  },
+  {
+    "id": "61d99a19-c29a-4c38-b2d1-df5f05d3a5e1",
+    "name": "Teeth Cleaning",
+    "description": "Professional teeth cleaning for pets",
+    "imageUrl": "img/service/teeth-cleaning.png",
+    "duration": "00:30:00",
+    "price": 30.00
   }
 ]

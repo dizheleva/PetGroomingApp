@@ -14,7 +14,7 @@
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
         [Comment("Appointment date")]
-        public required DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
         [Comment("Appointment notes")]
         public string? Notes { get; set; }
@@ -24,7 +24,7 @@
         public virtual Pet? Pet { get; set; }
 
         [Comment("Foreign key to the user for the appointment")]
-        public required string UserId { get; set; }
+        public string UserId { get; set; } = null!;
         public virtual IdentityUser User { get; set; } = null!;
 
         [Comment("Foreign key to the groomer for the appointment")]
@@ -34,7 +34,7 @@
         public virtual ICollection<AppointmentService> AppointmentServices { get; set; }
             = new HashSet<AppointmentService>();
 
-        public required AppointmentStatus Status { get; set; } 
+        public AppointmentStatus Status { get; set; } 
 
     }
 

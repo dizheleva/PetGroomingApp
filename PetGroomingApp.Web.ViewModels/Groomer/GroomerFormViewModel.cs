@@ -18,6 +18,10 @@
         [MaxLength(LastNameMaxLength, ErrorMessage = LastNameMaxLengthMessage)]
         public required string LastName { get; set; }
 
+        [Required(ErrorMessage = JobTitleRequiredMessage)]
+        [MaxLength(JobTitleMaxLength, ErrorMessage = JobTitleMaxLengthMessage)]
+        public required string JobTitle { get; set; }
+
         [Required(ErrorMessage = ImageUrlRequiredMessage)]
         [MaxLength(ImageUrlMaxLength, ErrorMessage = ImageUrlMaxLengthMessage)]
         public required string ImageUrl { get; set; }

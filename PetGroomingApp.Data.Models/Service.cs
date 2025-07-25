@@ -6,19 +6,19 @@
     public class Service
     {
         [Comment("Service identifier")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
         [Comment("Service name")]
-        public required string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [Comment("Service image")]
-        public required string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = null!;
 
         [Comment("Service description")]
         public string? Description { get; set; }
 
         [Comment("Service duration")]
-        public required string Duration { get; set; }
+        public string Duration { get; set; } = null!;
 
         [Comment("Service price")]
         public decimal Price { get; set; }

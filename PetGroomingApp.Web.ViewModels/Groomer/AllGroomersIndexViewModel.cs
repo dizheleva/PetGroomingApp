@@ -8,6 +8,8 @@
 
         public required string LastName { get; set; }
 
+        public required string JobTitle { get; set; }
+
         public required string ImageUrl { get; set; }
     }
 }

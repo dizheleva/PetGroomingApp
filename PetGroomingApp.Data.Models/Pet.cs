@@ -17,21 +17,21 @@
         [Comment("Pet name")]
         [Required(ErrorMessage = RequiredNameErrorMessage)]
         [StringLength(PetNameMaxLength, ErrorMessage = PetNameMaxLengthErrorMessage)]
-        public required string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [Comment("Pet type")]
         [Required(ErrorMessage = RequiredPetTypeErrorMessage)]
-        public required PetType Type { get; set; }
+        public PetType Type { get; set; } 
 
         [Comment("Pet breed")]
         [Required(ErrorMessage = RequiredBreedErrorMessage)]
         [StringLength(BreedMaxLength, ErrorMessage =
             BreedMaxLengthErrorMessage)]
-        public required string Breed { get; set; }
+        public string Breed { get; set; } = null!;
 
         [Comment("Pet size")]
         [Required(ErrorMessage = RequiredPetSizeErrorMessage)]
-        public required PetSize Size { get; set; }
+        public PetSize Size { get; set; }
 
         [Comment("Pet age")]
         [Required(ErrorMessage = RequiredAgeErrorMessage)]
@@ -49,7 +49,7 @@
         public string? Notes { get; set; }
 
         [Comment("Foreign key to the owner of the pet")]
-        public required string OwnerId { get; set; }
+        public string OwnerId { get; set; } = null!;
         public virtual IdentityUser Owner { get; set; } = null!;
 
         [Comment("Collection of appointments of the pet")]
