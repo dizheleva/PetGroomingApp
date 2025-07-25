@@ -17,7 +17,7 @@
             return User.Identity.IsAuthenticated;
         }
 
-        protected string GetUserId()
+        protected string? GetUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }

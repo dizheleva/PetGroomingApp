@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
-    using PetGroomingApp.Data;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
@@ -32,14 +31,25 @@
                 }).ToListAsync();
         }
 
-        public async Task<bool> IsServiceInFavoritesAsync(string userId, Guid serviceId)
+        public async Task<bool> IsServiceInFavoritesAsync(string? userId, string? serviceId)
         {
-            return await _favoritesRepository.GetAllAttached()
-                .AnyAsync(us => us.UserId == userId && us.ServiceId == serviceId);
+            if (serviceId != null && userId != null)
+            {
+                bool isServiceIdValid = Guid.TryParse(serviceId, out Guid serviceGuid);
+
+                if (isServiceIdValid)
+                {
+                    return await this._favoritesRepository.GetAllAttached()
+                        .AnyAsync(us => us.UserId.ToLower() == userId &&
+                                        us.ServiceId.ToString() == serviceGuid.ToString());                    
+                }
+            }
+
+            return false;
         }
 
         public async Task AddToFavoritesAsync(string userId, string serviceId)
-        {
+        {            
             var userService = new UserService
             {
                 UserId = userId,
@@ -48,15 +58,26 @@
 
             await _favoritesRepository.AddAsync(userService);
         }
-        public async Task RemoveFromFavoritesAsync(string userId, string serviceId)
+        public async Task<bool> RemoveFromFavoritesAsync(string? userId, string? serviceId)
         {
-            var userService = await _favoritesRepository.GetAllAttached()
-                .FirstOrDefaultAsync(us => us.UserId == userId && us.ServiceId == Guid.Parse(serviceId));
-
-            if (userService != null)
+            if (serviceId != null && userId != null)
             {
-                await _favoritesRepository.HardDeleteAsync(userService);
+                bool isServiceIdValid = Guid.TryParse(serviceId, out Guid serviceGuid);
+                if (isServiceIdValid)
+                {
+                    var userService = await this._favoritesRepository.GetAllAttached()
+                        .Where(us => us.UserId.ToLower() == userId &&
+                                     us.ServiceId.ToString() == serviceGuid.ToString())
+                        .SingleOrDefaultAsync();
+
+                    if (userService != null)
+                    {
+                        return await this._favoritesRepository.HardDeleteAsync(userService);
+                    }
+                }
             }
+            
+            return false;
         }
     }
 }

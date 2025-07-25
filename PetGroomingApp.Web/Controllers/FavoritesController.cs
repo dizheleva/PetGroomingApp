@@ -15,56 +15,89 @@
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            if (!IsUserAuthenticated())
+            try
             {
-                return RedirectToAction(nameof(Index), "Home");
+                var userId = this.GetUserId();
+
+                if (!IsUserAuthenticated() || userId == null)
+                {
+                    return this.Forbid();
+                }
+
+                var favorites = await _favoritesService.GetUserFavoritesAsync(userId);
+               
+                return View(favorites);
             }
-
-            var userId = GetUserId();
-
-            var favorites = await _favoritesService.GetUserFavoritesAsync(userId);
-
-            return View(favorites);
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving favorites: {e.Message}");
+                return this.RedirectToAction(nameof(Index), "Home");
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(string serviceId)
+        public async Task<IActionResult> Add(string? serviceId)
         {
-            if (!IsUserAuthenticated())
+            try
             {
-                return RedirectToAction(nameof(Index), "Home");
+                var userId = GetUserId();
+
+                if (!IsUserAuthenticated() || userId == null)
+                {
+                    return this.Forbid();
+                }                                
+
+                var isInFavorites = await _favoritesService.IsServiceInFavoritesAsync(userId, serviceId);
+
+                if (!isInFavorites)
+                {
+                    await _favoritesService.AddToFavoritesAsync(userId, serviceId);
+                }
+
+                return RedirectToAction(nameof(Index));
             }
-
-            var userId = GetUserId();
-
-            var isInFavorites = await _favoritesService.IsServiceInFavoritesAsync(userId, Guid.Parse(serviceId));
-
-            if (!isInFavorites)
+            catch (Exception e)
             {
-                await _favoritesService.AddToFavoritesAsync(userId, serviceId);
+                Console.WriteLine(e.Message);
+                ModelState.AddModelError(string.Empty, $"An error occurred while adding the service to favorites: {e.Message}");
+                return RedirectToAction(nameof(Index), "Favorites");
             }
-
-            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public IActionResult Remove(string serviceId)
+        public async Task<IActionResult> Remove(string? serviceId)
         {
-            if (!IsUserAuthenticated())
+            try
             {
-                return RedirectToAction(nameof(Index), "Home");
+                var userId = GetUserId();
+
+                if (!IsUserAuthenticated() || userId == null)
+                {
+                    return this.Forbid();
+                }
+                
+                var isInFavorites = _favoritesService.IsServiceInFavoritesAsync(userId, serviceId).Result;
+
+                if (isInFavorites)
+                {
+                   var result = await _favoritesService.RemoveFromFavoritesAsync(userId, serviceId);
+
+                    if (!result)
+                    {
+                        ModelState.AddModelError(string.Empty, "Failed to remove the service from favorites.");
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+
+                return RedirectToAction(nameof(Index), "Favorites");
             }
-
-            var userId = GetUserId();
-            var serviceGuid = Guid.Parse(serviceId);
-            var isInFavorites = _favoritesService.IsServiceInFavoritesAsync(userId, serviceGuid).Result;
-
-            if (isInFavorites)
+            catch (Exception e)
             {
-                _favoritesService.RemoveFromFavoritesAsync(userId, serviceId).Wait();
+                Console.WriteLine(e.Message);
+                ModelState.AddModelError(string.Empty, $"An error occurred while removing the service from favorites: {e.Message}");
+                return RedirectToAction(nameof(Index), "Favorites");
             }
-
-            return RedirectToAction(nameof(Index));
         }
     }
 }
