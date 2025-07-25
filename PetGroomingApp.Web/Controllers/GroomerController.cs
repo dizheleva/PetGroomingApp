@@ -3,45 +3,45 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
-    using PetGroomingApp.Web.ViewModels.Service;
+    using PetGroomingApp.Web.ViewModels.Groomer;
 
-    public class ServiceController : BaseController
+    public class GroomerController : BaseController
     {
-        private readonly IServiceService _serviceService;
+        private readonly IGroomerService _groomerService;
 
-        public ServiceController(IServiceService serviceService)
+        public GroomerController(IGroomerService groomerService)
         {
-            _serviceService = serviceService;
+            _groomerService = groomerService;
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var services = await _serviceService.GetAllAsync();
+            var groomers = await _groomerService.GetAllAsync();
 
-            return View(services);
+            return View(groomers);
         }
-                
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             try
             {
-                var service = await _serviceService.GetByIdAsync(id);
+                var groomer = await _groomerService.GetByIdAsync(id);
 
-                if (service == null)
+                if (groomer == null)
                 {
                     return NotFound();
                 }
 
-                return View(service);
+                return View(groomer);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the service details: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the groomer details: {ex.Message}");
                 return View(nameof(Index));
             }
         }
@@ -53,7 +53,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ServiceFormViewModel model)
+        public async Task<IActionResult> Create(GroomerFormViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -62,13 +62,13 @@
 
             try
             {
-                await _serviceService.AddAsync(model);
+                await _groomerService.AddAsync(model);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
-            {                
+            {
                 Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while creating the service: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"An error occurred while creating the groomer: {ex.Message}");
                 return View(model);
             }
         }
@@ -78,7 +78,7 @@
         {
             try
             {
-                var model = await _serviceService.GetForEditByIdAsync(id);
+                var model = await _groomerService.GetForEditByIdAsync(id);
 
                 if (model == null)
                 {
@@ -90,14 +90,14 @@
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the service for editing: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the groomer for editing: {ex.Message}");
 
                 return this.RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(string id, ServiceFormViewModel model)
+        public async Task<IActionResult> Edit(string id, GroomerFormViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -105,7 +105,7 @@
             }
             try
             {
-                bool editSuccess = await _serviceService.EditAsync(id, model);
+                bool editSuccess = await _groomerService.EditAsync(id, model);
                 if (!editSuccess)
                 {
                     return NotFound();
@@ -116,7 +116,7 @@
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while editing the service: {e.Message}");
+                ModelState.AddModelError(string.Empty, $"An error occurred while editing the groomer: {e.Message}");
                 return this.RedirectToAction(nameof(Index));
             }
         }
@@ -126,17 +126,17 @@
         {
             try
             {
-                var service = await _serviceService.GetByIdAsync(id);
-                if (service == null)
+                var groomer = await _groomerService.GetByIdAsync(id);
+                if (groomer == null)
                 {
                     return NotFound();
                 }
-                return View(service);
+                return View(groomer);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the service for deletion: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the groomer for deletion: {ex.Message}");
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -146,16 +146,16 @@
         {
             try
             {
-                await _serviceService.SoftDeleteAsync(id);
+                await _groomerService.SoftDeleteAsync(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while deleting the service: {e.Message}");
+                ModelState.AddModelError(string.Empty, $"An error occurred while deleting the groomer: {e.Message}");
                 return this.RedirectToAction(nameof(Index));
             }
-            
+
         }
     }
 }
