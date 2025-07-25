@@ -2,7 +2,7 @@
 {
     using PetGroomingApp.Data.Models;
 
-    public interface IGroomerRepository : IRepository<Groomer>
+    public interface IGroomerRepository : IRepository<Groomer, Guid>
     {
         Task<Groomer> GetTopRatedGroomersAsync(int count);
     }

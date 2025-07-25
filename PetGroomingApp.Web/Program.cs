@@ -3,6 +3,7 @@ namespace PetGroomingApp.Web
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
+    using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
@@ -36,9 +37,11 @@ namespace PetGroomingApp.Web
 
             builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
             builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
+            builder.Services.AddScoped<IGroomerRepository, GroomerRepository>();
 
             builder.Services.AddScoped<IServiceService, ServiceService>();
             builder.Services.AddScoped<IFavoritesService, FavoritesService>();
+            builder.Services.AddScoped<IGroomerService, GroomerService>();
 
             builder.Services.AddControllersWithViews();
 

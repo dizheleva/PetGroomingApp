@@ -7,7 +7,7 @@
     public class Groomer
     {
         [Comment("Groomer identifier")]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } 
 
         [Comment("Groomer first name")]
         [Required]
@@ -16,6 +16,10 @@
         [Comment("Groomer last name")]
         [Required]
         public required string LastName { get; set; }
+
+        [Comment("Groomer image URL")]
+        [Required]
+        public required string ImageUrl { get; set; }
 
         [Comment("Groomer phone number")]
         public required string PhoneNumber { get; set; }
