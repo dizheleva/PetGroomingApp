@@ -1,7 +1,6 @@
-﻿@model PetGroomingApp.Web.ViewModels.Service.ServiceDetailsViewModel
-
+﻿@model PetGroomingApp.Web.ViewModels.Groomer.GroomerDetailsViewModel
 @{
-    ViewData["Title"] = "Delete Service";
+    ViewData["Title"] = "Delete Groomer";
 }
 
 <div class="container mt-5">
@@ -11,25 +10,25 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="p-4 border border-danger rounded shadow-sm bg-light text-center">
-                <h4 class="text-danger mb-4">Are you sure you want to delete this service?</h4>
+                <h4 class="text-danger mb-4">Are you sure you want to delete <strong>@Model.FirstName @Model.LastName</strong>?</h4>
 
                 <dl class="row">
                     <dt class="col-sm-3">Image:</dt>
                     <dd class="col-sm-9">
-                        <img src="~/@Model.ImageUrl" alt="@Model.Name" class="img-thumbnail" style="max-width: 200px;">
+                        <img src="~/@Model.ImageUrl" alt="@Model.FirstName" class="img-thumbnail" style="max-width: 200px;">
                     </dd>
 
                     <dt class="col-sm-3">Name:</dt>
-                    <dd class="col-sm-9">@Model.Name</dd>
+                    <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+                    <dt class="col-sm-3">Job Title:</dt>
+                    <dd class="col-sm-9">@Model.JobTitle</dd>
+
+                    <dt class="col-sm-3">Phone:</dt>
+                    <dd class="col-sm-9">@Model.PhoneNumber</dd>
 
                     <dt class="col-sm-3">Description:</dt>
                     <dd class="col-sm-9">@Model.Description</dd>
-
-                    <dt class="col-sm-3">Duration:</dt>
-                    <dd class="col-sm-9">@Model.Duration</dd>
-
-                    <dt class="col-sm-3">Price:</dt>
-                    <dd class="col-sm-9">@Model.Price €</dd>
                 </dl>
 
                 <form asp-action="DeleteConfirmed" method="post">
