@@ -1,6 +1,5 @@
 ﻿namespace PetGroomingApp.Services.Core.Services
 {
-    using System.Security.Claims;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository.Interfaces;

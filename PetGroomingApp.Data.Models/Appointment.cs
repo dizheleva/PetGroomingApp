@@ -13,8 +13,8 @@
         [Comment("Time of Appointment creation")]
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
-        [Comment("Appointment date")]
-        public DateTime Date { get; set; }
+        [Comment("Appointment date and time")]
+        public DateTime AppointmentTime { get; set; }
 
         [Comment("Appointment notes")]
         public string? Notes { get; set; }

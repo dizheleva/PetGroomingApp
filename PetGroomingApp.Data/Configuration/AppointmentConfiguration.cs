@@ -18,7 +18,7 @@
                 .ValueGeneratedOnAdd()
                 .IsRequired();
 
-            builder.Property(a => a.Date)
+            builder.Property(a => a.AppointmentTime)
                 .IsRequired();
 
             builder.Property(a => a.Notes)
@@ -48,7 +48,7 @@
                 .WithOne(asg => asg.Appointment)
                 .HasForeignKey(asg => asg.AppointmentId);
 
-            builder.HasIndex(a => a.Date).HasDatabaseName("Appointment_Date");
+            builder.HasIndex(a => a.AppointmentTime).HasDatabaseName("Appointment_Time");
             builder.HasIndex(a => a.PetId);
             builder.HasIndex(a => a.GroomerId);
             builder.HasIndex(a => a.UserId);
