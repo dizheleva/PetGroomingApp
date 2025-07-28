@@ -1,10 +1,9 @@
 ﻿namespace PetGroomingApp.Data.Models.Enums
 {
-    public enum PetSize
+    public enum PetGender
     {
         Unknown,
-        Small,
-        Medium,
-        Large
+        Male,
+        Female
     }
 }

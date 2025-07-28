@@ -38,10 +38,12 @@ namespace PetGroomingApp.Web
             builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
             builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
             builder.Services.AddScoped<IGroomerRepository, GroomerRepository>();
+            builder.Services.AddScoped<IPetRepository, PetRepository>();
 
             builder.Services.AddScoped<IServiceService, ServiceService>();
             builder.Services.AddScoped<IFavoritesService, FavoritesService>();
             builder.Services.AddScoped<IGroomerService, GroomerService>();
+            builder.Services.AddScoped<IPetService, PetService>();
 
             builder.Services.AddControllersWithViews();
 

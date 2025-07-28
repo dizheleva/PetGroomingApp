@@ -1,0 +1,51 @@
+﻿@using PetGroomingApp.Web.ViewModels.Pet
+@model IEnumerable<AllPetsIndexViewModel>
+
+@{
+    ViewData["Title"] = "My Pets";
+}
+
+<partial name="_PageTitle" />
+
+<!-- Pets Section -->
+<section class="service_area py-5 bg-light">
+    <div class="container">        
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning text-center">
+                <strong>You do not have any pets yet!</strong>
+            </div>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                @foreach (var pet in Model)
+                {
+                    <div class="col-lg-4 col-md-6 d-flex align-items-stretch mb-4">
+                        <div class="single_service shadow-sm d-flex flex-column w-100">
+                            <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <div class="service_icon" style="max-width: 100px; max-height: 100px;">
+                                    <img src="@pet.ImageUrl" alt="@pet.Name" class="img-fluid" />
+                                </div>
+                            </div>
+                            <div class="service_content text-center p-3 d-flex flex-column flex-grow-1 justify-content-between">
+                                <div>
+                                    <h5 class="fw-bold">@pet.Name</h5>
+                                    <p class="text-muted mb-3">@pet.Type: <span fw-semibold>@pet.Breed</span></p>
+                                </div>
+                                <div style="margin-bottom: 20px">
+                                    <a asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id" class="boxed-btn3">Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <div class="row justify-content-center">
+            <div style="margin-bottom: 20px">
+                <a asp-controller="Pet" asp-action="Create" class="boxed-btn3"><i class="fa fa-plus"> Add New</i></a>
+            </div>
+        </div>
+    </div>
+</section>

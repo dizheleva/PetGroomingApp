@@ -41,6 +41,9 @@
         [Comment("Pet image URL")]
         public string? ImageUrl { get; set; }
 
+        [Comment("Pet gender")]
+        public PetGender Gender { get; set; }
+
         [Comment("Indicates if the pet is deleted")]
         public bool IsDeleted { get; set; } = false;
 

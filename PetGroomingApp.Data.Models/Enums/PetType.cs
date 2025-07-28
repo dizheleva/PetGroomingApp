@@ -2,6 +2,7 @@
 {
     public enum PetType
     {
+        Unknown,
         Dog,
         Cat
     }
