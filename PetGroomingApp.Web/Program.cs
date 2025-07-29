@@ -8,7 +8,7 @@ namespace PetGroomingApp.Web
     using PetGroomingApp.Data.Seeding;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Services.Core.Services;
-    using PetGroomingApp.Web.Infrastructure.Middlewares;
+    using PetGroomingApp.Web.Infrastructure.Extensions;
 
     public class Program
     {
@@ -37,17 +37,8 @@ namespace PetGroomingApp.Web
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-            builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
-            builder.Services.AddScoped<IGroomerRepository, GroomerRepository>();
-            builder.Services.AddScoped<IPetRepository, PetRepository>();
-            builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-
-            builder.Services.AddScoped<IServiceService, ServiceService>();
-            builder.Services.AddScoped<IFavoritesService, FavoritesService>();
-            builder.Services.AddScoped<IGroomerService, GroomerService>();
-            builder.Services.AddScoped<IPetService, PetService>();
-            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+            builder.Services.AddRepositories(typeof(IServiceRepository).Assembly);
+            builder.Services.AddUserDefinedServices(typeof(IServiceService).Assembly);
 
             builder.Services.AddControllersWithViews();
 
@@ -69,7 +60,7 @@ namespace PetGroomingApp.Web
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseMiddleware<ManagerAccessMiddleware>();
+            app.UseManagerAccessRestriction(); ;
             app.UseAuthorization();
 
             app.MapControllerRoute(
