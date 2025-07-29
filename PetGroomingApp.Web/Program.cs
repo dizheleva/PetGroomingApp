@@ -3,11 +3,9 @@ namespace PetGroomingApp.Web
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
-    using PetGroomingApp.Data.Repository;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Data.Seeding;
     using PetGroomingApp.Services.Core.Interfaces;
-    using PetGroomingApp.Services.Core.Services;
     using PetGroomingApp.Web.Infrastructure.Extensions;
 
     public class Program

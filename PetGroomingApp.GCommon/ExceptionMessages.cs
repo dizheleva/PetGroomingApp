@@ -1,6 +1,6 @@
 ﻿namespace PetGroomingApp.GCommon
 {
-    public class ExceptionMessages
+    public static class ExceptionMessages
     {
         public const string InterfaceNotFoundMessage = "Interface {0} not found for class {1}. " +
                                                       "Please ensure that the interface name matches the class name " +
