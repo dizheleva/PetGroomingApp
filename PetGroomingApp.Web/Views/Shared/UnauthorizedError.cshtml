@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<partial name="_PageTitle" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card text-center shadow rounded-4 border-0 p-4">
+                <div class="card-body">
+                    <h1 class="display-3 text-danger fw-bold">403</h1>
+                    <h3 class="card-title mb-3">Access Denied</h3>
+                    <p class="card-text mb-4 text-muted">
+                        You do not have permission to access this resource.<br />
+                        Please contact your administrator if you believe this is an error.
+                    </p>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary px-4 rounded-pill fw-semibold">
+                        <i class="bi bi-arrow-left-circle"></i> Return to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
