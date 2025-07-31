@@ -4,58 +4,60 @@
     ViewData["Title"] = "Create New Service";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center fw-bold mb-4">@ViewData["Title"]</h2>
+<section class="pet_care_area pt-5 pb-5">
+    <div class="container mt-5">
+        <h2 class="text-center fw-bold mb-4">@ViewData["Title"]</h2>
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form asp-action="Create" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form asp-action="Create" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
 
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label fw-semibold">Service Name</label>
-                    <input asp-for="Name" class="form-control rounded-pill" placeholder="Enter service name">
-                    <span asp-validation-for="Name" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Duration" class="form-label fw-semibold">Duration</label>
-                    <input asp-for="Duration" class="form-control rounded-pill" type="time">
-                    <span asp-validation-for="Duration" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-semibold">Description (optional)</label>
-                    <textarea asp-for="Description" class="form-control rounded-3" rows="3" placeholder="Enter description"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="ImageUrl" class="form-label fw-semibold">Image URL</label>
-                    <input asp-for="ImageUrl" class="form-control rounded-pill" placeholder="Enter image URL">
-                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Price" class="form-label fw-semibold">Price</label>
-                    <div class="input-group">
-                        <span class="input-group-text">€</span>
-                        <input asp-for="Price" class="form-control rounded-end" placeholder="0.00">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold">Service Name</label>
+                        <input asp-for="Name" class="form-control rounded-pill" placeholder="Enter service name">
+                        <span asp-validation-for="Name" class="text-danger small"></span>
                     </div>
-                    <span asp-validation-for="Price" class="text-danger small"></span>
-                </div>
 
-                <div class="text-center mt-4 d-flex justify-content-center gap-2">
-                    <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
-                        <i class="bi bi-plus-circle"></i> Create
-                    </button>
-                    <a asp-action="Index" asp-controller="Service" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
-                        <i class="bi bi-arrow-left-circle"></i> Cancel
-                    </a>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label asp-for="Duration" class="form-label fw-semibold">Duration</label>
+                        <input asp-for="Duration" class="form-control rounded-pill" type="time">
+                        <span asp-validation-for="Duration" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold">Description (optional)</label>
+                        <textarea asp-for="Description" class="form-control rounded-3" rows="3" placeholder="Enter description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label fw-semibold">Image URL</label>
+                        <input asp-for="ImageUrl" class="form-control rounded-pill" placeholder="Enter image URL">
+                        <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label fw-semibold">Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input asp-for="Price" class="form-control rounded-end" placeholder="0.00">
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+
+                    <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
+                            <i class="bi bi-plus-circle"></i> Create
+                        </button>
+                        <a asp-action="Index" asp-controller="Service" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
+                            <i class="bi bi-arrow-left-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

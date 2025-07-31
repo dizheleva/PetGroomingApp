@@ -9,7 +9,7 @@
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Repository.Interfaces;
 
-    public class BaseRepository<TType, TKey> : IRepository<TType, TKey>
+    public abstract class BaseRepository<TType, TKey> : IRepository<TType, TKey>
         where TType : class
     {
         private readonly ApplicationDbContext _context;

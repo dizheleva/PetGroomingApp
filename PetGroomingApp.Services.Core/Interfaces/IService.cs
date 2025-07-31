@@ -1,8 +1,9 @@
 ﻿namespace PetGroomingApp.Services.Core.Interfaces
 {
-    public interface IService<TType>
-    where TType : class
+    public interface IService<TType> where TType : class
     {
-        Task<TType?> GetByStringId(string? id);
+        Task<bool> SoftDeleteAsync(string? id);
+        Task<bool> HardDeleteAsync(string? id);
+        Task<bool> ExistsAsync(string? id);
     }
 }

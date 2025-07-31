@@ -1,15 +1,18 @@
 ﻿namespace PetGroomingApp.Services.Core.Interfaces
 {
+    using PetGroomingApp.Data.Models;
     using PetGroomingApp.Web.ViewModels.Pet;
 
-    public interface IPetService
+    public interface IPetService : IService<Pet>
     {
-        Task<IEnumerable<AllPetsIndexViewModel>> GetAllAsync();
-        Task AddAsync(PetFormViewModel model, string userId);
-        Task<PetDetailsViewModel?> GetByIdAsync(string? id);
-        Task<PetFormViewModel?> GetForEditByIdAsync(string? id);
-        Task<bool> EditAsync(string? id, PetFormViewModel? model);
-        Task<bool> SoftDeleteAsync(string? id);
-        Task<bool> HardDeleteAsync(string? id);
+        Task<string> CreateAsync(PetFormViewModel model, string? ownerId);
+        Task<PetFormViewModel> GetPetForEditAsync(string? petId, string? ownerId);
+        Task<bool> EditAsync(string? petId, PetFormViewModel? model, string? ownerId);
+        Task<PetDetailsViewModel> GetDetailsAsync(string? petId, string? ownerId);
+        Task<bool> IsOwnerAsync(string? petId, string? userId);
+        Task<IEnumerable<AllPetsViewModel?>> GetAllPetsAsync(); 
+        Task<IEnumerable<AllPetsViewModel?>> GetPetsByUserAsync(string? userId);
+        Task<bool> EditAsManagerAsync(string? petId, PetFormViewModel? model);
     }
+
 }

@@ -1,6 +1,6 @@
 ﻿namespace PetGroomingApp.Web.ViewModels.Pet
 {
-    public class AllPetsIndexViewModel
+    public class AllPetsViewModel
     {
         public required string Id { get; set; }
 

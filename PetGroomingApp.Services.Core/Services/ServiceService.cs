@@ -8,11 +8,11 @@
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
 
-    public class ServiceService : IServiceService
+    public class ServiceService : BaseService<Service>, IServiceService
     {
         private readonly IServiceRepository _serviceRepository;
 
-        public ServiceService(IServiceRepository serviceRepository)
+        public ServiceService(IServiceRepository serviceRepository) : base(serviceRepository)
         {
             _serviceRepository = serviceRepository;
         }
@@ -21,7 +21,7 @@
         {
             return await _serviceRepository.GetAllAttached()
                 .Where(s => !s.IsDeleted)
-                .AsNoTracking() // improves performance when the results will only be read, not updated
+                .AsNoTracking() 
                 .Select(s => new AllServicesIndexViewModel
                 {
                     Id = s.Id.ToString(),
@@ -115,31 +115,6 @@
             service.Price = model.Price;
 
             return await _serviceRepository.UpdateAsync(service);
-        }
-
-        public async Task<bool> SoftDeleteAsync(string? id)
-        {
-            var service = await _serviceRepository.GetAllAttached()
-                .FirstOrDefaultAsync(s => s.Id.ToString() == id);
-
-            if (service == null)
-            {
-                return false;
-            }
-
-            return await _serviceRepository.SoftDeleteAsync(service);
-        }
-        public async Task<bool> HardDeleteAsync(string? id)
-        {
-            var service = await _serviceRepository.GetAllAttached()
-                .FirstOrDefaultAsync(s => s.Id.ToString() == id);
-
-            if (service == null)
-            {
-                return false;
-            }
-
-            return await _serviceRepository.HardDeleteAsync(service);
         }
     }
 }

@@ -52,8 +52,8 @@
         public string? Notes { get; set; }
 
         [Comment("Foreign key to the owner of the pet")]
-        public string OwnerId { get; set; } = null!;
-        public virtual IdentityUser Owner { get; set; } = null!;
+        public string? OwnerId { get; set; } = null!;
+        public virtual IdentityUser? Owner { get; set; } = null!;
 
         [Comment("Collection of appointments of the pet")]
         public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();

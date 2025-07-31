@@ -73,6 +73,15 @@
                     <span asp-validation-for="Notes" class="text-danger small"></span>
                 </div>
 
+                @if (User.IsInRole("Manager"))
+                {
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="OwnerId" class="form-label">Owner ID (optional)</label>
+                        <input asp-for="OwnerId" class="form-control" />
+                        <span asp-validation-for="OwnerId" class="text-danger small"></span>
+                    </div>
+                }
+
                 <div class="text-center mt-4 d-flex justify-content-center gap-2">
                     <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
                         <i class="bi bi-plus-circle"></i> Create

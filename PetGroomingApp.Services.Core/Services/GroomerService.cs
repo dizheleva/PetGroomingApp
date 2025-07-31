@@ -8,11 +8,11 @@
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Groomer;
 
-    public class GroomerService : IGroomerService
+    public class GroomerService : BaseService<Groomer>, IGroomerService
     {
         private readonly IGroomerRepository _groomerRepository;
 
-        public GroomerService(IGroomerRepository groomerRepository)
+        public GroomerService(IGroomerRepository groomerRepository) : base(groomerRepository)
         {
             _groomerRepository = groomerRepository;
         }
@@ -120,31 +120,6 @@
             groomer.PhoneNumber = model.PhoneNumber;
 
             return await _groomerRepository.UpdateAsync(groomer);
-        }
-
-        public async Task<bool> SoftDeleteAsync(string? id)
-        {
-            var groomer = await _groomerRepository.GetAllAttached()
-                .SingleOrDefaultAsync(s => s.Id.ToString() == id);
-
-            if (groomer == null)
-            {
-                return false;
-            }
-
-            return await _groomerRepository.SoftDeleteAsync(groomer);
-        }
-        public async Task<bool> HardDeleteAsync(string? id)
-        {
-            var groomer = await _groomerRepository.GetAllAttached()
-                .SingleOrDefaultAsync(s => s.Id.ToString() == id);
-
-            if (groomer == null)
-            {
-                return false;
-            }
-
-            return await _groomerRepository.HardDeleteAsync(groomer);
         }
     }
 }

@@ -45,5 +45,9 @@
         [MaxLength(NotesMaxLength, ErrorMessage = NotesMaxLengthMessage)]
         [Display(Name = "Additional Notes")]
         public string? Notes { get; set; }
+                
+        [Display(Name = "Owner ID")]
+        [RegularExpression(@"^[a-zA-Z0-9-]{36}$", ErrorMessage = OwnerIdInvalidMessage)]
+        public string? OwnerId { get; set; }
     }
 }

@@ -1,14 +1,19 @@
 ﻿@using PetGroomingApp.Web.ViewModels.Pet
-@model IEnumerable<AllPetsIndexViewModel>
+@model IEnumerable<AllPetsViewModel>
 
 @{
-    ViewData["Title"] = "My Pets";
+    ViewData["Title"] = "Pets";
 }
 
 <partial name="_PageTitle" />
 
 <!-- Pets Section -->
 <section class="service_area py-5 bg-light">
+    <div class="container justify-content-center">
+        <div style="margin-bottom: 20px">
+            <a asp-controller="Pet" asp-action="Create" class="boxed-btn3"><i class="fa fa-plus"> Add New Pet</i></a>
+        </div>
+    </div>
     <div class="container">        
         @if (!Model.Any())
         {
@@ -41,11 +46,6 @@
                     </div>
                 }
             </div>
-        }
-        <div class="row justify-content-center">
-            <div style="margin-bottom: 20px">
-                <a asp-controller="Pet" asp-action="Create" class="boxed-btn3"><i class="fa fa-plus"> Add New</i></a>
-            </div>
-        </div>
+        }        
     </div>
 </section>

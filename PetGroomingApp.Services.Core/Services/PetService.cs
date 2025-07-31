@@ -6,37 +6,95 @@
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Pet;
 
-    public class PetService : IPetService
+    public class PetService : BaseService<Pet>, IPetService
     {
         private readonly IPetRepository _petRepository;
 
         public PetService(IPetRepository petRepository)
+        : base(petRepository)
         {
             _petRepository = petRepository;
         }
 
-        public async Task AddAsync(PetFormViewModel model, string userId)
+        public async Task<string> CreateAsync(PetFormViewModel model, string? ownerId)
         {
             var pet = new Pet
             {
                 Id = Guid.NewGuid(),
                 Name = model.Name,
-                ImageUrl = model.ImageUrl,
                 Type = model.Type,
                 Breed = model.Breed,
                 Size = model.Size,
-                Age = model.Age,
                 Gender = model.Gender,
-                OwnerId = userId.ToString(),
-                Notes = model.Notes
+                Age = model.Age,
+                ImageUrl = model.ImageUrl ?? "img/pet/defaultPet.png",
+                Notes = model.Notes,
+                OwnerId = ownerId
             };
 
             await _petRepository.AddAsync(pet);
+
+            return pet.Id.ToString();
         }
-        public async Task<bool> EditAsync(string? id, PetFormViewModel? model)
+                
+        public async Task<PetDetailsViewModel> GetDetailsAsync(string? petId, string? ownerId)
         {
-            bool isGuidValid = Guid.TryParse(id, out Guid idGuid);
+            var pet = await _petRepository
+                .GetAllAttached()
+                .AsNoTracking()
+                .Where(p => p.Id.ToString() == petId && p.OwnerId == ownerId && !p.IsDeleted)
+                .Select(p => new PetDetailsViewModel
+                {
+                    Id = p.Id.ToString(),
+                    Name = p.Name,
+                    Type = p.Type,
+                    Breed = p.Breed,
+                    Size = p.Size,
+                    Gender = p.Gender,
+                    Age = p.Age,
+                    Notes = p.Notes,
+                    ImageUrl = p.ImageUrl
+                })
+                .FirstOrDefaultAsync();
+
+            return pet ?? throw new InvalidOperationException("Pet not found or access denied.");
+        }
+
+        public async Task<PetFormViewModel> GetPetForEditAsync(string? petId, string? ownerId)
+        {
+            bool isGuidValid = Guid.TryParse(petId, out Guid petGuid);
             
+            if (!isGuidValid)
+            {
+                throw new InvalidOperationException("Invalid pet ID.");
+            }
+
+            var pet = await _petRepository
+                .GetAllAttached()
+                .AsNoTracking()
+                .Where(p => p.Id == petGuid && !p.IsDeleted)
+                .Select(p => new PetFormViewModel
+                {
+                    Id = p.Id.ToString(),
+                    Name = p.Name,
+                    Type = p.Type,
+                    Breed = p.Breed,
+                    Size = p.Size,
+                    Gender = p.Gender,
+                    Age = p.Age,
+                    Notes = p.Notes,
+                    ImageUrl = p.ImageUrl,
+                    OwnerId = ownerId
+                })
+                .FirstOrDefaultAsync();
+
+            return pet ?? throw new InvalidOperationException("Pet not found.");
+        }
+
+        public async Task<bool> EditAsync(string? petId, PetFormViewModel? model, string? ownerId)
+        {
+            bool isGuidValid = Guid.TryParse(petId, out Guid idGuid);
+
             if (!isGuidValid || model == null)
             {
                 return false;
@@ -46,116 +104,95 @@
             
             if (pet == null || pet.IsDeleted)
             {
-                return false;
+                throw new InvalidOperationException("Cannot edit pet.");
+            }
+
+            if (pet.OwnerId != null && pet.OwnerId != ownerId)
+            {
+                throw new UnauthorizedAccessException();
             }
 
             pet.Name = model.Name;
-            pet.ImageUrl = model.ImageUrl;
             pet.Type = model.Type;
             pet.Breed = model.Breed;
             pet.Size = model.Size;
-            pet.Age = model.Age;
             pet.Gender = model.Gender;
+            pet.Age = model.Age;
+            pet.ImageUrl = model.ImageUrl;
             pet.Notes = model.Notes;
 
             return await _petRepository.UpdateAsync(pet);
         }
-        public async Task<PetDetailsViewModel?> GetByIdAsync(string? id)
+
+        public async Task<bool> IsOwnerAsync(string? petId, string? userId)
         {
-            return await _petRepository.GetAllAttached()
+            return await _petRepository
+                .GetAllAttached()
                 .AsNoTracking()
-                .Where(p => p.Id.ToString() == id && !p.IsDeleted)
-                .Select(p => new PetDetailsViewModel
-                {
-                    Id = p.Id.ToString(),
-                    Name = p.Name,
-                    ImageUrl = p.ImageUrl ?? "img/pet/defaultPet.png",
-                    Type = p.Type,
-                    Breed = p.Breed,
-                    Size = p.Size,
-                    Gender = p.Gender,
-                    Age = p.Age,
-                    Notes = p.Notes
-                })
-                .FirstOrDefaultAsync();
+                .AnyAsync(p => p.Id.ToString() == petId && p.OwnerId == userId && !p.IsDeleted);
         }
-        public async Task<PetFormViewModel?> GetForEditByIdAsync(string? id)
+
+        public async Task<IEnumerable<AllPetsViewModel?>> GetAllPetsAsync()
         {
-            bool isGuidValid = Guid.TryParse(id, out Guid idGuid);
-
-            if (!isGuidValid)
-            {
-                return null;
-            }
-
-            return await _petRepository.GetAllAttached()
-                .AsNoTracking()
-                .Where(p => p.Id == idGuid && !p.IsDeleted)
-                .Select(p => new PetFormViewModel
-                {
-                    Id = p.Id.ToString(),
-                    Name = p.Name,
-                    ImageUrl = p.ImageUrl ?? "img/pet/defaultPet.png",
-                    Type = p.Type,
-                    Breed = p.Breed,
-                    Size = p.Size,
-                    Age = p.Age,
-                    Gender = p.Gender,
-                    Notes = p.Notes
-                })
-                .FirstOrDefaultAsync();
-        }
-        public async Task<bool> HardDeleteAsync(string? id)
-        {
-            bool isGuidValid = Guid.TryParse(id, out Guid idGuid);
-            
-            if (!isGuidValid)
-            {
-                return false;
-            }
-            
-            var pet = await _petRepository.GetByIdAsync(idGuid);
-            
-            if (pet == null)
-            {
-                return false;
-            }
-
-            return await _petRepository.HardDeleteAsync(pet);
-        }
-        public async Task<bool> SoftDeleteAsync(string? id)
-        {
-            bool isGuidValid = Guid.TryParse(id, out Guid idGuid);
-
-            if (!isGuidValid)
-            {
-                return false;
-            }
-
-            var pet = await _petRepository.GetByIdAsync(idGuid);
-            
-            if (pet == null)
-            {
-                return false;
-            }
-
-            return await _petRepository.SoftDeleteAsync(pet);
-        }
-        public async Task<IEnumerable<AllPetsIndexViewModel>> GetAllAsync()
-        {
-            return await _petRepository.GetAllAttached()
+            return await _petRepository
+                .GetAllAttached()
                 .AsNoTracking()
                 .Where(p => !p.IsDeleted)
-                .Select(p => new AllPetsIndexViewModel
+                .Select(p => new AllPetsViewModel
                 {
                     Id = p.Id.ToString(),
                     Name = p.Name,
                     Type = p.Type.ToString(),
                     Breed = p.Breed,
-                    ImageUrl = p.ImageUrl ?? "img/pet/defaultPet.png"
-
+                    ImageUrl = p.ImageUrl
                 })
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<AllPetsViewModel?>> GetPetsByUserAsync(string? userId)
+        {
+            return await _petRepository
+                .GetAllAttached()
+                .AsNoTracking()
+                .Where(p => p.OwnerId == userId && !p.IsDeleted)
+                .Select(p => new AllPetsViewModel
+                {
+                    Id = p.Id.ToString(),
+                    Name = p.Name,
+                    Type = p.Type.ToString(),
+                    Breed = p.Breed,
+                    ImageUrl = p.ImageUrl
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> EditAsManagerAsync(string? petId, PetFormViewModel? model)
+        {
+            bool isGuidValid = Guid.TryParse(petId, out Guid petGuid);
+            Pet? pet = null;
+
+            if (isGuidValid)
+            {
+                pet = await _petRepository.GetByIdAsync(petGuid);
+            }
+
+            if (pet == null || model == null)
+            {
+                throw new InvalidOperationException("Pet not found.");
+            }
+
+            pet.Name = model.Name;
+            pet.Type = model.Type;
+            pet.Breed = model.Breed;
+            pet.Size = model.Size;
+            pet.Gender = model.Gender;
+            pet.Age = model.Age;
+            pet.ImageUrl = model.ImageUrl;
+            pet.Notes = model.Notes;
+            pet.OwnerId = model.OwnerId;
+
+            return await _petRepository.UpdateAsync(pet);
+        }
+                
     }
 }

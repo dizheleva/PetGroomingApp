@@ -97,6 +97,8 @@
             public const int NotesMaxLength = 500;
             public const string NotesMinLengthMessage = "Additional notes must be at least {1} characters long.";
             public const string NotesMaxLengthMessage = "Additional notes cannot exceed {1} characters.";
+
+            public const string OwnerIdInvalidMessage = "Owner ID must be a valid GUID.";
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     using PetGroomingApp.Web.ViewModels.Favorites;
 
-    public interface IFavoritesService
+    public interface IFavoritesService 
     {
         Task<IEnumerable<FavoritesViewModel>> GetUserFavoritesAsync(string userId);
         Task<bool> IsServiceInFavoritesAsync(string? userId, string? serviceId);

@@ -19,6 +19,14 @@
         </div>
 
         <div class="row justify-content-center">
+            @if(User.IsInRole("Manager"))
+            {
+                <div class="container justify-content-center">
+                    <div style="margin-bottom: 20px">
+                        <a asp-controller="Service" asp-action="Create" class="boxed-btn3"><i class="fa fa-plus"> Add New Service</i></a>
+                    </div>
+                </div>
+            }
             @foreach (var service in Model)
             {
                 <div class="col-lg-4 col-md-6 d-flex align-items-stretch mb-4">

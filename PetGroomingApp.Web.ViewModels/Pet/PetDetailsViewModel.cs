@@ -8,7 +8,7 @@
 
         public required string Name { get; set; }
 
-        public required string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public required PetType Type { get; set; }
 

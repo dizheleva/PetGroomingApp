@@ -1,7 +1,5 @@
 ﻿namespace PetGroomingApp.Web.Controllers
 {
-    using System.Security.Claims;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
     using PetGroomingApp.Services.Core.Interfaces;
@@ -10,28 +8,33 @@
     public class PetController : BaseController
     {
         private readonly IPetService _petService;
-
+                
         public PetController(IPetService petService)
         {
             _petService = petService;
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var pets = await _petService.GetAllAsync();
+            if (User.IsInRole("Manager"))
+            {
+                var pets = await _petService.GetAllPetsAsync();
+                return View(pets);
+            }
 
-            return View(pets);
+            var userPets = await _petService.GetPetsByUserAsync(GetUserId());
+            return View(userPets);
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             try
             {
-                var pet = await _petService.GetByIdAsync(id);
+                var ownerId = User.IsInRole("Manager") ? null : GetUserId();
+
+                var pet = await _petService.GetDetailsAsync(id, ownerId);
 
                 if (pet == null)
                 {
@@ -42,8 +45,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the pet details: {ex.Message}");
+                TempData["Error"] = ex.Message;
                 return View(nameof(Index));
             }
         }
@@ -57,7 +59,7 @@
         [HttpPost]
         public async Task<IActionResult> Create(PetFormViewModel model)
         {
-            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string? userId = GetUserId();
 
             if (!ModelState.IsValid || userId.IsNullOrEmpty())
             {
@@ -75,13 +77,15 @@
 
             try
             {
-                await _petService.AddAsync(model, userId);
-                return RedirectToAction(nameof(Index));
+                var ownerId = User.IsInRole("Manager") ? null : userId;
+                var petId = await _petService.CreateAsync(model, ownerId);
+
+                TempData["Success"] = "Pet created successfully.";
+                return RedirectToAction(nameof(Details), new { id = petId });
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while creating the pet: {ex.Message}");
+                TempData["Error"] = ex.Message;
                 return View(model);
             }
         }
@@ -91,7 +95,8 @@
         {
             try
             {
-                var model = await _petService.GetForEditByIdAsync(id);
+                var ownerId = User.IsInRole("Manager") ? null : GetUserId();
+                var model = await _petService.GetPetForEditAsync(id, ownerId);
 
                 if (model == null)
                 {
@@ -118,19 +123,23 @@
             }
             try
             {
-                bool editSuccess = await _petService.EditAsync(id, model);
-                if (!editSuccess)
+                bool success = User.IsInRole("Manager")
+                    ? await _petService.EditAsManagerAsync(id, model)
+                    : await _petService.EditAsync(id, model, GetUserId());
+
+                if (!success)
                 {
+                    TempData["Error"] = "Failed to edit pet.";
                     return NotFound();
                 }
 
+                TempData["Success"] = "Pet updated successfully.";
                 return this.RedirectToAction(nameof(Details), new { id = model.Id });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while editing the pet: {e.Message}");
-                return this.RedirectToAction(nameof(Index));
+                TempData["Error"] = ex.Message;
+                return View(model);
             }
         }
 
@@ -139,12 +148,13 @@
         {
             try
             {
-                var groomer = await _petService.GetByIdAsync(id);
-                if (groomer == null)
+                var pet = await _petService.GetDetailsAsync(id, GetUserId());
+                if (pet == null)
                 {
                     return NotFound();
                 }
-                return View(groomer);
+
+                return View(pet);
             }
             catch (Exception ex)
             {
@@ -159,16 +169,24 @@
         {
             try
             {
-                await _petService.SoftDeleteAsync(id);
+                bool success = await _petService.SoftDeleteAsync(id);
+
+                if (!success)
+                {
+                    TempData["Error"] = "Failed to delete pet.";
+                }
+                else
+                {
+                    TempData["Success"] = "Pet deleted successfully.";
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while deleting the pet: {e.Message}");
-                return this.RedirectToAction(nameof(Index));
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
             }
-
         }
     }
 }
