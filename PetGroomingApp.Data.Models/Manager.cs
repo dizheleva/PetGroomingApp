@@ -1,6 +1,5 @@
 ﻿namespace PetGroomingApp.Data.Models
 {
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     [Comment("Manager in the system")]
@@ -13,6 +12,6 @@
 
         [Comment("Manager's user entity")]
         public string UserId { get; set; } = null!;
-        public virtual IdentityUser User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; } = null!;
     }
 }

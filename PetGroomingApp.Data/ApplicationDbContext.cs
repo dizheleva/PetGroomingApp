@@ -8,12 +8,15 @@
 
     public class ApplicationDbContext : IdentityDbContext
     {
-        public virtual DbSet<Pet> Pets { get; set; }
-        public virtual DbSet<Groomer> Groomers { get; set; }
-        public virtual DbSet<Service> Services { get; set; }
-        public virtual DbSet<Appointment> Appointments { get; set; }
-        public virtual DbSet<AppointmentService> AppointmentServices { get; set; }
-        public virtual DbSet<UserService> UserServices { get; set; }
+        public virtual DbSet<Pet> Pets { get; set; } = null!;
+        public virtual DbSet<Groomer> Groomers { get; set; } = null!;
+        public virtual DbSet<Service> Services { get; set; } = null!;
+        public virtual DbSet<Appointment> Appointments { get; set; } = null!;
+        public virtual DbSet<AppointmentService> AppointmentServices { get; set; } = null!;
+        public virtual DbSet<UserService> UserServices { get; set; } = null!;
+        public virtual DbSet<Manager> Managers { get; set; } = null!;
+        public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

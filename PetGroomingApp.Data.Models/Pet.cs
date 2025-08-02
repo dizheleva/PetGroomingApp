@@ -1,7 +1,7 @@
 ﻿namespace PetGroomingApp.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using Microsoft.AspNetCore.Identity;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models.Enums;
 
@@ -53,7 +53,9 @@
 
         [Comment("Foreign key to the owner of the pet")]
         public string? OwnerId { get; set; } = null!;
-        public virtual IdentityUser? Owner { get; set; } = null!;
+
+        [ForeignKey(nameof(OwnerId))]
+        public virtual ApplicationUser? Owner { get; set; } = null!;
 
         [Comment("Collection of appointments of the pet")]
         public virtual ICollection<Appointment> Appointments { get; set; } = new HashSet<Appointment>();

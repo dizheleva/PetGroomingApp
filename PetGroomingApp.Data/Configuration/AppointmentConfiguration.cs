@@ -31,7 +31,7 @@
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(a => a.User)
-                .WithMany() 
+                .WithMany(u => u.Appointments) 
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 

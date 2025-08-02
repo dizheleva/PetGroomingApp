@@ -18,7 +18,7 @@
         public string? Description { get; set; }
 
         [Comment("Service duration")]
-        public string Duration { get; set; } = null!;
+        public TimeSpan Duration { get; set; }
 
         [Comment("Service price")]
         public decimal Price { get; set; }

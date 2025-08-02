@@ -12,7 +12,7 @@
 
             builder
                 .HasOne(us => us.User)
-                .WithMany()
+                .WithMany(u => u.Favorites)
                 .HasForeignKey(us => us.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -45,9 +45,9 @@
                 .HasDefaultValue(false);
 
             builder.HasOne(p => p.Owner)
-                .WithMany()
+                .WithMany(o => o.Pets)
                 .HasForeignKey(p => p.OwnerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder
                 .HasQueryFilter(p => p.IsDeleted == false);
