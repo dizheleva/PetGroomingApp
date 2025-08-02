@@ -66,7 +66,7 @@
             
             if (!isGuidValid)
             {
-                throw new InvalidOperationException("Invalid pet ID.");
+                throw new InvalidOperationException("Invalid ID.");
             }
 
             var pet = await _petRepository

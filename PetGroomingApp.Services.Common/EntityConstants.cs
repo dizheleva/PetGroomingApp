@@ -19,10 +19,10 @@
             public const string DescriptionMinLengthMessage = "Description must be at least {1} characters long.";
             public const string DescriptionMaxLengthMessage = "Description cannot exceed {1} characters.";
 
-            //public const int DurationMin = 5; // in minutes
-            //public const int DurationMax = 480; // in minutes (8 hours)
             public const string DurationRequiredMessage = "Duration is required.";
-            //public const string DurationRangeMessage = "Duration must be between {1} and {2} minutes.";
+            public const string DurationDisplayName = "Duration (HH:mm)";
+            public const string DurationFormat = @"hh\:mm"; // TimeSpan format for display
+            public const string DurationInvalidMessage = "Invalid duration format. Use HH:mm.";
 
             public const string PriceMin = "0.01";
             public const string PriceMax = "1000.00";

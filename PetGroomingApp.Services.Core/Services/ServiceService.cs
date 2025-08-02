@@ -8,6 +8,8 @@
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
 
+    using static PetGroomingApp.Services.Common.EntityConstants.Service;
+
     public class ServiceService : BaseService<Service>, IServiceService
     {
         private readonly IServiceRepository _serviceRepository;
@@ -21,7 +23,7 @@
         {
             return await _serviceRepository.GetAllAttached()
                 .Where(s => !s.IsDeleted)
-                .AsNoTracking() 
+                .AsNoTracking()
                 .Select(s => new AllServicesIndexViewModel
                 {
                     Id = s.Id.ToString(),
@@ -40,7 +42,7 @@
                 Name = model.Name,
                 ImageUrl = model.ImageUrl,
                 Description = model.Description,
-                Duration = model.Duration,
+                Duration = ParseDuration(model.Duration),
                 Price = model.Price,
             };
 
@@ -55,7 +57,7 @@
 
             if (service == null)
             {
-                return null;    
+                return null;
             }
 
             return new ServiceDetailsViewModel
@@ -64,7 +66,7 @@
                 Name = service.Name,
                 ImageUrl = service.ImageUrl,
                 Description = service.Description,
-                Duration = service.Duration,
+                Duration = service.Duration.ToString(DurationFormat),
                 Price = service.Price
             };
         }
@@ -74,7 +76,7 @@
             ServiceFormViewModel? service = null;
 
             bool isGuidValid = Guid.TryParse(id, out Guid serviceGuid);
-            
+
             if (isGuidValid)
             {
                 service = await _serviceRepository.GetAllAttached()
@@ -85,12 +87,12 @@
                     Name = s.Name,
                     ImageUrl = s.ImageUrl,
                     Description = s.Description,
-                    Duration = s.Duration,
+                    Duration = s.Duration.ToString(DurationFormat),
                     Price = s.Price
                 })
                 .SingleOrDefaultAsync();
             }
-            
+
             return service;
         }
         public async Task<bool> EditAsync(string? id, ServiceFormViewModel? model)
@@ -102,7 +104,7 @@
             {
                 service = await _serviceRepository.GetByIdAsync(serviceGuid);
             }
-                
+
             if (service == null || model == null)
             {
                 return false;
@@ -111,10 +113,20 @@
             service.Name = model.Name;
             service.ImageUrl = model.ImageUrl;
             service.Description = model.Description;
-            service.Duration = model.Duration;
+            service.Duration = ParseDuration(model.Duration);
             service.Price = model.Price;
 
             return await _serviceRepository.UpdateAsync(service);
+        }
+
+        private static TimeSpan ParseDuration(string duration)
+        {
+            if (TimeSpan.TryParse(duration, out TimeSpan parsedDuration))
+            {
+                return parsedDuration;
+            }
+
+            throw new ArgumentException(DurationInvalidMessage);
         }
     }
 }

@@ -28,7 +28,7 @@
                     FirstName = g.FirstName,
                     LastName = g.LastName,
                     JobTitle = g.JobTitle,
-                    ImageUrl = g.ImageUrl                    
+                    ImageUrl = g.ImageUrl
                 })
                 .ToListAsync();
         }
@@ -81,7 +81,7 @@
             if (isGuidValid)
             {
                 groomer = await _groomerRepository.GetAllAttached()
-                .Where(g => g.Id.ToString() == id && !g.IsDeleted)
+                .Where(g => g.Id == groomerGuid && !g.IsDeleted)
                 .Select(g => new GroomerFormViewModel
                 {
                     Id = g.Id.ToString(),
@@ -99,6 +99,8 @@
         }
         public async Task<bool> EditAsync(string? id, GroomerFormViewModel? model)
         {
+            ArgumentNullException.ThrowIfNull(model);
+
             bool isGuidValid = Guid.TryParse(id, out Guid groomerGuid);
             Groomer? groomer = null;
 
@@ -107,7 +109,7 @@
                 groomer = await _groomerRepository.GetByIdAsync(groomerGuid);
             }
 
-            if (groomer == null || model == null)
+            if (groomer == null)
             {
                 return false;
             }

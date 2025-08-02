@@ -40,8 +40,8 @@
                 if (isServiceIdValid)
                 {
                     return await this._favoritesRepository.GetAllAttached()
-                        .AnyAsync(us => us.UserId.ToLower() == userId &&
-                                        us.ServiceId.ToString() == serviceGuid.ToString());                    
+                        .AnyAsync(us => us.UserId == userId &&
+                                        us.ServiceId == serviceGuid);                    
                 }
             }
 
@@ -49,14 +49,25 @@
         }
 
         public async Task AddToFavoritesAsync(string userId, string serviceId)
-        {            
+        {
+            bool isServiceIdValid = Guid.TryParse(serviceId, out Guid serviceGuid);
+
+            if (!isServiceIdValid)
+            {
+                throw new InvalidOperationException("Invalid serviceId");
+            }
+
             var userService = new UserService
             {
                 UserId = userId,
-                ServiceId = Guid.Parse(serviceId)
+                ServiceId = serviceGuid
             };
 
-            await _favoritesRepository.AddAsync(userService);
+            if (!await IsServiceInFavoritesAsync(userId, serviceId))
+            {
+                await _favoritesRepository.AddAsync(userService);
+            }
+
         }
         public async Task<bool> RemoveFromFavoritesAsync(string? userId, string? serviceId)
         {

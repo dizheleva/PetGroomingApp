@@ -4,12 +4,20 @@
 
     public interface IAppointmentService 
     {
-        Task<IEnumerable<AllAppointmetIndexViewModel>> GetAllAsync();
-        Task AddAsync(AppointmentFormViewModel model);
-        Task<AppointmentFormViewModel?> GetByIdAsync(string? id);
-        Task<AppointmentFormViewModel?> GetForEditByIdAsync(string? id);
-        Task<bool> EditAsync(string? id, AppointmentFormViewModel? model);
-        Task<bool> SoftDeleteAsync(string? id);
-        Task<bool> HardDeleteAsync(string? id);
+        Task<string> CreateAsync(AppointmentFormViewModel model, string? userId);
+        Task<AppointmentDetailsViewModel?> GetDetailsAsync(string appointmentId, string? userId);
+        Task<AppointmentDetailsViewModel?> GetDetailsAsManagerAsync(string appointmentId);
+        Task<AppointmentFormViewModel?> GetForEditByIdAsync(string appointmentId, string? userId);
+        Task<bool> EditAsync(string appointmentId, AppointmentFormViewModel model, string? userId);
+        Task<bool> CancelAsync(string appointmentId, string? userId);
+
+        Task<IEnumerable<AppointmentListViewModel>> GetAllAsync(); // All appointments
+        Task<IEnumerable<AppointmentListViewModel>> GetByUserAsync(string userId);
+        Task<IEnumerable<AppointmentListViewModel>> GetByDateAsync(DateTime date);
+        Task<bool> EditAsManagerAsync(string appointmentId, AppointmentFormViewModel model);
+
+        Task<bool> IsOwnerAsync(string appointmentId, string userId);
+        Task<bool> IsOverlappingAsync(Guid groomerId, DateTime startTime, TimeSpan duration, Guid? appointmentId = null);
+
     }
 }
