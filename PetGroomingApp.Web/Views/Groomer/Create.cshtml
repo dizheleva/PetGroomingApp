@@ -3,52 +3,55 @@
     ViewData["Title"] = "Create New Groomer";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center fw-bold mb-4">@ViewData["Title"]</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form asp-action="Create" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
-                <div class="mb-3">
-                    <label asp-for="FirstName" class="form-label fw-semibold"></label>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger small"></span>
-                </div>
+<partial name="_PageTitle" />
 
-                <div class="mb-3">
-                    <label asp-for="LastName" class="form-label fw-semibold"></label>
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger small"></span>
-                </div>
+<section class="team_area">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form asp-action="Create" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
+                    <div class="mb-3">
+                        <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="JobTitle" class="form-label fw-semibold"></label>
-                    <input asp-for="JobTitle" class="form-control" />
-                    <span asp-validation-for="JobTitle" class="text-danger small"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="LastName" class="form-label fw-semibold"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
-                    <input asp-for="PhoneNumber" class="form-control" type="tel"/>
-                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="JobTitle" class="form-label fw-semibold"></label>
+                        <input asp-for="JobTitle" class="form-control" />
+                        <span asp-validation-for="JobTitle" class="text-danger small"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="ImageUrl" class="form-label fw-semibold"></label>
-                    <input asp-for="ImageUrl" class="form-control" />
-                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                        <input asp-for="PhoneNumber" class="form-control" type="tel" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-semibold"></label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Description" class="text-danger small"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label fw-semibold"></label>
+                        <input asp-for="ImageUrl" class="form-control" />
+                        <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                    </div>
 
-                <div class="text-center mt-4 d-flex justify-content-center gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
-                    <button type="submit" class="btn btn-success rounded-pill px-4">Create Groomer</button>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                        <button type="submit" class="btn btn-success rounded-pill px-4">Create Groomer</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>

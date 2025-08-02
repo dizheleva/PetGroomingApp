@@ -4,63 +4,64 @@
     ViewData["Title"] = "Edit Groomer";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center fw-bold mb-4">@ViewData["Title"]</h2>
-    <hr class="mb-4">
+<partial name="_PageTitle" />
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form asp-action="Edit" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
-                <input type="hidden" asp-for="Id" />
+<section class="team_area">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form asp-action="Edit" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
+                    <input type="hidden" asp-for="Id" />
 
-                <div class="mb-3">
-                    <label asp-for="FirstName" class="form-label fw-bold">First Name</label>
-                    <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="FirstName" class="form-label fw-bold">First Name</label>
+                        <input asp-for="FirstName" class="form-control" placeholder="Enter First Name" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="LastName" class="form-label fw-bold">Last Name</label>
-                    <input asp-for="LastName" class="form-control" placeholder="Enter Last Name" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="LastName" class="form-label fw-bold">Last Name</label>
+                        <input asp-for="LastName" class="form-control" placeholder="Enter Last Name" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="JobTitle" class="form-label fw-bold">Job Title</label>
-                    <input asp-for="JobTitle" class="form-control" placeholder="Enter job title" />
-                    <span asp-validation-for="JobTitle" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="JobTitle" class="form-label fw-bold">Job Title</label>
+                        <input asp-for="JobTitle" class="form-control" placeholder="Enter job title" />
+                        <span asp-validation-for="JobTitle" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="PhoneNumber" class="form-label fw-bold">Phone Number</label>
-                    <input asp-for="PhoneNumber" class="form-control" type="tel" placeholder="Enter phone number"/>
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" type="tel" placeholder="Enter phone number" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="ImageUrl" class="form-label fw-bold">Image URL</label>
-                    <input asp-for="ImageUrl" class="form-control" placeholder="Enter image URL" />
-                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label fw-bold">Image URL</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="Enter image URL" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-bold">Description</label>
-                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
 
-                <div class="text-center mt-4 d-flex justify-content-center gap-2">
-                    <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
-                        <i class="bi bi-plus-circle"></i> Save Changes
-                    </button>
-                    <a asp-action="Manage" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
-                        <i class="bi bi-arrow-left-circle"></i> Cancel
-                    </a>
-                </div>
-            </form>
+                    <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
+                            <i class="bi bi-plus-circle"></i> Save Changes
+                        </button>
+                        <a asp-action="Manage" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
+                            <i class="bi bi-arrow-left-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
