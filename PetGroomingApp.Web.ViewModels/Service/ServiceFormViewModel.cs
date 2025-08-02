@@ -21,8 +21,9 @@
         [MaxLength(DescriptionMaxLength, ErrorMessage = DescriptionMaxLengthMessage)]
         public string? Description { get; set; }
 
-        [Required(ErrorMessage = DurationRequiredMessage)]        
-        public required string Duration { get; set; }
+        [Required(ErrorMessage = DurationRequiredMessage)]
+        [Display(Name = DurationDisplayName)]
+        public string Duration { get; set; } = null!;
 
         [Required(ErrorMessage = PriceRequiredMessage)]
         [Range(typeof(Decimal), PriceMin, PriceMax, ErrorMessage = PriceRangeMessage)]

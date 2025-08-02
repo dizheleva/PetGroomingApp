@@ -10,6 +10,7 @@
     <ProjectReference Include="..\PetGroomingApp.Data.Models\PetGroomingApp.Data.Models.csproj" />
     <ProjectReference Include="..\PetGroomingApp.GCommon\PetGroomingApp.GCommon.csproj" />
     <ProjectReference Include="..\PetGroomingApp.Services.AutoMapping\PetGroomingApp.Services.AutoMapping.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
