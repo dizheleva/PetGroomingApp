@@ -12,7 +12,7 @@
         [Display(Name = "Date and Time")]
         public DateTime AppointmentTime { get; set; }
 
-        [Required]
+        [Required]  
         [Display(Name = "Services")]
         public List<Guid> SelectedServiceIds { get; set; } = [];
         

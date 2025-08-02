@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetGroomingApp.Web", "PetGr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetGroomingApp.GCommon", "PetGroomingApp.GCommon\PetGroomingApp.GCommon.csproj", "{ECC70A02-DA6C-4D64-86B3-969AE6EB4F60}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetGroomingApp.WebApi", "PetGroomingApp.WebApi\PetGroomingApp.WebApi.csproj", "{5867C12A-A01B-42C2-B6C1-06F6B714A0DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{ECC70A02-DA6C-4D64-86B3-969AE6EB4F60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECC70A02-DA6C-4D64-86B3-969AE6EB4F60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECC70A02-DA6C-4D64-86B3-969AE6EB4F60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5867C12A-A01B-42C2-B6C1-06F6B714A0DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5867C12A-A01B-42C2-B6C1-06F6B714A0DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5867C12A-A01B-42C2-B6C1-06F6B714A0DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5867C12A-A01B-42C2-B6C1-06F6B714A0DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +118,7 @@ Global
 		{86909A20-72E9-418E-ABA0-7D6738CF8D4F} = {F5309D7D-C09A-4F63-9926-BBF0D4623380}
 		{47C0B2FF-FF13-4D5E-A561-D6FEE0F4E9EE} = {F5309D7D-C09A-4F63-9926-BBF0D4623380}
 		{CF06A478-4DBE-44E9-BD23-F6B9699B7ED7} = {93EF63D2-F88C-45A8-A833-653989757DFE}
+		{5867C12A-A01B-42C2-B6C1-06F6B714A0DF} = {93EF63D2-F88C-45A8-A833-653989757DFE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0063E44C-41E7-488F-ABC8-30AB4DD8226E}
