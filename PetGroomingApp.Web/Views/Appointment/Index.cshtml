@@ -1,0 +1,66 @@
+﻿@using PetGroomingApp.Web.ViewModels.Appointment
+@model IEnumerable<AppointmentListViewModel>
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="slider_area">
+    <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-auto">
+                    <div class="slider_text text-center">
+                        <h3>Professional Pet Grooming</h3>
+                        <p>Give your pets the love and care they deserve</p>
+                        <a class="boxed-btn4" asp-controller="Appointment" asp-action="Create">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="about_area py-5">
+    <div class="container">
+        <h2 class="mb-4"> My @ViewData["Title"]</h2>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning">You have no appointments yet.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Groomer</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var appt in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@appt.AppointmentTime.ToString("g")</td>
+                                <td>@appt.GroomerName</td>
+                                <td>
+                                    <span class="badge bg-@(appt.Status == "Confirmed" ? "success" : appt.Status == "Pending" ? "warning" : "secondary")">
+                                        @appt.Status
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-route-id="@appt.Id" class="btn btn-sm btn-outline-info me-1">Details</a>
+                                    <a asp-action="Edit" asp-route-id="@appt.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                    <a asp-action="Cancel" asp-route-id="@appt.Id" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

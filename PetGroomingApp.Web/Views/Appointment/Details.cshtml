@@ -1,0 +1,41 @@
+﻿@using PetGroomingApp.Web.ViewModels.Appointment
+@model AppointmentDetailsViewModel
+
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<partial name="_PageTitle" />
+
+<section class="appointment_details_area py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">@Model.PetName's Appointment</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Appointment Time:</strong> @Model.AppointmentTime.ToString("f")</p>
+                        <p><strong>Duration:</strong> @Model.Duration minutes</p>
+                        <p><strong>Groomer:</strong> @Model.GroomerName</p>
+                        <p><strong>Notes:</strong> @Model.Notes</p>
+                        <hr />
+                        <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                            
+                            <a asp-action="Index" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
+                                <i class="bi bi-arrow-left-circle"></i> Back to Appointments
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold px-4 rounded-pill">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <a asp-action="Cancel" asp-route-id="@Model.Id" class="btn btn-danger fw-bold px-4 rounded-pill">
+                                <i class="bi bi-pencil-square"></i> Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

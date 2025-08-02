@@ -1,0 +1,75 @@
+﻿@using PetGroomingApp.Web.ViewModels.Appointment
+@model AppointmentFormViewModel
+@{
+    ViewData["Title"] = "Book New Appointment";
+}
+
+<partial name="_PageTitle" />
+
+<section class="about_area">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">                
+                <form asp-action="Create" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="AppointmentTime"></label>
+                        <input asp-for="AppointmentTime" class="form-control" type="datetime-local" placeholder="@DateTime.Now"/>
+                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Services">Select Services</label>
+                        @foreach (var service in Model.Services)
+                        {
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       name="SelectedServiceIds"
+                                       value="@service.Value"
+                                       @(Model.SelectedServiceIds.Contains(Guid.Parse(service.Value)) ? "checked" : "") />
+                                <label class="form-check-label">@service.Text</label>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PetId">Pet</label>
+                        <select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
+                        <span asp-validation-for="PetId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="GroomerId">Groomer</label>
+                        <select asp-for="GroomerId" asp-items="Model.Groomers" class="form-control"></select>
+                        <span asp-validation-for="GroomerId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Notes"></label>
+                        <textarea asp-for="Notes" class="form-control"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div id="calculatedDuration" class="mt-2 text-info">
+                        Duration: <span id="durationValue">0</span> minutes
+                    </div>
+
+                    <div id="totalPrice" class="mt-2 text-info">
+                        Total Price: <span id="priceValue">0</span> €
+                    </div>
+
+                    <div class="text-center mt-4 d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
+                            <i class="bi bi-plus-circle"></i> Book Now
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
+                            <i class="bi bi-arrow-left-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
