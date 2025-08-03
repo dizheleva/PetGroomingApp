@@ -1,13 +1,42 @@
 
 namespace PetGroomingApp.WebApi
 {
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using PetGroomingApp.Data;
+    using PetGroomingApp.Data.Repository.Interfaces;
+    using PetGroomingApp.Services.Core.Interfaces;
+    using PetGroomingApp.Web.Infrastructure.Extensions;
+
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+            builder.Services
+                .AddDbContext<ApplicationDbContext>(options =>
+                {
+                    options.UseSqlServer(connectionString);
+                });
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddRepositories(typeof(IServiceRepository).Assembly);
+            builder.Services.AddUserDefinedServices(typeof(IServiceService).Assembly);
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.WithOrigins("https://localhost:7116") 
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      .AllowCredentials());
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -25,9 +54,11 @@ namespace PetGroomingApp.WebApi
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAllOrigins");
+
             app.UseAuthorization();
 
-
+            app.MapIdentityApi<IdentityUser>();
             app.MapControllers();
 
             app.Run();

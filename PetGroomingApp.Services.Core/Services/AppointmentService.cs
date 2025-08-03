@@ -342,6 +342,8 @@
 
             return false;
         }
+
+        // Helper method to check if two time intervals overlap
         private static bool IsTimeOverlapping(Appointment appointment, DateTime startTime, DateTime endTime)
         {
             var existingStart = appointment.AppointmentTime;

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PetGroomingApp.Data\PetGroomingApp.Data.csproj" />
     <ProjectReference Include="..\PetGroomingApp.GCommon\PetGroomingApp.GCommon.csproj" />
   </ItemGroup>
 

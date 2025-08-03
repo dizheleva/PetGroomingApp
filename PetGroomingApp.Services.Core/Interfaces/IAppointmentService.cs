@@ -13,11 +13,12 @@
 
         Task<IEnumerable<AppointmentListViewModel>> GetAllAsync(); // All appointments
         Task<IEnumerable<AppointmentListViewModel>> GetByUserAsync(string userId);
+        Task<IEnumerable<AppointmentListViewModel>> GetByGroomerAsync(string groomerId);
         Task<IEnumerable<AppointmentListViewModel>> GetByDateAsync(DateTime date);
         Task<bool> EditAsManagerAsync(string appointmentId, AppointmentFormViewModel model);
 
         Task<bool> IsOwnerAsync(string appointmentId, string userId);
         Task<bool> IsOverlappingAsync(Guid groomerId, DateTime startTime, TimeSpan duration, Guid? appointmentId = null);
-
+        Task<bool> CompleteAsync(string appointmentId);
     }
 }

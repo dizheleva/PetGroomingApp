@@ -3,14 +3,16 @@ namespace PetGroomingApp.Web
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
+    using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Data.Seeding;
+    using PetGroomingApp.Data.Seeding.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.Infrastructure.Extensions;
 
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
             
@@ -23,20 +25,17 @@ namespace PetGroomingApp.Web
                 });
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services
-                .AddDefaultIdentity<IdentityUser>(options =>
+                .AddDefaultIdentity<ApplicationUser>(options =>
                 {
-                    options.SignIn.RequireConfirmedAccount = false;
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequiredLength = 3;
+                    ConfigureIdentity(builder.Configuration, options);
                 })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddRepositories(typeof(IServiceRepository).Assembly);
             builder.Services.AddUserDefinedServices(typeof(IServiceService).Assembly);
+
+            builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
 
             builder.Services.AddControllersWithViews();
 
@@ -68,22 +67,30 @@ namespace PetGroomingApp.Web
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            // Seed roles and manager user
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    await RoleSeedier.SeedRolesAsync(services);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
-                }
-            }
-
             app.Run();
+        }
+
+        private static void ConfigureIdentity(IConfigurationManager configurationManager, IdentityOptions options)
+        {
+            options.SignIn.RequireConfirmedEmail =
+                configurationManager.GetValue<bool>($"IdentityConfig:SignIn:RequireConfirmedEmail");
+            options.SignIn.RequireConfirmedAccount =
+                configurationManager.GetValue<bool>($"IdentityConfig:SignIn:RequireConfirmedAccount");
+            options.SignIn.RequireConfirmedPhoneNumber =
+                configurationManager.GetValue<bool>($"IdentityConfig:SignIn:RequireConfirmedPhoneNumber");
+
+            options.Password.RequiredLength =
+                configurationManager.GetValue<int>($"IdentityConfig:Password:RequiredLength");
+            options.Password.RequireNonAlphanumeric =
+                configurationManager.GetValue<bool>($"IdentityConfig:Password:RequireNonAlphanumeric");
+            options.Password.RequireDigit =
+                configurationManager.GetValue<bool>($"IdentityConfig:Password:RequireDigit");
+            options.Password.RequireLowercase =
+                configurationManager.GetValue<bool>($"IdentityConfig:Password:RequireLowercase");
+            options.Password.RequireUppercase =
+                configurationManager.GetValue<bool>($"IdentityConfig:Password:RequireUppercase");
+            options.Password.RequiredUniqueChars =
+                configurationManager.GetValue<int>($"IdentityConfig:Password:RequiredUniqueChars");
         }
     }
 }
