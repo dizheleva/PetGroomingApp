@@ -15,11 +15,11 @@
 
                     <div class="form-group">
                         <label asp-for="AppointmentTime"></label>
-                        <input asp-for="AppointmentTime" class="form-control" type="datetime-local" placeholder="@DateTime.Now"/>
+                        <input asp-for="AppointmentTime" id="appointment-time" class="form-control" type="datetime-local" />
                         <span asp-validation-for="AppointmentTime" class="text-danger"></span>
                     </div>
-
-                    <div class="form-group">
+                                        
+                    <div id="service-select" class="form-group">
                         <label asp-for="Services">Select Services</label>
                         @foreach (var service in Model.Services)
                         {

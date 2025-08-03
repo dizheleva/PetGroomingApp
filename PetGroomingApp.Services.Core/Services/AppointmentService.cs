@@ -6,18 +6,22 @@
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Models.Enums;
+    using PetGroomingApp.Data.Repository;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Appointment;
+    using PetGroomingApp.Web.ViewModels.Groomer;
 
     public class AppointmentService : BaseService<Appointment>, IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IServiceRepository _serviceRepository;
-        public AppointmentService(IAppointmentRepository appointmentRepository, IServiceRepository serviceRepository) : base(appointmentRepository)
+        private readonly IGroomerRepository _groomerRepository;
+        public AppointmentService(IAppointmentRepository appointmentRepository, IServiceRepository serviceRepository, IGroomerRepository groomerRepository) : base(appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
             _serviceRepository = serviceRepository;
+            _groomerRepository = groomerRepository;
         }
 
         public async Task<bool> CancelAsync(string appointmentId, string? userId)
@@ -341,6 +345,63 @@
             }
 
             return false;
+        }
+
+        public async Task<List<GroomerDto>> GetAvailableGroomersAsync(DateTime appointmentTime)
+        {
+            var allGroomers = await _groomerRepository.GetAllAsync();
+            var busyGroomers = await _appointmentRepository
+                .GetAllAttached()
+                .Where(a => a.AppointmentTime == appointmentTime)
+                .Select(a => a.GroomerId)
+                .ToListAsync();
+
+            var available = allGroomers.Where(g => !busyGroomers.Contains(g.Id))
+                .Select(g => new GroomerDto
+                { 
+                    Id = g.Id, 
+                    Name = g.FirstName + " " + g.LastName,
+                })
+                .ToList();
+
+            return available;
+        }
+
+        public async Task<DateTime> GetNextFreeTimeForGroomerAsync(Guid groomerId)
+        {
+            var appointments = await _appointmentRepository
+                .GetAllAttached()
+                .Where(a => a.GroomerId == groomerId && a.AppointmentTime > DateTime.Now)
+                .OrderBy(a => a.AppointmentTime)
+                .ToListAsync();
+
+            DateTime now = DateTime.Now;
+            TimeSpan slot = TimeSpan.FromMinutes(30);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var proposed = now.AddMinutes(i * 30);
+                bool conflict = appointments.Any(a => Math.Abs((a.AppointmentTime - proposed).TotalMinutes) < a.Duration.TotalMinutes);
+                if (!conflict)
+                    return proposed;
+            }
+
+            return now.AddDays(1);
+        }
+
+        public async Task<AppointmentCalculationDto> CalculateTotalAsync(List<Guid> serviceIds)
+        {
+            var services = await _serviceRepository.GetAllAttached()
+                .Where(s => serviceIds.Contains(s.Id))
+                .ToListAsync();
+
+            var total = new AppointmentCalculationDto
+            {
+                TotalDuration = (int)services.Sum(s => s.Duration.TotalMinutes),
+                TotalPrice = services.Sum(s => s.Price)
+            };
+
+            return total;
         }
 
         // Helper method to check if two time intervals overlap

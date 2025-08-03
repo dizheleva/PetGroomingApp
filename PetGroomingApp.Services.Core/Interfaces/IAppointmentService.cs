@@ -20,5 +20,9 @@
         Task<bool> IsOwnerAsync(string appointmentId, string userId);
         Task<bool> IsOverlappingAsync(Guid groomerId, DateTime startTime, TimeSpan duration, Guid? appointmentId = null);
         Task<bool> CompleteAsync(string appointmentId);
+
+        Task<List<GroomerDto>> GetAvailableGroomersAsync(DateTime appointmentTime);
+        Task<DateTime> GetNextFreeTimeForGroomerAsync(Guid groomerId);
+        Task<AppointmentCalculationDto> CalculateTotalAsync(List<Guid> serviceIds);
     }
 }
