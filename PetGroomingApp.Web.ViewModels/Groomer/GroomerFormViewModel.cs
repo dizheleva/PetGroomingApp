@@ -2,7 +2,8 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static PetGroomingApp.Services.Common.EntityConstants.Groomer;
+    using static PetGroomingApp.GCommon.Constants.GroomerConstants;
+    using static PetGroomingApp.GCommon.Messages.GroomerValidationMessages;
 
     public class GroomerFormViewModel
     {
@@ -11,20 +12,20 @@
         [Required(ErrorMessage = FirstNameRequiredMessage)]
         [MinLength(FirstNameMinLength, ErrorMessage = FirstNameMinLengthMessage)]
         [MaxLength(FirstNameMaxLength, ErrorMessage = FirstNameMaxLengthMessage)]
-        public required string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = LastNameRequiredMessage)]
         [MinLength(LastNameMinLength, ErrorMessage = LastNameMinLengthMessage)]
         [MaxLength(LastNameMaxLength, ErrorMessage = LastNameMaxLengthMessage)]
-        public required string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = JobTitleRequiredMessage)]
         [MaxLength(JobTitleMaxLength, ErrorMessage = JobTitleMaxLengthMessage)]
-        public required string JobTitle { get; set; }
+        public string JobTitle { get; set; } = string.Empty;
 
         [Required(ErrorMessage = ImageUrlRequiredMessage)]
         [MaxLength(ImageUrlMaxLength, ErrorMessage = ImageUrlMaxLengthMessage)]
-        public required string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
 
         [MinLength(DescriptionMinLength, ErrorMessage = DescriptionMinLengthMessage)]
         [MaxLength(DescriptionMaxLength, ErrorMessage = DescriptionMaxLengthMessage)]
@@ -32,7 +33,7 @@
 
         [Required(ErrorMessage = PhoneNumberRequiredMessage)]
         [RegularExpression(PhoneNumberPattern, ErrorMessage = PhoneNumberInvalidMessage)]
-        public required string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
     }
 }

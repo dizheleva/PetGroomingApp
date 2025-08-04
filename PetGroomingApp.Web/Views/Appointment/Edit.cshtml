@@ -28,23 +28,23 @@
                                 <input type="checkbox"
                                        class="form-check-input"
                                        name="SelectedServiceIds"
-                                       value="@service.Value"
-                                       @(Model.SelectedServiceIds.Contains(Guid.Parse(service.Value)) ? "checked" : "") />
-                                <label class="form-check-label">@service.Text</label>
+                                       value="@service.Name"
+                                       @(Model.SelectedServiceIds.Contains(Guid.Parse(service.Name)) ? "checked" : "") />
+                                <label class="form-check-label">@service.Name</label>
                             </div>
                         }
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="PetId">Pet</label>
-                        <select asp-for="PetId" asp-items="Model.Pets" class="form-control"></select>
-                        <span asp-validation-for="PetId" class="text-danger"></span>
+                        <label asp-for="SelectedPetId">Pet</label>
+                        <select asp-for="SelectedPetId" asp-items="Model.Pets" class="form-control"></select>
+                        <span asp-validation-for="SelectedPetId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="GroomerId">Groomer</label>
-                        <select asp-for="GroomerId" asp-items="Model.Groomers" class="form-control"></select>
-                        <span asp-validation-for="GroomerId" class="text-danger"></span>
+                        <label asp-for="SelectedGroomerId">Groomer</label>
+                        <select asp-for="SelectedGroomerId" asp-items="Model.Groomers" class="form-control"></select>
+                        <span asp-validation-for="SelectedGroomerId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
@@ -63,7 +63,7 @@
 
                     <div class="text-center mt-4 d-flex justify-content-center gap-2">
                         <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
-                            <i class="bi bi-plus-circle"></i> Book Now
+                            <i class="bi bi-plus-circle"></i> Edit
                         </button>
                         <a asp-action="Index" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
                             <i class="bi bi-arrow-left-circle"></i> Cancel

@@ -128,5 +128,8 @@
 
             throw new ArgumentException(DurationInvalidMessage);
         }
+
+        public Task<int> GetTotalDurationAsync(List<string> serviceIds) => throw new NotImplementedException();
+        public Task<decimal> GetTotalPriceAsync(List<string> serviceIds) => throw new NotImplementedException();
     }
 }

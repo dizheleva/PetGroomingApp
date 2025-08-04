@@ -1,7 +1,7 @@
 ﻿@model PetGroomingApp.Web.ViewModels.Groomer.GroomerDetailsViewModel
 
 @{
-    ViewData["Title"] = $"{Model.FirstName} {Model.LastName}";
+    ViewData["Title"] = $"{Model.Name}";
 }
 
 <partial name="_PageTitle" />
@@ -13,11 +13,11 @@
                 <div class="card shadow-lg border-0 p-4 rounded-4">
                     <div class="row g-4 align-items-center">
                         <div class="col-md-5 text-center">
-                            <img src="~/@Model.ImageUrl" alt="@Model.FirstName @Model.LastName"
+                            <img src="~/@Model.ImageUrl" alt="@Model.Name"
                                  class="img-fluid rounded-3 shadow-sm" style="max-height: 300px; object-fit: cover;" />
                         </div>
                         <div class="col-md-7">
-                            <h2 class="fw-bold text-primary">@Model.FirstName @Model.LastName</h2>
+                            <h2 class="fw-bold text-primary">@Model.Name</h2>
                             <p class="text-muted fs-5">@Model.JobTitle</p>
                             <hr />
                             <p><strong>Phone:</strong> <a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a></p>

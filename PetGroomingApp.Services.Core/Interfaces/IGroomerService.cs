@@ -10,5 +10,7 @@
         Task<GroomerDetailsViewModel?> GetByIdAsync(string? id);
         Task<GroomerFormViewModel?> GetForEditByIdAsync(string? id);
         Task<bool> EditAsync(string? id, GroomerFormViewModel? model);
+        Task<List<GroomerViewModel>> GetAvailableGroomersAsync(DateTime appointmentTime, int serviceDurationMinutes);
+        Task<List<DateTime>> GetAvailableTimesAsync(string groomerId, DateTime selectedDate);
     }
 }

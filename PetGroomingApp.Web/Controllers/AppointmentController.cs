@@ -73,7 +73,7 @@
                 Groomers = (await _groomerService.GetAllAsync()).Select(g => new SelectListItem
                 {
                     Value = g.Id.ToString(),
-                    Text = $"{g.FirstName} {g.LastName}"
+                    Text = g.Name
                 }),
 
                 Pets = (await _petService.GetPetsByUserAsync(GetUserId())).Select(p => new SelectListItem
@@ -82,10 +82,10 @@
                     Text = p?.Name ?? "No Pets Available"
                 }),
 
-                Services = (await _serviceService.GetAllAsync()).Select(s => new SelectListItem
+                Services = (await _serviceService.GetAllAsync()).Select(s => new ViewModels.Service.AllServicesViewModel
                 {
-                    Value = s.Id.ToString(),
-                    Text = s.Name
+                    Id = s.Id,
+                    Name = s.Name,
                 })
             };
 
@@ -245,7 +245,7 @@
             model.Groomers = (await _groomerService.GetAllAsync()).Select(g => new SelectListItem
             {
                 Value = g.Id.ToString(),
-                Text = $"{g.FirstName} {g.LastName}"
+                Text = g.Name
             });
 
             model.Pets = (await _petService.GetPetsByUserAsync(GetUserId())).Select(p => new SelectListItem
@@ -254,10 +254,10 @@
                 Text = p?.Name ?? "No Pets Available"
             });
 
-            model.Services = (await _serviceService.GetAllAsync()).Select(s => new SelectListItem
+            model.Services = (await _serviceService.GetAllAsync()).Select(s => new ViewModels.Service.AllServicesViewModel
             {
-                Value = s.Id.ToString(),
-                Text = s.Name
+                Id = s.Id,
+                Name = s.Name,
             });
         }
     }

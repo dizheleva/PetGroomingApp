@@ -4,9 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Appointment;
-
-    [Route("api/[controller]")]
-    [ApiController]
+        
     public class AppointmentApiController : BaseApiController
     {
         private readonly IAppointmentService _appointmentService;
@@ -48,25 +46,25 @@
             return Ok(result);
         }
 
-        [HttpPost("CheckAvailableGroomers")]
-        public async Task<IActionResult> CheckAvailableGroomers([FromBody] DateTime appointmentTime)
-        {
-            var groomers = await _appointmentService.GetAvailableGroomersAsync(appointmentTime);
-            return Ok(groomers);
-        }
+        //[HttpPost("CheckAvailableGroomers")]
+        //public async Task<IActionResult> CheckAvailableGroomers([FromBody] DateTime appointmentTime)
+        //{
+        //    var groomers = await _appointmentService.GetAvailableGroomersAsync(appointmentTime);
+        //    return Ok(groomers);
+        //}
 
-        [HttpGet("GetGroomerNextAvailability/{groomerId}")]
-        public async Task<IActionResult> GetGroomerNextAvailability(Guid groomerId)
-        {
-            var time = await _appointmentService.GetNextFreeTimeForGroomerAsync(groomerId);
-            return Ok(time);
-        }
+        //[HttpGet("GetGroomerNextAvailability/{groomerId}")]
+        //public async Task<IActionResult> GetGroomerNextAvailability(Guid groomerId)
+        //{
+        //    var time = await _appointmentService.GetNextFreeTimeForGroomerAsync(groomerId);
+        //    return Ok(time);
+        //}
 
-        [HttpPost("CalculateTotal")] // from list of selected serviceIds
-        public async Task<IActionResult> CalculateTotal([FromBody] List<Guid> serviceIds)
-        {
-            var result = await _appointmentService.CalculateTotalAsync(serviceIds);
-            return Ok(result);
-        }
+        //[HttpPost("CalculateTotal")] // from list of selected serviceIds
+        //public async Task<IActionResult> CalculateTotal([FromBody] List<Guid> serviceIds)
+        //{
+        //    var result = await _appointmentService.CalculateTotalAsync(serviceIds);
+        //    return Ok(result);
+        //}
     }
 }

@@ -1,6 +1,8 @@
 ﻿namespace PetGroomingApp.Services.Core.Services
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
@@ -11,10 +13,12 @@
     public class GroomerService : BaseService<Groomer>, IGroomerService
     {
         private readonly IGroomerRepository _groomerRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public GroomerService(IGroomerRepository groomerRepository) : base(groomerRepository)
+        public GroomerService(IGroomerRepository groomerRepository, IAppointmentRepository appointmentRepository) : base(groomerRepository)
         {
             _groomerRepository = groomerRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<IEnumerable<AllGroomersIndexViewModel>> GetAllAsync()
@@ -25,8 +29,7 @@
                 .Select(g => new AllGroomersIndexViewModel
                 {
                     Id = g.Id.ToString(),
-                    FirstName = g.FirstName,
-                    LastName = g.LastName,
+                    Name = $"{g.FirstName} {g.LastName}",
                     JobTitle = g.JobTitle,
                     ImageUrl = g.ImageUrl
                 })
@@ -63,8 +66,7 @@
             return new GroomerDetailsViewModel
             {
                 Id = groomer.Id.ToString(),
-                FirstName = groomer.FirstName,
-                LastName = groomer.LastName,
+                Name = $"{groomer.FirstName} {groomer.LastName}",
                 JobTitle = groomer.JobTitle,
                 ImageUrl = groomer.ImageUrl,
                 PhoneNumber = groomer.PhoneNumber,
@@ -74,13 +76,10 @@
 
         public async Task<GroomerFormViewModel?> GetForEditByIdAsync(string? id)
         {
-            GroomerFormViewModel? groomer = null;
+            if (!Guid.TryParse(id, out Guid groomerGuid))
+                return null;
 
-            bool isGuidValid = Guid.TryParse(id, out Guid groomerGuid);
-
-            if (isGuidValid)
-            {
-                groomer = await _groomerRepository.GetAllAttached()
+            return await _groomerRepository.GetAllAttached()
                 .Where(g => g.Id == groomerGuid && !g.IsDeleted)
                 .Select(g => new GroomerFormViewModel
                 {
@@ -93,26 +92,16 @@
                     PhoneNumber = g.PhoneNumber,
                 })
                 .SingleOrDefaultAsync();
-            }
-
-            return groomer;
         }
+
         public async Task<bool> EditAsync(string? id, GroomerFormViewModel? model)
         {
-            ArgumentNullException.ThrowIfNull(model);
-
-            bool isGuidValid = Guid.TryParse(id, out Guid groomerGuid);
-            Groomer? groomer = null;
-
-            if (isGuidValid)
-            {
-                groomer = await _groomerRepository.GetByIdAsync(groomerGuid);
-            }
-
-            if (groomer == null)
-            {
+            if (model == null || !Guid.TryParse(id, out Guid groomerGuid))
                 return false;
-            }
+
+            var groomer = await _groomerRepository.GetByIdAsync(groomerGuid);
+            if (groomer == null)
+                return false;
 
             groomer.FirstName = model.FirstName;
             groomer.LastName = model.LastName;
@@ -122,6 +111,72 @@
             groomer.PhoneNumber = model.PhoneNumber;
 
             return await _groomerRepository.UpdateAsync(groomer);
+        }
+
+        public async Task<List<GroomerViewModel>> GetAvailableGroomersAsync(DateTime appointmentTime, int serviceDurationMinutes)
+        {
+            var allGroomers = await _groomerRepository.GetAllAsync();
+
+            // Get all appointments on the same day with Confirmed status
+            var appointments = await _appointmentRepository.GetAllAttached()
+                .Where(a => a.AppointmentTime.Date == appointmentTime.Date &&
+                            a.Status == Data.Models.Enums.AppointmentStatus.Confirmed)
+                .ToListAsync();
+
+            // Find groomers who are busy due to overlapping appointments
+            var busyGroomerIds = appointments
+                .Where(a => IsOverlapping(
+                    a.AppointmentTime, (int)a.Duration.TotalMinutes,
+                    appointmentTime, serviceDurationMinutes))
+                .Select(a => a.GroomerId)
+                .Distinct()
+                .ToList();
+
+            // Filter available groomers
+            var available = allGroomers
+                .Where(g => !busyGroomerIds.Contains(g.Id))
+                .Select(g => new GroomerViewModel
+                {
+                    Id = g.Id,
+                    Name = g.FirstName + " " + g.LastName,
+                })
+                .ToList();
+
+            return available;
+        }
+
+        public async Task<List<DateTime>> GetAvailableTimesAsync(string groomerId, DateTime selectedDate)
+        {
+            var groomer = await _groomerRepository.GetAllAttached().FirstOrDefaultAsync(g => g.Id.ToString() == groomerId);
+            List<DateTime> availableAppointmentTimes = new List<DateTime>();
+
+            var busyAppointmentTimes = groomer?.Appointments
+                .Where(a => a.AppointmentTime.Date == selectedDate.Date &&
+                            a.Status == Data.Models.Enums.AppointmentStatus.Confirmed)
+                .Select(a => a.AppointmentTime)
+                .ToList() ?? new List<DateTime>();
+
+            // Generate slots (every 30 minutes from 9:00 to 17:30)
+            for (int hour = 9; hour <= 17; hour++)
+            {
+                var baseTime = selectedDate.Date.AddHours(hour);
+                availableAppointmentTimes.Add(baseTime);
+                availableAppointmentTimes.Add(baseTime.AddMinutes(30));
+            }
+            // Remove busy times
+            availableAppointmentTimes = availableAppointmentTimes
+                .Where(time => !busyAppointmentTimes.Contains(time))
+                .ToList();
+
+            return availableAppointmentTimes;
+        }
+
+        // Helpers:
+        public static bool IsOverlapping(DateTime existingStart, int existingDuration, DateTime requestedStart, int requestedDuration)
+        {
+            var existingEnd = existingStart.AddMinutes(existingDuration);
+            var requestedEnd = requestedStart.AddMinutes(requestedDuration);
+            return existingStart < requestedEnd && existingEnd > requestedStart;
         }
     }
 }
