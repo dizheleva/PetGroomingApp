@@ -6,9 +6,9 @@
     public interface IAppointmentService 
     {
         Task<bool> CancelAsync(string appointmentId, string userId);
-        Task<string> CreateAsync(Appointment appointment);
-        Task<bool> EditAsManagerAsync(string appointmentId, Appointment updated);
-        Task<bool> EditAsync(string appointmentId, Appointment updated, string userId);
+        Task<string> CreateAsync(AppointmentFormViewModel model, string? id);
+        Task<bool> EditAsManagerAsync(string appointmentId, AppointmentFormViewModel model);
+        Task<bool> EditAsync(string appointmentId, AppointmentFormViewModel model, string userId);
         Task<IEnumerable<AppointmentListViewModel>> GetAllAsync();
         Task<IEnumerable<AppointmentListViewModel>> GetByDateAsync(DateTime date);
         Task<IEnumerable<AppointmentListViewModel>> GetByUserAsync(string userId);

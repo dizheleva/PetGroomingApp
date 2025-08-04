@@ -10,7 +10,6 @@
         Task<ServiceDetailsViewModel?> GetByIdAsync(string? id);
         Task<ServiceFormViewModel?> GetForEditByIdAsync(string? id);
         Task<bool> EditAsync(string? id, ServiceFormViewModel? model);
-
         Task<int> GetTotalDurationAsync(List<string> serviceIds);
         Task<decimal> GetTotalPriceAsync(List<string> serviceIds);
     }

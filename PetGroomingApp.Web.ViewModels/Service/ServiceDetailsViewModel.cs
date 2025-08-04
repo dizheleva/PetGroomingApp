@@ -4,7 +4,7 @@
 
     public class ServiceDetailsViewModel
     {
-        public string Id { get; set; } = null!;
+        public required string Id { get; set; }
 
         public required string Name { get; set; }
                 
@@ -15,5 +15,7 @@
         public required string Duration { get; set; }
 
         public decimal Price { get; set; }
+
+        public string FormattedPrice => Price.ToString("C");
     }
 }

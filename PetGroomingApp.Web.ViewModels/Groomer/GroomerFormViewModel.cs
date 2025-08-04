@@ -2,8 +2,8 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static PetGroomingApp.GCommon.Constants.GroomerConstants;
-    using static PetGroomingApp.GCommon.Messages.GroomerValidationMessages;
+    using static PetGroomingApp.GCommon.Constants.Groomer;
+    using static PetGroomingApp.GCommon.Messages.Groomer;
 
     public class GroomerFormViewModel
     {

@@ -2,7 +2,8 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static PetGroomingApp.Services.Common.EntityConstants.Service;
+    using static PetGroomingApp.GCommon.Constants.Service;
+    using static PetGroomingApp.GCommon.Messages.Service;
 
     public class ServiceFormViewModel
     {

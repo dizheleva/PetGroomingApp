@@ -118,7 +118,7 @@
             pet.Size = model.Size;
             pet.Gender = model.Gender;
             pet.Age = model.Age;
-            pet.ImageUrl = model.ImageUrl;
+            pet.ImageUrl = model.ImageUrl ?? "img/pet/defaultPet.png";
             pet.Notes = model.Notes;
 
             return await _petRepository.UpdateAsync(pet);

@@ -7,6 +7,7 @@
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Models.Enums;
+    using PetGroomingApp.Data.Repository;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Appointment;
@@ -36,13 +37,31 @@
             return await _appointmentRepository.UpdateAsync(appointment);
         }
 
-        public async Task<string> CreateAsync(Appointment appointment)
+        public async Task<string> CreateAsync(AppointmentFormViewModel model, string? id)
         {
+            var appoinmentId = Guid.NewGuid();
+            var appointment = new Appointment
+            {
+                Id = appoinmentId,
+                AppointmentTime = model.AppointmentTime,
+                Duration = TimeSpan.FromMinutes(model.TotalDuration),
+                Notes = model.Notes,
+                GroomerId = model.SelectedGroomerId,
+                UserId = id,
+                Status = AppointmentStatus.Pending,
+                TotalPrice = model.TotalPrice, 
+                AppointmentServices = model.SelectedServiceIds.Select(s => new Data.Models.AppointmentService
+                {
+                    AppointmentId = appoinmentId,
+                    ServiceId = s
+                }).ToList()
+            };
+            
             await _appointmentRepository.AddAsync(appointment);
             return appointment.Id.ToString();
         }
 
-        public async Task<bool> EditAsManagerAsync(string appointmentId, Appointment updated)
+        public async Task<bool> EditAsManagerAsync(string appointmentId, AppointmentFormViewModel model)
         {
             if (!Guid.TryParse(appointmentId, out var id))
                 return false;
@@ -51,37 +70,44 @@
             if (appointment == null || appointment.Status == AppointmentStatus.Completed)
                 throw new InvalidOperationException("Cannot edit appointment.");
 
-            appointment.AppointmentTime = updated.AppointmentTime;
-            appointment.Duration = updated.Duration;
-            appointment.Notes = updated.Notes;
-            appointment.GroomerId = updated.GroomerId;
-            appointment.PetId = updated.PetId;
-            appointment.Status = updated.Status;
-            appointment.UserId = updated.UserId;
-            appointment.TotalPrice = updated.TotalPrice;
-            appointment.AppointmentServices = updated.AppointmentServices;
+            if (model.AppointmentTime < DateTime.UtcNow)
+                throw new InvalidOperationException("Appointment time cannot be in the past.");
+
+            appointment.AppointmentTime = model.AppointmentTime;
+            appointment.Duration = TimeSpan.FromMinutes(model.TotalDuration);
+            appointment.Notes = model.Notes;
+            appointment.GroomerId = model.SelectedGroomerId;
+            appointment.PetId = model.SelectedPetId;
+            appointment.Status = model.Status;
+            appointment.UserId = model.UserId;
+            appointment.TotalPrice = model.TotalPrice;
+            UpdateAppointmentServices(appointment, model.SelectedServiceIds);
 
             return await _appointmentRepository.UpdateAsync(appointment);
         }
 
-        public async Task<bool> EditAsync(string appointmentId, Appointment updated, string userId)
+        public async Task<bool> EditAsync(string appointmentId, AppointmentFormViewModel model, string userId)
         {
             if (!Guid.TryParse(appointmentId, out var id) || userId == null)
                 return false;
 
             var appointment = await _appointmentRepository.GetByIdAsync(id);
-            if (appointment == null || appointment.Status == AppointmentStatus.Completed)
+            if (appointment == null || appointment.Status == AppointmentStatus.Completed || appointment.Status == AppointmentStatus.Canceled)
                 throw new InvalidOperationException("Cannot edit appointment.");
+
+            if (model.AppointmentTime < DateTime.UtcNow)
+                throw new InvalidOperationException("Appointment time cannot be in the past.");
+                       
             if (appointment.UserId != userId)
                 throw new UnauthorizedAccessException();
 
-            appointment.AppointmentTime = updated.AppointmentTime;
-            appointment.Duration = updated.Duration;
-            appointment.Notes = updated.Notes;
-            appointment.GroomerId = updated.GroomerId;
-            appointment.PetId = updated.PetId;
-            appointment.TotalPrice = updated.TotalPrice;
-            appointment.AppointmentServices = updated.AppointmentServices;
+            appointment.AppointmentTime = model.AppointmentTime;
+            appointment.Duration = TimeSpan.FromMinutes(model.TotalDuration);
+            appointment.Notes = model.Notes;
+            appointment.GroomerId = model.SelectedGroomerId;
+            appointment.PetId = model.SelectedPetId;
+            appointment.TotalPrice = model.TotalPrice;
+            UpdateAppointmentServices(appointment, model.SelectedServiceIds);
 
             return await _appointmentRepository.UpdateAsync(appointment);
         }
@@ -218,12 +244,37 @@
             return appointments.Any(a => IsTimeOverlapping(a.AppointmentTime, a.Duration, startTime, duration));
         }
 
-        // Static helper for time overlap
+        // Helpers:
         public static bool IsTimeOverlapping(DateTime existingStart, TimeSpan existingDuration, DateTime newStart, TimeSpan newDuration)
         {
             var existingEnd = existingStart.Add(existingDuration);
             var newEnd = newStart.Add(newDuration);
             return existingStart < newEnd && existingEnd > newStart;
+        }
+
+        public static  void UpdateAppointmentServices(Appointment appointment, List<Guid> newServiceIds)
+        {
+            var currentServiceIds = appointment.AppointmentServices.Select(x => x.ServiceId).ToList();
+            
+            var toAddGuids = newServiceIds.Except(currentServiceIds).ToList();
+            var toRemoveGuids = currentServiceIds.Except(newServiceIds).ToList();
+            
+            foreach (var serviceId in toAddGuids)
+            {
+                appointment.AppointmentServices.Add(new Data.Models.AppointmentService
+                {
+                    AppointmentId = appointment.Id,
+                    ServiceId = serviceId
+                });
+            }
+
+            var servicesToRemove = appointment.AppointmentServices
+                .Where(x => toRemoveGuids.Contains(x.ServiceId))
+                .ToList();
+            foreach (var service in servicesToRemove)
+            {
+                appointment.AppointmentServices.Remove(service);
+            }
         }
     }
 }

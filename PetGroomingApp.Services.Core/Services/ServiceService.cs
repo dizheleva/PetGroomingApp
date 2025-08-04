@@ -1,13 +1,14 @@
 ﻿namespace PetGroomingApp.Services.Core.Services
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
-
     using static PetGroomingApp.Services.Common.EntityConstants.Service;
 
     public class ServiceService : BaseService<Service>, IServiceService
@@ -36,6 +37,9 @@
 
         public async Task AddAsync(ServiceFormViewModel model)
         {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+
             var service = new Service
             {
                 Id = Guid.NewGuid(),
@@ -51,14 +55,15 @@
 
         public async Task<ServiceDetailsViewModel?> GetByIdAsync(string? id)
         {
+            if (!Guid.TryParse(id, out var guid))
+                return null;
+
             var service = await _serviceRepository.GetAllAttached()
                 .AsNoTracking()
-                .FirstOrDefaultAsync(s => s.Id.ToString() == id && !s.IsDeleted);
+                .FirstOrDefaultAsync(s => s.Id == guid && !s.IsDeleted);
 
             if (service == null)
-            {
                 return null;
-            }
 
             return new ServiceDetailsViewModel
             {
@@ -73,14 +78,11 @@
 
         public async Task<ServiceFormViewModel?> GetForEditByIdAsync(string? id)
         {
-            ServiceFormViewModel? service = null;
+            if (!Guid.TryParse(id, out var guid))
+                return null;
 
-            bool isGuidValid = Guid.TryParse(id, out Guid serviceGuid);
-
-            if (isGuidValid)
-            {
-                service = await _serviceRepository.GetAllAttached()
-                .Where(s => s.Id.ToString() == id && !s.IsDeleted)
+            return await _serviceRepository.GetAllAttached()
+                .Where(s => s.Id == guid && !s.IsDeleted)
                 .Select(s => new ServiceFormViewModel
                 {
                     Id = s.Id.ToString(),
@@ -91,24 +93,16 @@
                     Price = s.Price
                 })
                 .SingleOrDefaultAsync();
-            }
-
-            return service;
         }
+
         public async Task<bool> EditAsync(string? id, ServiceFormViewModel? model)
         {
-            bool isGuidValid = Guid.TryParse(id, out Guid serviceGuid);
-            Service? service = null;
-
-            if (isGuidValid)
-            {
-                service = await _serviceRepository.GetByIdAsync(serviceGuid);
-            }
-
-            if (service == null || model == null)
-            {
+            if (model == null || !Guid.TryParse(id, out var guid))
                 return false;
-            }
+
+            var service = await _serviceRepository.GetByIdAsync(guid);
+            if (service == null)
+                return false;
 
             service.Name = model.Name;
             service.ImageUrl = model.ImageUrl;
@@ -121,15 +115,44 @@
 
         private static TimeSpan ParseDuration(string duration)
         {
-            if (TimeSpan.TryParse(duration, out TimeSpan parsedDuration))
-            {
+            if (TimeSpan.TryParse(duration, out var parsedDuration))
                 return parsedDuration;
-            }
 
             throw new ArgumentException(DurationInvalidMessage);
         }
 
-        public Task<int> GetTotalDurationAsync(List<string> serviceIds) => throw new NotImplementedException();
-        public Task<decimal> GetTotalPriceAsync(List<string> serviceIds) => throw new NotImplementedException();
+        public async Task<int> GetTotalDurationAsync(List<string> serviceIds)
+        {
+            if (serviceIds == null || serviceIds.Count == 0)
+                return 0;
+
+            var guids = serviceIds
+                .Where(id => Guid.TryParse(id, out _))
+                .Select(id => Guid.Parse(id))
+                .ToList();
+
+            var totalDuration = await _serviceRepository.GetAllAttached()
+                .Where(s => guids.Contains(s.Id) && !s.IsDeleted)
+                .SumAsync(s => (int)s.Duration.TotalMinutes);
+
+            return totalDuration;
+        }
+
+        public async Task<decimal> GetTotalPriceAsync(List<string> serviceIds)
+        {
+            if (serviceIds == null || serviceIds.Count == 0)
+                return 0m;
+
+            var guids = serviceIds
+                .Where(id => Guid.TryParse(id, out _))
+                .Select(id => Guid.Parse(id))
+                .ToList();
+
+            var totalPrice = await _serviceRepository.GetAllAttached()
+                .Where(s => guids.Contains(s.Id) && !s.IsDeleted)
+                .SumAsync(s => s.Price);
+
+            return totalPrice;
+        }
     }
 }

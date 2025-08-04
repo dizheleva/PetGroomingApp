@@ -3,8 +3,6 @@
     using System.ComponentModel.DataAnnotations;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using PetGroomingApp.Data.Models.Enums;
-    using PetGroomingApp.Web.ViewModels.Groomer;
-    using PetGroomingApp.Web.ViewModels.Pet;
     using PetGroomingApp.Web.ViewModels.Service;
 
     public class AppointmentFormViewModel
@@ -38,12 +36,8 @@
         // For dropdowns
         public IEnumerable<SelectListItem>? Pets { get; set; }
         public IEnumerable<SelectListItem>? Groomers { get; set; }
-        //public IEnumerable<SelectListItem>? Services { get; set; }
         public IEnumerable<SelectListItem>? Statuses { get; set; }
-
         public IEnumerable<AllServicesViewModel>? Services { get; set; }
-        //public IEnumerable<AllPetsViewModel>? Pets { get; set; }
-        //public IEnumerable<AllGroomersIndexViewModel>? Groomers { get; set; }
 
         [Display(Name = "Total Duration (minutes)")]
         public int TotalDuration { get; set; }
