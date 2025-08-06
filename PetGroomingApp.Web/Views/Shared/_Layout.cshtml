@@ -1,27 +1,29 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - PetGroomingApp</title>
 
+    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
-    <!-- CSS here -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS (No integrity to avoid blocking) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Local styles (optional, but may override Bootstrap) -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/themify-icons.css">
-    <!-- <link rel="stylesheet" href="~/css/flaticon.css"> 
-    <link rel="stylesheet" href="~/css/animate.css"> -->
-    <link rel="stylesheet" href="~/css/style.css">
-    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/identity.css" />
-    <!-- <link rel="stylesheet" href="css/responsive.css"> -->
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <!-- Header -->
-    <partial name="_Header"/>
+    <partial name="_Header" />
 
     <!-- Main Content -->
     <main role="main">
@@ -29,31 +31,21 @@
     </main>
 
     <!-- Footer -->
-    <partial name="_Footer"/>
+    <partial name="_Footer" />
 
-    <!-- Scripts -->
-    <script src="~/js/vendor/modernizr-3.5.0.min.js"></script>
-    <script src="~/js/vendor/jquery-1.12.4.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/owl.carousel.min.js"></script>
-    <script src="~/js/isotope.pkgd.min.js"></script>
-    <script src="~/js/ajax-form.js"></script>
-    <script src="~/js/waypoints.min.js"></script>
-    <script src="~/js/jquery.counterup.min.js"></script>
-    <script src="~/js/imagesloaded.pkgd.min.js"></script>
-    <script src="~/js/scrollIt.js"></script>
-    <script src="~/js/jquery.scrollUp.min.js"></script>
-    <script src="~/js/wow.min.js"></script>
-    <script src="~/js/nice-select.min.js"></script>
-    <script src="~/js/jquery.slicknav.min.js"></script>
-    <script src="~/js/jquery.magnific-popup.min.js"></script>
-    <script src="~/js/plugins.js"></script>
-    <script src="~/js/gijgo.min.js"></script>
-    <script src="~/js/main.js"></script>
+    <!-- jQuery (Load FIRST) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Bundle (Popper included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <!-- jQuery Validation Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- Your App Script -->
     <script src="~/js/appointment-booking.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-    @await RenderSectionAsync("Styles", required: false)
 </body>
 </html>
