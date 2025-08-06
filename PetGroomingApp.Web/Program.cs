@@ -32,6 +32,12 @@ namespace PetGroomingApp.Web
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.Secure = CookieSecurePolicy.Always;
+            });
+
+
             builder.Services.AddRepositories(typeof(IServiceRepository).Assembly);
             builder.Services.AddUserDefinedServices(typeof(IServiceService).Assembly);
 

@@ -4,6 +4,7 @@ namespace PetGroomingApp.WebApi
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;
+    using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.Infrastructure.Extensions;
@@ -14,7 +15,8 @@ namespace PetGroomingApp.WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             builder.Services
                 .AddDbContext<ApplicationDbContext>(options =>
@@ -23,7 +25,8 @@ namespace PetGroomingApp.WebApi
                 });
 
             builder.Services.AddAuthorization();
-            builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+            builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddRepositories(typeof(IServiceRepository).Assembly);
@@ -32,11 +35,18 @@ namespace PetGroomingApp.WebApi
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
-                    builder => builder.WithOrigins("https://localhost:7116") 
+                    builder => builder.WithOrigins("https://localhost:7199") 
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
                                       .AllowCredentials());
             });
+
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.Always;
+            });
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -56,9 +66,10 @@ namespace PetGroomingApp.WebApi
 
             app.UseCors("AllowAllOrigins");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapIdentityApi<IdentityUser>();
+            app.MapIdentityApi<ApplicationUser>();
             app.MapControllers();
 
             app.Run();

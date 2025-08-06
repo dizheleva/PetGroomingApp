@@ -3,7 +3,7 @@
     using System.Security.Claims;
     using Microsoft.AspNetCore.Mvc;
 
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public abstract class BaseApiController : ControllerBase
     {

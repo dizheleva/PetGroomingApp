@@ -9,20 +9,11 @@
     }
   },
   "profiles": {
-    "http": {
+    "PetGroomingApp": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5129",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:7116;http://localhost:5129",
+      "applicationUrl": "https://localhost:7199",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
