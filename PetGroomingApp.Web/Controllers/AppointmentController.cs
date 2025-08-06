@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
+    using PetGroomingApp.Data.Models.Enums;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Appointment;
 
@@ -67,39 +68,30 @@
 
         [HttpGet]
         public async Task<IActionResult> Create()
-        {
-            var model = new AppointmentFormViewModel
+        {     
+            if (User.IsInRole("Manager"))
             {
-                Groomers = (await _groomerService.GetAllAsync()).Select(g => new SelectListItem
-                {
-                    Value = g.Id.ToString(),
-                    Text = g.Name
-                }),
+                var model = new AppointmentManagerFormViewModel();
+                await PopulateManagerSelectListsAsync(model);
 
-                Pets = (await _petService.GetPetsByUserAsync(GetUserId())).Select(p => new SelectListItem
-                {
-                    Value = p?.Id.ToString() ?? null,
-                    Text = p?.Name ?? "No Pets Available"
-                }),
+                return View(model);
+            }
+            else
+            {
+                var model = new AppointmentUserFormViewModel();
+                await PopulateUserSelectListsAsync(model);
 
-                Services = (await _serviceService.GetAllAsync()).Select(s => new ViewModels.Service.AllServicesViewModel
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                })
-            };
-
-            return View(model);
+                return View(model);
+            }
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> Create(AppointmentFormViewModel model)
+        public async Task<IActionResult> Create(AppointmentUserFormViewModel model)
         {            
             if(User.Identity?.IsAuthenticated != true)
             {
                 ModelState.AddModelError(string.Empty, "You must be logged in to create an appointment.");
-                await PopulateSelectListsAsync(model);
-                return View(model);
+                return RedirectToAction(nameof(Index));
             }            
 
             if (model.SelectedServiceIds == null || model.SelectedServiceIds.Count == 0)
@@ -108,9 +100,7 @@
                 return View(model);
             }
 
-            Console.WriteLine("Creating appointment for user: " + GetUserId());
-            Console.WriteLine("Selected services: " + string.Join(", ", model.SelectedServiceIds));
-
+            await PopulateUserSelectListsAsync(model);
 
             if (!ModelState.IsValid)
             {
@@ -122,11 +112,9 @@
                         Console.WriteLine($"  Error: {err.ErrorMessage}");
                     }
                 }
-                await PopulateSelectListsAsync(model);
+
                 return View(model);
             }
-            Console.WriteLine("Creating appointment for user: " + GetUserId());
-            Console.WriteLine("Selected services: " + string.Join(", ", model.SelectedServiceIds));
 
             try
             {
@@ -138,7 +126,7 @@
             {
                 Console.WriteLine(ex.Message);
                 ModelState.AddModelError(string.Empty, $"An error occurred while creating the appointment: {ex.Message}");
-                await PopulateSelectListsAsync(model);
+                await PopulateUserSelectListsAsync(model);
                 return View(model);
             }
         }
@@ -155,7 +143,7 @@
                     return NotFound();
                 }
 
-                await PopulateSelectListsAsync(model);
+                await PopulateUserSelectListsAsync(model);
 
                 return View(model);
             }
@@ -169,14 +157,15 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(string id, AppointmentFormViewModel model)
+        public async Task<IActionResult> Edit(string id, AppointmentUserFormViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                await PopulateSelectListsAsync(model);
+                await PopulateUserSelectListsAsync(model);
 
                 return View(model);
             }
+
             try
             {
                 bool editSuccess = await _appointmentService.EditAsync(id, model, GetUserId());
@@ -192,7 +181,7 @@
                 Console.WriteLine(e.Message);
                 ModelState.AddModelError(string.Empty, $"An error occurred while editing the appointment: {e.Message}");
 
-                await PopulateSelectListsAsync(model);
+                await PopulateUserSelectListsAsync(model);
 
                 return this.RedirectToAction(nameof(Index));
             }
@@ -240,25 +229,57 @@
 
         }
 
-        private async Task PopulateSelectListsAsync(AppointmentFormViewModel model)
+        private async Task PopulateUserSelectListsAsync(AppointmentUserFormViewModel model)
         {
             model.Groomers = (await _groomerService.GetAllAsync()).Select(g => new SelectListItem
             {
                 Value = g.Id.ToString(),
                 Text = g.Name
-            });
+            }).ToList();
 
             model.Pets = (await _petService.GetPetsByUserAsync(GetUserId())).Select(p => new SelectListItem
             {
                 Value = p?.Id.ToString() ?? null,
                 Text = p?.Name ?? "No Pets Available"
-            });
+            }).ToList();
 
-            model.Services = (await _serviceService.GetAllAsync()).Select(s => new ViewModels.Service.AllServicesViewModel
+            model.Services = (await _serviceService.GetAllAsync()).Select(s => new SelectListItem
             {
-                Id = s.Id,
-                Name = s.Name,
-            });
+                Value = s.Id,
+                Text = s.Name,
+            }).ToList();
+        }
+
+        private async Task PopulateManagerSelectListsAsync(AppointmentManagerFormViewModel model)
+        {
+            model.Groomers = (await _groomerService.GetAllAsync()).Select(g => new SelectListItem
+            {
+                Value = g.Id.ToString(),
+                Text = g.Name
+            }).ToList();
+            model.Users = (await _appointmentService.GetAllUsersAsync()).Select(u => new SelectListItem
+            {
+                Value = u.Id,
+                Text = u.UserName
+            }).ToList();
+            model.Pets = (await _petService.GetAllPetsAsync()).Select(p => new SelectListItem
+            {
+                Value = p?.Id.ToString() ?? null,
+                Text = p?.Name ?? "No Pets Available"
+            }).ToList();
+            model.Services = (await _serviceService.GetAllAsync()).Select(s => new SelectListItem
+            {
+                Value = s.Id,
+                Text = s.Name,
+            }).ToList();
+
+            model.Statuses = Enum.GetValues(typeof(AppointmentStatus))
+                .Cast<AppointmentStatus>()
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ToString(),
+                    Text = s.ToString()
+                }).ToList();
         }
     }
 }

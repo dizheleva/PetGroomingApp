@@ -12,19 +12,29 @@
             _groomerService = groomerService;
         }
 
-        // GET: api/groomers/available?dateTime=2025-08-03T10:00
-        [HttpGet("available")]
-        public async Task<IActionResult> GetAvailableGroomers([FromQuery] DateTime dateTime, int serviceDurationMinutes)
+        public class AvailableGroomersRequest
         {
-            var groomers = await _groomerService.GetAvailableGroomersAsync(dateTime, serviceDurationMinutes);
+            public DateTime AppointmentTime { get; set; }
+            public int DurationMinutes { get; set; }
+        }
+
+        public class GroomerAvailableTimesRequest
+        {
+            public required string Id { get; set; }
+            public int Duration { get; set; }
+        }
+
+        [HttpPost("AvailableGroomers")]
+        public async Task<IActionResult> GetAvailableGroomers([FromBody] AvailableGroomersRequest request)
+        {
+            var groomers = await _groomerService.GetAvailableGroomersAsync(request.AppointmentTime, request.DurationMinutes);
             return Ok(groomers);
         }
 
-        // GET: api/groomers/{id}/available-times
-        [HttpGet("{id}/available-times")]
-        public async Task<IActionResult> GetGroomerAvailableTimes(string id, DateTime selectedTime)
+        [HttpPost("AvailableTimes")]
+        public async Task<IActionResult> GetGroomerAvailableTimes([FromBody] GroomerAvailableTimesRequest request)
         {
-            var times = await _groomerService.GetAvailableTimesAsync(id, selectedTime);
+            var times = await _groomerService.GetAvailableTimesAsync(request.Id, request.Duration);
             return Ok(times);
         }
     }
