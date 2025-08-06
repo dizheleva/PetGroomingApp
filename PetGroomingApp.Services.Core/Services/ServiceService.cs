@@ -7,9 +7,11 @@
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Repository.Interfaces;
+    using PetGroomingApp.Data.Seeding.Dtos;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Service;
-    using static PetGroomingApp.Services.Common.EntityConstants.Service;
+
+    using static PetGroomingApp.Services.Common.Constants.Service;
 
     public class ServiceService : BaseService<Service>, IServiceService
     {
@@ -127,15 +129,21 @@
                 return 0;
 
             var guids = serviceIds
-                .Where(id => Guid.TryParse(id, out _))
-                .Select(id => Guid.Parse(id))
+                .Select(id => Guid.TryParse(id, out var guid) ? guid : (Guid?)null)
+                .Where(guid => guid.HasValue)
+                .Select(guid => guid.Value)
                 .ToList();
 
-            var totalDuration = await _serviceRepository.GetAllAttached()
-                .Where(s => guids.Contains(s.Id) && !s.IsDeleted)
-                .SumAsync(s => (int)s.Duration.TotalMinutes);
+            if (guids.Count == 0)
+                return 0;
 
-            return totalDuration;
+            var services = await _serviceRepository.GetAllAttached()
+                .Where(s => guids.Contains(s.Id) && !s.IsDeleted)
+                .ToListAsync();
+
+            var totalDuration = services.Sum(s => s.Duration.TotalMinutes);
+
+            return (int)totalDuration;
         }
 
         public async Task<decimal> GetTotalPriceAsync(List<string> serviceIds)
@@ -144,15 +152,33 @@
                 return 0m;
 
             var guids = serviceIds
-                .Where(id => Guid.TryParse(id, out _))
-                .Select(id => Guid.Parse(id))
-                .ToList();
+               .Select(id => Guid.TryParse(id, out var guid) ? guid : (Guid?)null)
+               .Where(guid => guid.HasValue)
+               .Select(guid => guid.Value)
+               .ToList();
 
-            var totalPrice = await _serviceRepository.GetAllAttached()
+            if (guids.Count == 0)
+                return 0m;
+
+            var services = await _serviceRepository.GetAllAttached()
                 .Where(s => guids.Contains(s.Id) && !s.IsDeleted)
-                .SumAsync(s => s.Price);
+                .ToListAsync();
+
+            var totalPrice = services.Sum(s => s.Price);
 
             return totalPrice;
+        }
+
+        public async Task<TotalsDto> CalculateTotalsAsync(List<string> serviceIds)
+        {
+            var totalDuration = await this.GetTotalDurationAsync(serviceIds);
+            var totalPrice = await this.GetTotalPriceAsync(serviceIds);
+
+            return new TotalsDto
+            {
+                TotalDuration = (int)totalDuration,
+                TotalPrice = totalPrice
+            };
         }
     }
 }

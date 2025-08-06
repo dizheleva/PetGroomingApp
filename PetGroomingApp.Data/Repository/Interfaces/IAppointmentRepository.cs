@@ -4,5 +4,6 @@
 
     public interface IAppointmentRepository : IRepository<Appointment, Guid>
     {
+        Task<List<Service>?> GetAppointmentServicesByIds(List<Guid> servicesIds);
     }
 }

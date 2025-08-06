@@ -54,7 +54,7 @@
 
             if (!isServiceIdValid)
             {
-                throw new InvalidOperationException("Invalid serviceId");
+                throw new InvalidOperationException();
             }
 
             var userService = new UserService

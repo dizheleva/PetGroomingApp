@@ -1,6 +1,7 @@
 ﻿namespace PetGroomingApp.Services.Core.Interfaces
 {
     using PetGroomingApp.Data.Models;
+    using PetGroomingApp.Data.Seeding.Dtos;
     using PetGroomingApp.Web.ViewModels.Groomer;
 
     public interface IGroomerService : IService<Groomer>
@@ -10,7 +11,7 @@
         Task<GroomerDetailsViewModel?> GetByIdAsync(string? id);
         Task<GroomerFormViewModel?> GetForEditByIdAsync(string? id);
         Task<bool> EditAsync(string? id, GroomerFormViewModel? model);
-        Task<List<GroomerViewModel>> GetAvailableGroomersAsync(DateTime appointmentTime, int serviceDurationMinutes);
-        Task<List<DateTime>> GetAvailableTimesAsync(string groomerId, DateTime selectedDate);
+        Task<List<GroomerDto>> GetAvailableGroomersAsync(DateTime appointmentTime, int durationMinutes);
+        Task<List<DateTime>> GetAvailableTimesAsync(string groomerId, int durationMinutes);
     }
 }

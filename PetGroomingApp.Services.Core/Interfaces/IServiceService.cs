@@ -1,6 +1,7 @@
 ﻿namespace PetGroomingApp.Services.Core.Interfaces
 {
     using PetGroomingApp.Data.Models;
+    using PetGroomingApp.Data.Seeding.Dtos;
     using PetGroomingApp.Web.ViewModels.Service;
 
     public interface IServiceService : IService<Service>
@@ -12,5 +13,6 @@
         Task<bool> EditAsync(string? id, ServiceFormViewModel? model);
         Task<int> GetTotalDurationAsync(List<string> serviceIds);
         Task<decimal> GetTotalPriceAsync(List<string> serviceIds);
+        Task<TotalsDto> CalculateTotalsAsync(List<string> serviceIds);
     }
 }

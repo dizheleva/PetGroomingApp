@@ -6,6 +6,8 @@
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Pet;
 
+    using static PetGroomingApp.Services.Common.Constants.Pet;
+
     public class PetService : BaseService<Pet>, IPetService
     {
         private readonly IPetRepository _petRepository;
@@ -27,7 +29,7 @@
                 Size = model.Size,
                 Gender = model.Gender,
                 Age = model.Age,
-                ImageUrl = model.ImageUrl ?? "img/pet/defaultPet.png",
+                ImageUrl = model.ImageUrl ?? DefaultPetUrl,
                 Notes = model.Notes,
                 OwnerId = ownerId
             };
@@ -57,7 +59,7 @@
                 })
                 .FirstOrDefaultAsync();
 
-            return pet ?? throw new InvalidOperationException("Pet not found or access denied.");
+            return pet ?? throw new InvalidOperationException(InvalidOperationMessage);
         }
 
         public async Task<PetFormViewModel> GetPetForEditAsync(string? petId, string? ownerId)
@@ -66,7 +68,7 @@
             
             if (!isGuidValid)
             {
-                throw new InvalidOperationException("Invalid ID.");
+                throw new InvalidOperationException(IdInvalidMessage);
             }
 
             var pet = await _petRepository
@@ -88,7 +90,7 @@
                 })
                 .FirstOrDefaultAsync();
 
-            return pet ?? throw new InvalidOperationException("Pet not found.");
+            return pet ?? throw new InvalidOperationException(PetNotFoundMessage);
         }
 
         public async Task<bool> EditAsync(string? petId, PetFormViewModel? model, string? ownerId)
@@ -104,7 +106,7 @@
             
             if (pet == null || pet.IsDeleted)
             {
-                throw new InvalidOperationException("Cannot edit pet.");
+                throw new InvalidOperationException(NotEditableMessage);
             }
 
             if (pet.OwnerId != null && pet.OwnerId != ownerId)
@@ -118,7 +120,7 @@
             pet.Size = model.Size;
             pet.Gender = model.Gender;
             pet.Age = model.Age;
-            pet.ImageUrl = model.ImageUrl ?? "img/pet/defaultPet.png";
+            pet.ImageUrl = model.ImageUrl ?? DefaultPetUrl;
             pet.Notes = model.Notes;
 
             return await _petRepository.UpdateAsync(pet);
@@ -178,7 +180,7 @@
 
             if (pet == null || model == null)
             {
-                throw new InvalidOperationException("Pet not found.");
+                throw new InvalidOperationException(PetNotFoundMessage);
             }
 
             pet.Name = model.Name;

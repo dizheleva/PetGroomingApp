@@ -4,6 +4,7 @@
 
     public interface IGroomerRepository : IRepository<Groomer, Guid>
     {
-        Task<Groomer> GetTopRatedGroomersAsync(int count);
+        Task<List<DateTime>?> GetGroomerAvailableTimes(Guid groomerId, int durationMinutes);
+        Task<List<Groomer>?> GetAllAvailableAtAsync(DateTime time, int durationMinutes);
     }
 }

@@ -7,10 +7,11 @@
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data.Models;
     using PetGroomingApp.Data.Models.Enums;
-    using PetGroomingApp.Data.Repository;
     using PetGroomingApp.Data.Repository.Interfaces;
     using PetGroomingApp.Services.Core.Interfaces;
     using PetGroomingApp.Web.ViewModels.Appointment;
+
+    using static PetGroomingApp.Services.Common.Constants.Appointment;
 
     public class AppointmentService : BaseService<Appointment>, IAppointmentService
     {
@@ -37,7 +38,7 @@
             return await _appointmentRepository.UpdateAsync(appointment);
         }
 
-        public async Task<string> CreateAsync(AppointmentFormViewModel model, string? id)
+        public async Task<string> CreateAsManagerAsync(AppointmentManagerFormViewModel model, string? id)
         {
             var appoinmentId = Guid.NewGuid();
             var appointment = new Appointment
@@ -49,36 +50,117 @@
                 GroomerId = model.SelectedGroomerId,
                 UserId = id,
                 Status = AppointmentStatus.Pending,
-                TotalPrice = model.TotalPrice, 
+                TotalPrice = model.TotalPrice,
                 AppointmentServices = model.SelectedServiceIds.Select(s => new Data.Models.AppointmentService
                 {
                     AppointmentId = appoinmentId,
                     ServiceId = s
                 }).ToList()
             };
-            
+
             await _appointmentRepository.AddAsync(appointment);
             return appointment.Id.ToString();
         }
 
-        public async Task<bool> EditAsManagerAsync(string appointmentId, AppointmentFormViewModel model)
+        public async Task<string> CreateAsync(AppointmentUserFormViewModel model, string? id)
+        {
+            if (model.SelectedServiceIds == null || !model.SelectedServiceIds.Any())
+            {
+                return string.Empty;
+            }
+
+            var selectedServices = await _appointmentRepository.GetAppointmentServicesByIds(model.SelectedServiceIds); ;
+
+            if (selectedServices == null || !selectedServices.Any()) return string.Empty;
+
+            var appointmentStatus = AppointmentStatus.Pending;
+            if (Enum.TryParse<AppointmentStatus>(model.Status, true, out var statusEnum))
+            {
+                appointmentStatus = statusEnum;
+            }
+
+            var totalDuration = selectedServices.Sum(s => s.Duration.TotalMinutes);
+            var totalPrice = selectedServices.Sum(s => s.Price);
+
+            var appoinmentId = Guid.NewGuid();
+
+            var appointment = new Appointment
+            {
+                Id = appoinmentId,
+                AppointmentTime = model.AppointmentTime,
+                Duration = TimeSpan.FromMinutes(totalDuration),
+                Notes = model.Notes,
+                GroomerId = model.SelectedGroomerId,
+                UserId = id,
+                Status = appointmentStatus,
+                TotalPrice = totalPrice,
+                AppointmentServices = model.SelectedServiceIds.Select(s => new Data.Models.AppointmentService
+                {
+                    AppointmentId = appoinmentId,
+                    ServiceId = s
+                }).ToList()
+            };
+
+            await _appointmentRepository.AddAsync(appointment);
+            return appointment.Id.ToString();
+        }
+
+        public async Task<AppointmentUserFormViewModel?> GetForEditByIdAsync(string id, string userId)
+        {
+            bool isGuidValid = Guid.TryParse(id, out Guid appointmentGuid);
+
+            if (!isGuidValid)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var appointment = await _appointmentRepository
+                .GetAllAttached()
+                .AsNoTracking()
+                .Where(a => a.Id == appointmentGuid && a.Status != AppointmentStatus.Canceled)
+                .Select(a => new AppointmentUserFormViewModel
+                {
+                    Id = a.Id,
+                    AppointmentTime = a.AppointmentTime,
+                    SelectedServiceIds = a.AppointmentServices.Select(s => s.ServiceId).ToList(),
+                    Notes = a.Notes,
+                    SelectedPetId = a.PetId,
+                    SelectedGroomerId = a.GroomerId,
+                    Status = a.Status.ToString(),
+                    UserId = a.UserId ?? string.Empty,
+                    TotalDuration = a.Duration,
+                    TotalPrice = a.TotalPrice
+                }).FirstOrDefaultAsync();
+
+            return appointment;
+        }
+
+        public async Task<bool> EditAsManagerAsync(string appointmentId, AppointmentUserFormViewModel model)
         {
             if (!Guid.TryParse(appointmentId, out var id))
                 return false;
 
             var appointment = await _appointmentRepository.GetByIdAsync(id);
             if (appointment == null || appointment.Status == AppointmentStatus.Completed)
-                throw new InvalidOperationException("Cannot edit appointment.");
+                throw new InvalidOperationException(NotEditableMessage);
 
             if (model.AppointmentTime < DateTime.UtcNow)
-                throw new InvalidOperationException("Appointment time cannot be in the past.");
+                throw new InvalidOperationException(NotPastTimeMessage);
+
+            if (Enum.TryParse<AppointmentStatus>(model.Status, true, out var statusEnum))
+            {
+                appointment.Status = statusEnum;
+            }
+            else
+            {
+                appointment.Status = AppointmentStatus.Pending; // or throw exception
+            }
 
             appointment.AppointmentTime = model.AppointmentTime;
-            appointment.Duration = TimeSpan.FromMinutes(model.TotalDuration);
+            appointment.Duration = model.TotalDuration;
             appointment.Notes = model.Notes;
             appointment.GroomerId = model.SelectedGroomerId;
             appointment.PetId = model.SelectedPetId;
-            appointment.Status = model.Status;
             appointment.UserId = model.UserId;
             appointment.TotalPrice = model.TotalPrice;
             UpdateAppointmentServices(appointment, model.SelectedServiceIds);
@@ -86,23 +168,23 @@
             return await _appointmentRepository.UpdateAsync(appointment);
         }
 
-        public async Task<bool> EditAsync(string appointmentId, AppointmentFormViewModel model, string userId)
+        public async Task<bool> EditAsync(string appointmentId, AppointmentUserFormViewModel model, string userId)
         {
             if (!Guid.TryParse(appointmentId, out var id) || userId == null)
                 return false;
 
             var appointment = await _appointmentRepository.GetByIdAsync(id);
             if (appointment == null || appointment.Status == AppointmentStatus.Completed || appointment.Status == AppointmentStatus.Canceled)
-                throw new InvalidOperationException("Cannot edit appointment.");
+                throw new InvalidOperationException(NotEditableMessage);
 
             if (model.AppointmentTime < DateTime.UtcNow)
-                throw new InvalidOperationException("Appointment time cannot be in the past.");
-                       
+                throw new InvalidOperationException(NotPastTimeMessage);
+
             if (appointment.UserId != userId)
                 throw new UnauthorizedAccessException();
 
             appointment.AppointmentTime = model.AppointmentTime;
-            appointment.Duration = TimeSpan.FromMinutes(model.TotalDuration);
+            appointment.Duration = model.TotalDuration;
             appointment.Notes = model.Notes;
             appointment.GroomerId = model.SelectedGroomerId;
             appointment.PetId = model.SelectedPetId;
@@ -111,6 +193,18 @@
 
             return await _appointmentRepository.UpdateAsync(appointment);
         }
+
+        public async Task<List<ApplicationUser>> GetAllUsersAsync()
+        {
+            var users = await _appointmentRepository
+                .GetAllAttached()
+                .Select(a => a.User)
+                .Distinct()
+                .ToListAsync();
+            //TODO: Needs paging/filtering
+            return users;
+        }
+
 
         public async Task<IEnumerable<AppointmentListViewModel>> GetAllAsync()
         {
@@ -186,7 +280,7 @@
                     Duration = (int)a.Duration.TotalMinutes,
                     Notes = a.Notes,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
-                    PetName = a.Pet != null ? a.Pet.Name : "No pet",
+                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     Services = a.AppointmentServices.Select(s => s.ServiceId.ToString()).ToList(),
                     Status = a.Status.ToString(),
                     OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : ""
@@ -208,7 +302,7 @@
                     Duration = (int)a.Duration.TotalMinutes,
                     Notes = a.Notes,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
-                    PetName = a.Pet != null ? a.Pet.Name : "No pet",
+                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     Services = a.AppointmentServices.Select(s => s.ServiceId.ToString()).ToList(),
                     Status = a.Status.ToString(),
                     OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : ""
@@ -227,7 +321,7 @@
             if (appointment == null) return false;
 
             if (appointment.Status == AppointmentStatus.Completed)
-                throw new InvalidOperationException("Appointment is already completed.");
+                throw new InvalidOperationException(AlreadyCompletedMessage);
 
             appointment.Status = AppointmentStatus.Completed;
             return await _appointmentRepository.UpdateAsync(appointment);
@@ -252,13 +346,13 @@
             return existingStart < newEnd && existingEnd > newStart;
         }
 
-        public static  void UpdateAppointmentServices(Appointment appointment, List<Guid> newServiceIds)
+        public static void UpdateAppointmentServices(Appointment appointment, List<Guid> newServiceIds)
         {
             var currentServiceIds = appointment.AppointmentServices.Select(x => x.ServiceId).ToList();
-            
+
             var toAddGuids = newServiceIds.Except(currentServiceIds).ToList();
             var toRemoveGuids = currentServiceIds.Except(newServiceIds).ToList();
-            
+
             foreach (var serviceId in toAddGuids)
             {
                 appointment.AppointmentServices.Add(new Data.Models.AppointmentService
@@ -275,6 +369,6 @@
             {
                 appointment.AppointmentServices.Remove(service);
             }
-        }
+        }        
     }
 }
