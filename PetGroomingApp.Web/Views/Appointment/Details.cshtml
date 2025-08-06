@@ -7,31 +7,111 @@
 
 <partial name="_PageTitle" />
 
-<section class="appointment_details_area py-5 bg-light">
+<section class="about_area py-5">
     <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <hr class="w-25 mx-auto border-danger">
+            </div>
+        </div>
+
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">@Model.PetName's Appointment</h3>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Appointment Time:</strong> @Model.AppointmentTime.ToString("f")</p>
-                        <p><strong>Duration:</strong> @Model.Duration minutes</p>
-                        <p><strong>Groomer:</strong> @Model.GroomerName</p>
-                        <p><strong>Notes:</strong> @Model.Notes</p>
-                        <hr />
-                        <div class="text-center mt-4 d-flex justify-content-center gap-2">
-                            
-                            <a asp-action="Index" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
-                                <i class="bi bi-arrow-left-circle"></i> Back to Appointments
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold px-4 rounded-pill">
-                                <i class="bi bi-pencil-square"></i> Edit
-                            </a>
-                            <a asp-action="Cancel" asp-route-id="@Model.Id" class="btn btn-danger fw-bold px-4 rounded-pill">
-                                <i class="bi bi-pencil-square"></i> Cancel
-                            </a>
+            <div class="col-lg-8">
+                <div class="card shadow border-0 rounded-4 mb-4">
+                    <div class="card-body py-4 px-5">
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5>
+                                    <i class="bi bi-calendar-event me-2 text-secondary"></i>
+                                    <span class="fw-bold">Date & Time:</span>
+                                </h5>
+                                <span class="fs-5">@Model.AppointmentTime.ToString("dd MMM yyyy, HH:mm")</span>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>
+                                    <i class="bi bi-clock-history me-2 text-secondary"></i>
+                                    <span class="fw-bold">Duration:</span>
+                                </h5>
+                                <span class="fs-5">@TimeSpan.FromMinutes(Model.Duration).ToString(@"hh\:mm") hours</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5>
+                                    <i class="bi bi-person-badge me-2 text-secondary"></i>
+                                    <span class="fw-bold">Groomer:</span>
+                                </h5>
+                                <span class="fs-5">@Model.GroomerName</span>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>
+                                    <i class="bi bi-paw-fill me-2 text-primary"></i>
+                                    <span class="fw-bold">Pet:</span>
+                                </h5>
+                                <span class="fs-5">@Model.PetName</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5>
+                                    <i class="bi bi-list-check me-2 text-secondary"></i>
+                                    <span class="fw-bold">Services:</span>
+                                </h5>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var service in Model.Services)
+                                    {
+                                        <li>
+                                            <i class="bi bi-check2-circle text-success me-1"></i> @service
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>
+                                    <i class="bi bi-info-square me-2 text-secondary"></i>
+                                    <span class="fw-bold">Status:</span>
+                                </h5>
+                                <span class="badge px-3 py-2 fs-6 bg-@(
+                                      Model.Status == "Confirmed" ? "success" :
+                                      Model.Status == "Pending" ? "warning text-dark" :
+                                      Model.Status == "Cancelled" ? "danger" :
+                                      "secondary")">
+                                    @Model.Status
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5>
+                                    <i class="bi bi-currency-euro me-2 text-success"></i>
+                                    <span class="fw-bold">Total Price:</span>
+                                </h5>
+                                <span class="fs-5">@Model.Price.ToString("0.00") €</span>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>
+                                    <i class="bi bi-chat-left-dots me-2 text-secondary"></i>
+                                    <span class="fw-bold">Notes:</span>
+                                </h5>
+                                <span class="fs-6">@(!string.IsNullOrWhiteSpace(Model.Notes) ? Model.Notes : "—")</span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12 d-flex justify-content-center gap-3">
+                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary rounded-pill px-4">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                                    <i class="bi bi-arrow-left-circle"></i> Back
+                                </a>
+                                <a asp-action="Cancel" asp-route-id="@Model.Id" class="btn btn-outline-danger rounded-pill px-4">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

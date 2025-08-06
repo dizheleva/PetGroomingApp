@@ -19,6 +19,8 @@
         public List<string> Services { get; set; } = [];
 
         public string Status { get; set; } = null!;
+
+        public decimal Price { get; set; }
     }
 
 }

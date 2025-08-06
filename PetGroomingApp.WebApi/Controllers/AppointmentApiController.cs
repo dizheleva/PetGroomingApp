@@ -62,6 +62,7 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize]
         public async Task<IActionResult> GetAvailableGroomers([FromBody] AppointmentTimeDto dto)
         {
             var result = await _groomerService.GetAvailableGroomersAsync(dto.Time, dto.DurationMinutes);

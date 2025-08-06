@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Server Error";
+}
+
+<partial name="_PageTitle" />
+
+<section class="about_area">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card text-center shadow rounded-4 border-0 p-4">
+                    <div class="card-body">
+                        <h1 class="display-3 text-danger fw-bold">500</h1>
+                        <h3 class="card-title mb-3">Internal Server Error</h3>
+                        <p class="card-text mb-4 text-muted">
+                            Sorry, something went wrong on our end.<br />
+                            Please try again later or contact support if the problem persists.
+                        </p>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary px-4 rounded-pill fw-semibold">
+                            <i class="bi bi-house-door-fill"></i> Go to Homepage
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

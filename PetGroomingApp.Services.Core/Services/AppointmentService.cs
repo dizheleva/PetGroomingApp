@@ -215,6 +215,7 @@
                 {
                     Id = a.Id.ToString(),
                     AppointmentTime = a.AppointmentTime,
+                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     Status = a.Status.ToString()
                 })
@@ -230,6 +231,7 @@
                 {
                     Id = a.Id.ToString(),
                     AppointmentTime = a.AppointmentTime,
+                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     Status = a.Status.ToString()
                 })
@@ -245,6 +247,7 @@
                 {
                     Id = a.Id.ToString(),
                     AppointmentTime = a.AppointmentTime,
+                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     Status = a.Status.ToString()
                 })
@@ -260,6 +263,7 @@
                 {
                     Id = a.Id.ToString(),
                     AppointmentTime = a.AppointmentTime,
+                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     Status = a.Status.ToString()
                 })
@@ -270,7 +274,17 @@
         {
             if (!Guid.TryParse(appointmentId, out var id) || userId == null)
                 return null;
-            return await _appointmentRepository
+
+            var appointmentServicesIds = await _appointmentRepository
+                .GetAllAttached()
+                .Where(a => a.Id == id && a.UserId == userId)
+                .Select(a => a.AppointmentServices.Select(s => s.ServiceId.ToString()))
+                .ToListAsync();
+
+            var appointmentServicesNames = await _appointmentRepository
+                .GetAppointmentServicesNamesByIdsAsync(appointmentServicesIds.SelectMany(s => s).ToList());
+
+            var appointment = await _appointmentRepository
                 .GetAllAttached()
                 .Where(a => a.Id == id && a.UserId == userId)
                 .Select(a => new AppointmentDetailsViewModel
@@ -281,17 +295,30 @@
                     Notes = a.Notes,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
-                    Services = a.AppointmentServices.Select(s => s.ServiceId.ToString()).ToList(),
+                    Services = appointmentServicesNames,
                     Status = a.Status.ToString(),
-                    OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : ""
+                    OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : "",
+                    Price = a.TotalPrice
                 })
                 .FirstOrDefaultAsync();
+
+            return appointment;
         }
 
         public async Task<AppointmentDetailsViewModel?> GetDetailsAsManagerAsync(string appointmentId)
         {
             if (!Guid.TryParse(appointmentId, out var id))
                 return null;
+
+            var appointmentServicesIds = await _appointmentRepository
+                .GetAllAttached()
+                .Where(a => a.Id == id)
+                .Select(a => a.AppointmentServices.Select(s => s.ServiceId.ToString()))
+                .ToListAsync();
+
+            var appointmentServicesNames = await _appointmentRepository
+                .GetAppointmentServicesNamesByIdsAsync(appointmentServicesIds.SelectMany(s => s).ToList());
+
             return await _appointmentRepository
                 .GetAllAttached()
                 .Where(a => a.Id == id)
@@ -303,9 +330,10 @@
                     Notes = a.Notes,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
-                    Services = a.AppointmentServices.Select(s => s.ServiceId.ToString()).ToList(),
+                    Services = appointmentServicesNames,
                     Status = a.Status.ToString(),
-                    OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : ""
+                    OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : "",
+                    Price = a.TotalPrice
                 })
                 .FirstOrDefaultAsync();
         }

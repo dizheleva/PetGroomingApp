@@ -1,5 +1,6 @@
 ﻿namespace PetGroomingApp.WebApi.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
         
@@ -12,16 +13,22 @@
             _serviceService = serviceService;
         }
 
-        // POST: api/services/totalDuration
         [HttpPost("totalDuration")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize]
         public async Task<IActionResult> GetTotalServicesDuration([FromBody] List<string> serviceIds)
         {
             var result = await _serviceService.GetTotalDurationAsync(serviceIds);
             return Ok(result); 
         }
 
-        // POST: api/services/totalPrice
         [HttpPost("totalPrice")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize]
         public async Task<IActionResult> GetTotalServicesPrice([FromBody] List<string> serviceIds)
         {
             var result = await _serviceService.GetTotalPriceAsync(serviceIds);

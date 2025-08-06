@@ -49,6 +49,8 @@ namespace PetGroomingApp.Web.Controllers
                     return View("UnauthorizedError");
                 case 404:
                     return View("NotFoundError");
+                case 500:
+                    return View("BadRequestError");
                 default:
                     return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }

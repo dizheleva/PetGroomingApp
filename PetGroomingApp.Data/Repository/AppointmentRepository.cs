@@ -27,5 +27,20 @@
 
             return services;
         }
+
+        public async Task<List<string>> GetAppointmentServicesNamesByIdsAsync(List<string> serviceIds)
+        {
+            if (serviceIds == null || serviceIds.Count == 0)
+            {
+                return new List<string>();
+            }
+
+            var services = await _context.Services
+                .Where(s => serviceIds.Contains(s.Id.ToString()))
+                .Select(s => s.Name)
+                .ToListAsync();
+
+            return services;
+        }
     }
 }
