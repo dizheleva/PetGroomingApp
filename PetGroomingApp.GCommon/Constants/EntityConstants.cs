@@ -28,4 +28,34 @@
         public const int ImageUrlMaxLength = 2048;
         public const string PhoneNumberPattern = @"^\+?\d{10,15}$";
     }
+
+    public static class Pet
+    {
+        public const int NameMinLength = 2;
+        public const int NameMaxLength = 50;
+
+        public const int BreedMinLength = 2;
+        public const int BreedMaxLength = 50;
+
+        public const int ImageUrlMaxLength = 2048;
+
+        public const int NotesMinLength = 5;
+        public const int NotesMaxLength = 500;
+
+        public const int AgeMinValue = 0;
+        public const int AgeMaxValue = 50;
+
+        public const string OwnerIdRegexPattern = @"^[a-zA-Z0-9-]{36}$";
+    }
+
+    public static class Appointment
+    {
+        public const int NotesMaxLength = 500;
+
+        public const int TotalDurationMin = 10;
+        public const int TotalDurationMax = 240; 
+
+        public const decimal TotalPriceMin = 0.00m;
+        public const decimal TotalPriceMax = 10000.00m;
+    }
 }
