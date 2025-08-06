@@ -6,14 +6,17 @@
         public const string ManagerRoleName = "Manager";
         public const string UserRoleName = "User";
 
-        public const string DefaultAdminEmail = "admin@mail.com";
+        public const string DefaultAdminEmail = "admin@example.com";
         public const string DefaultAdminPassword = "Admin123";
 
-        public const string DefaultManagerEmail = "manager@mail.com";
+        public const string DefaultManagerEmail = "manager@example.com";
         public const string DefaultManagerPassword = "Manager123";
 
-        public const string DefaultUserEmail = "user@mail.com";
+        public const string DefaultUserEmail = "user@example.com";
         public const string DefaultUserPassword = "User123";
+
+        public const string SuccessMessageKey = "SuccessMessage";
+        public const string ErrorMessageKey = "ErrorMessage";
 
     }
 }

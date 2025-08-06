@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\GroomerManagment\" />
+    <Folder Include="Areas\Admin\Views\AppointmentManagment\" />
     <Folder Include="Views\Manager\" />
   </ItemGroup>
 
