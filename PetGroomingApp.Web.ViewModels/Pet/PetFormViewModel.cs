@@ -3,7 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using PetGroomingApp.Data.Models.Enums;
 
-    using static PetGroomingApp.Services.Common.EntityConstants.Pet;
+    using static PetGroomingApp.GCommon.Constants.Pet;
+    using static PetGroomingApp.GCommon.Messages.Pet;
 
     public class PetFormViewModel
     {
@@ -47,7 +48,7 @@
         public string? Notes { get; set; }
                 
         [Display(Name = "Owner ID")]
-        [RegularExpression(@"^[a-zA-Z0-9-]{36}$", ErrorMessage = OwnerIdInvalidMessage)]
+        [RegularExpression(OwnerIdRegexPattern, ErrorMessage = OwnerIdInvalidMessage)]
         public string? OwnerId { get; set; }
     }
 }
