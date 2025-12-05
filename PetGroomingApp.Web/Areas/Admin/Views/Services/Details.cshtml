@@ -1,0 +1,99 @@
+@using PetGroomingApp.Web.ViewModels.Service
+@model ServiceDetailsViewModel
+
+@{
+    ViewData["Title"] = "Service Details";
+}
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-5 mb-2 text-danger fw-bold">
+                    <i class="bi bi-scissors me-2"></i>@ViewData["Title"]
+                </h1>
+                <hr class="w-25 mx-auto border-warning mb-0">
+            </div>
+        </div>
+
+        <div class="row justify-content-start mb-3">
+            <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Services" asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+                    <i class="bi bi-arrow-left"></i> Back to Services
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                        {
+                            var adminDetailImageSrc = Model.ImageUrl.StartsWith("http") ? Model.ImageUrl : (Model.ImageUrl.StartsWith("/") ? Model.ImageUrl : $"~/{Model.ImageUrl}");
+                            <img src="@Url.Content(adminDetailImageSrc)" alt="@Model.Name" class="img-fluid rounded-4 shadow" style="max-height: 400px; width: 100%; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div style="width: 100%; height: 400px; background: linear-gradient(135deg, #f14437 0%, #ff6b5a 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-scissors text-white" style="font-size: 5rem;"></i>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-tag-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <div class="text-muted small">Service Name</div>
+                                    <div class="fw-bold fs-4">@Model.Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <div class="mb-3">
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="bi bi-file-text me-2 text-danger" style="font-size: 1.5rem;"></i>
+                                    <div>
+                                        <div class="text-muted small">Description</div>
+                                        <div class="fw-semibold">@Model.Description</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-clock me-2 text-danger" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <div class="text-muted small">Duration</div>
+                                    <div class="fw-bold fs-5">@Model.Duration</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-currency-dollar me-2 text-danger" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <div class="text-muted small">Price</div>
+                                    <div class="fw-bold fs-4 text-danger">@Model.FormattedPrice</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <a asp-area="" asp-controller="Service" asp-action="Edit" asp-route-id="@Model.Id" 
+                               class="btn btn-outline-warning rounded-pill px-4 fw-bold me-2">
+                                <i class="bi bi-pencil-fill me-2"></i> Edit Service
+                            </a>
+                            <a asp-area="" asp-controller="Service" asp-action="Delete" asp-route-id="@Model.Id" 
+                               class="btn btn-outline-danger rounded-pill px-4 fw-bold">
+                                <i class="bi bi-trash-fill me-2"></i> Delete Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

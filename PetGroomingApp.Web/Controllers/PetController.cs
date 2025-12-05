@@ -1,5 +1,6 @@
 ﻿namespace PetGroomingApp.Web.Controllers
 {
+    using Microsoft.AspNetCore.Antiforgery;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
     using PetGroomingApp.Services.Core.Interfaces;
@@ -8,23 +9,44 @@
     public class PetController : BaseController
     {
         private readonly IPetService _petService;
+        private readonly ILogger<PetController> _logger;
                 
-        public PetController(IPetService petService)
+        public PetController(IPetService petService, ILogger<PetController> logger)
         {
             _petService = petService;
+            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, string? searchTerm = null, string? typeFilter = null)
         {
-            if (User.IsInRole("Manager"))
+            const int pageSize = 6;
+            IEnumerable<AllPetsViewModel?> pets = await _petService.GetPetsByUserAsync(GetUserId());
+
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                var pets = await _petService.GetAllPetsAsync();
-                return View(pets);
+                pets = pets.Where(p => p != null && (
+                    p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    p.Breed.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
-            var userPets = await _petService.GetPetsByUserAsync(GetUserId());
-            return View(userPets);
+            // Apply type filter
+            if (!string.IsNullOrWhiteSpace(typeFilter))
+            {
+                pets = pets.Where(p => p != null && p.Type.Equals(typeFilter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Pagination
+            var totalItems = pets.Count();
+            var pagination = Infrastructure.Helpers.PaginationHelper.CreatePagination(page, totalItems, pageSize);
+            var paginatedPets = Infrastructure.Helpers.PaginationHelper.Paginate(pets, page, pageSize);
+
+            ViewBag.Pagination = pagination;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.TypeFilter = typeFilter;
+
+            return View(paginatedPets);
         }
 
         [HttpGet]
@@ -32,9 +54,7 @@
         {
             try
             {
-                var ownerId = User.IsInRole("Manager") ? null : GetUserId();
-
-                var pet = await _petService.GetDetailsAsync(id, ownerId);
+                var pet = await _petService.GetDetailsAsync(id, GetUserId());
 
                 if (pet == null)
                 {
@@ -57,28 +77,20 @@
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PetFormViewModel model)
         {
             string? userId = GetUserId();
 
             if (!ModelState.IsValid || userId.IsNullOrEmpty())
             {
-                foreach (var error in ModelState)
-                {
-                    Console.WriteLine($"Key: {error.Key}");
-                    foreach (var err in error.Value.Errors)
-                    {
-                        Console.WriteLine($"  Error: {err.ErrorMessage}");
-                    }
-                }
-
+                _logger.LogWarning("Model validation failed for pet creation or user ID is empty");
                 return View(model);
             }
 
             try
             {
-                var ownerId = User.IsInRole("Manager") ? null : userId;
-                var petId = await _petService.CreateAsync(model, ownerId);
+                var petId = await _petService.CreateAsync(model, userId);
 
                 TempData["Success"] = "Pet created successfully.";
                 return RedirectToAction(nameof(Details), new { id = petId });
@@ -95,8 +107,7 @@
         {
             try
             {
-                var ownerId = User.IsInRole("Manager") ? null : GetUserId();
-                var model = await _petService.GetPetForEditAsync(id, ownerId);
+                var model = await _petService.GetPetForEditAsync(id, GetUserId());
 
                 if (model == null)
                 {
@@ -107,14 +118,14 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the pet for editing: {ex.Message}");
-
+                _logger.LogError(ex, "Error retrieving pet for editing. ID: {PetId}", id);
+                TempData["Error"] = "An error occurred while retrieving the pet for editing.";
                 return this.RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, PetFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -123,9 +134,7 @@
             }
             try
             {
-                bool success = User.IsInRole("Manager")
-                    ? await _petService.EditAsManagerAsync(id, model)
-                    : await _petService.EditAsync(id, model, GetUserId());
+                bool success = await _petService.EditAsync(id, model, GetUserId());
 
                 if (!success)
                 {
@@ -158,13 +167,14 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the pet for deletion: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving pet for deletion. ID: {PetId}", id);
+                TempData["Error"] = "An error occurred while retrieving the pet for deletion.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             try

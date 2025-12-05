@@ -13,8 +13,6 @@
         public virtual DbSet<Service> Services { get; set; } = null!;
         public virtual DbSet<Appointment> Appointments { get; set; } = null!;
         public virtual DbSet<AppointmentService> AppointmentServices { get; set; } = null!;
-        public virtual DbSet<UserService> UserServices { get; set; } = null!;
-        public virtual DbSet<Manager> Managers { get; set; } = null!;
         public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

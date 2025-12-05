@@ -15,15 +15,17 @@ $(window).on('scroll', function () {
 
 $(document).ready(function(){
 
-// mobile_menu
-var menu = $('ul#navigation');
-if(menu.length){
-	menu.slicknav({
-		prependTo: ".mobile_menu",
-		closedSymbol: '+',
-		openedSymbol:'-'
-	});
-};
+// mobile_menu - only apply slicknav on mobile devices
+if ($(window).width() <= 991) {
+	var menu = $('ul#navigation');
+	if(menu.length){
+		menu.slicknav({
+			prependTo: ".mobile_menu",
+			closedSymbol: '+',
+			openedSymbol:'-'
+		});
+	}
+}
 // blog-menu
   // $('ul#blog-menu').slicknav({
   //   prependTo: ".blog_menu"

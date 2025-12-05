@@ -1,5 +1,6 @@
 ﻿namespace PetGroomingApp.Web.Controllers
 {
+    using Microsoft.AspNetCore.Antiforgery;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using PetGroomingApp.Services.Core.Interfaces;
@@ -8,19 +9,38 @@
     public class GroomerController : BaseController
     {
         private readonly IGroomerService _groomerService;
+        private readonly ILogger<GroomerController> _logger;
 
-        public GroomerController(IGroomerService groomerService)
+        public GroomerController(IGroomerService groomerService, ILogger<GroomerController> logger)
         {
             _groomerService = groomerService;
+            _logger = logger;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, string? searchTerm = null)
         {
+            const int pageSize = 6;
             var groomers = await _groomerService.GetAllAsync();
 
-            return View(groomers);
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                groomers = groomers.Where(g => 
+                    g.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    (g.JobTitle != null && g.JobTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            // Pagination
+            var totalItems = groomers.Count();
+            var pagination = Infrastructure.Helpers.PaginationHelper.CreatePagination(page, totalItems, pageSize);
+            var paginatedGroomers = Infrastructure.Helpers.PaginationHelper.Paginate(groomers, page, pageSize);
+
+            ViewBag.Pagination = pagination;
+            ViewBag.SearchTerm = searchTerm;
+
+            return View(paginatedGroomers);
         }
 
         [HttpGet]
@@ -40,19 +60,22 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the groomer details: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving groomer details. ID: {GroomerId}", id);
+                ModelState.AddModelError(string.Empty, "An error occurred while retrieving the groomer details.");
                 return View(nameof(Index));
             }
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(GroomerFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -67,13 +90,14 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while creating the groomer: {ex.Message}");
+                _logger.LogError(ex, "Error creating groomer");
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the groomer. Please try again.");
                 return View(model);
             }
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             try
@@ -89,14 +113,15 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the groomer for editing: {ex.Message}");
-
+                _logger.LogError(ex, "Error retrieving groomer for editing. ID: {GroomerId}", id);
+                TempData["ErrorMessage"] = "An error occurred while retrieving the groomer for editing.";
                 return this.RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id, GroomerFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -115,13 +140,14 @@
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while editing the groomer: {e.Message}");
+                _logger.LogError(e, "Error editing groomer. ID: {GroomerId}", id);
+                TempData["ErrorMessage"] = "An error occurred while editing the groomer. Please try again.";
                 return this.RedirectToAction(nameof(Index));
             }
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             try
@@ -135,13 +161,15 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the groomer for deletion: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving groomer for deletion. ID: {GroomerId}", id);
+                TempData["ErrorMessage"] = "An error occurred while retrieving the groomer for deletion.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             try
@@ -151,8 +179,8 @@
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while deleting the groomer: {e.Message}");
+                _logger.LogError(e, "Error deleting groomer. ID: {GroomerId}", id);
+                TempData["ErrorMessage"] = "An error occurred while deleting the groomer. Please try again.";
                 return this.RedirectToAction(nameof(Index));
             }
 

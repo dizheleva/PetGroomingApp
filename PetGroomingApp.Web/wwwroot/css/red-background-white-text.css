@@ -1,0 +1,153 @@
+/* Ensure white text on all red backgrounds */
+/* Elements with inline red background styles - only apply to elements that actually have red background */
+[style*="background: linear-gradient"][style*="#f14437"]:not([style*="background: white"]):not([style*="background: #fff"]):not([style*="background: #ffffff"]):not([style*="background-color: white"]):not([style*="background-color: #fff"]):not([style*="background-color: #ffffff"]),
+[style*="background-color: #f14437"]:not([style*="background: white"]):not([style*="background: #fff"]):not([style*="background: #ffffff"]) {
+    color: #ffffff !important;
+}
+
+/* Only apply white text to direct children of red background elements, not all descendants */
+[style*="background: linear-gradient"][style*="#f14437"]:not([style*="background: white"]):not([style*="background: #fff"]):not([style*="background: #ffffff"]) > *,
+[style*="background-color: #f14437"]:not([style*="background: white"]):not([style*="background: #fff"]):not([style*="background: #ffffff"]) > * {
+    color: #ffffff !important;
+}
+
+/* CTA sections with red gradient */
+.cta-section {
+    color: #ffffff !important;
+}
+
+.cta-section *,
+.cta-section h1,
+.cta-section h2,
+.cta-section h3,
+.cta-section h4,
+.cta-section h5,
+.cta-section h6,
+.cta-section p,
+.cta-section span,
+.cta-section div,
+.cta-section a:not(.btn-light):not(.btn-outline-light) {
+    color: #ffffff !important;
+}
+
+/* Table headers with red background */
+thead[style*="background-color: #f14437"] {
+    color: #ffffff !important;
+}
+
+thead[style*="background-color: #f14437"] *,
+thead[style*="background-color: #f14437"] th {
+    color: #ffffff !important;
+}
+
+/* Buttons with red background */
+.btn-primary-custom,
+.btn-primary-custom *,
+.btn-primary-custom i,
+.btn-primary-custom span,
+.boxed-btn3,
+.boxed-btn3 *,
+.boxed-btn4,
+.boxed-btn4 * {
+    color: #ffffff !important;
+}
+
+/* Card headers with red background */
+.card-header.primary-header,
+.card-header.primary-header *,
+.card-header.primary-header h1,
+.card-header.primary-header h2,
+.card-header.primary-header h3,
+.card-header.primary-header h4,
+.card-header.primary-header h5,
+.card-header.primary-header h6,
+.card-header.primary-header p,
+.card-header.primary-header span,
+.card-header.primary-header i {
+    color: #ffffff !important;
+}
+
+/* Elements with bg-primary class that use red color */
+.testimonial-avatar.bg-primary {
+    color: #ffffff !important;
+}
+
+.testimonial-avatar.bg-primary * {
+    color: #ffffff !important;
+}
+
+/* Service icon circles should keep their original icon colors */
+.service-icon-circle.bg-primary i,
+.service-icon-circle.bg-success i,
+.service-icon-circle.bg-info i {
+    color: inherit !important;
+}
+
+/* Ensure dark text on light backgrounds in pet, groomer and service details pages */
+.pet-detail-content,
+.pet-detail-content *,
+.pet-details-card[style*="background: white"],
+.pet-details-card[style*="background: white"] *,
+.groomer-detail-content,
+.groomer-detail-content *,
+.groomer-details-card[style*="background: white"],
+.groomer-details-card[style*="background: white"] *,
+.service-detail-content,
+.service-detail-content *,
+.service-details-card[style*="background: white"],
+.service-details-card[style*="background: white"] *,
+.service-content,
+.service-content * {
+    color: inherit !important;
+}
+
+.pet-detail-content h1,
+.pet-detail-content h2,
+.pet-detail-content h3,
+.pet-detail-content h4,
+.pet-detail-content h5,
+.pet-detail-content h6,
+.pet-detail-content p,
+.pet-detail-content span:not([style*="background: linear-gradient"][style*="#f14437"]):not([style*="background-color: #f14437"]),
+.groomer-detail-content h1,
+.groomer-detail-content h2,
+.groomer-detail-content h3,
+.groomer-detail-content h4,
+.groomer-detail-content h5,
+.groomer-detail-content h6,
+.groomer-detail-content p,
+.groomer-detail-content span:not([style*="background: linear-gradient"][style*="#f14437"]):not([style*="background-color: #f14437"]),
+.service-detail-content h1,
+.service-detail-content h2,
+.service-detail-content h3,
+.service-detail-content h4,
+.service-detail-content h5,
+.service-detail-content h6,
+.service-detail-content p,
+.service-detail-content span:not([style*="background: linear-gradient"][style*="#f14437"]):not([style*="background-color: #f14437"]),
+.service-content h1,
+.service-content h2,
+.service-content h3,
+.service-content h4,
+.service-content h5,
+.service-content h6,
+.service-content p,
+.service-content span:not([style*="background: linear-gradient"][style*="#f14437"]):not([style*="background-color: #f14437"]) {
+    color: #2c3e50 !important;
+}
+
+.pet-detail-content .text-muted,
+.groomer-detail-content .text-muted,
+.service-detail-content .text-muted,
+.service-content .text-muted {
+    color: #6c757d !important;
+}
+
+/* Ensure icons on light backgrounds are visible */
+.pet-detail-content i[style*="color: #f14437"],
+.groomer-detail-content i[style*="color: #f14437"],
+.service-detail-content i[style*="color: #f14437"],
+.service-content i[style*="color: #f14437"] {
+    color: #f14437 !important;
+}
+

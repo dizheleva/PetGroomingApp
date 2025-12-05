@@ -28,6 +28,14 @@
                 </a>
             </div>
             <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                    <i class="bi bi-plus-circle-fill me-2"></i> Add New User
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-between mb-3">
+            <div class="col-auto">
                 @if (!string.IsNullOrEmpty(successMessage))
                 {
                     <span class="alert alert-success py-2 px-4 rounded-pill fw-semibold">@successMessage</span>
@@ -39,68 +47,82 @@
             </div>
         </div>
 
+        <!-- Search -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <form method="get" class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="searchTerm" class="form-control rounded-pill" placeholder="Search by name, email, or role..." value="@ViewBag.SearchTerm">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary-custom rounded-pill w-100">
+                            <i class="fa fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-pill w-100">Clear</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="card shadow border-0 rounded-4">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table align-middle mb-0">
                         <thead style="background-color: #f14437; color: #fff;">
                             <tr class="text-center">
+                                <th class="py-3">Name</th>
                                 <th class="py-3">Email</th>
                                 <th class="py-3">Roles</th>
                                 <th class="py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var user in Model)
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td class="align-middle">
+                                            <span class="fw-bold fs-5">@(user.UserName ?? user.Email)</span>
+                                        </td>
+                                        <td class="align-middle">@user.Email</td>
+                                        <td class="align-middle">
+                                            @foreach (var role in user.Roles)
+                                            {
+                                                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill me-1">@role</span>
+                                            }
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="d-flex justify-content-center align-items-center gap-2" style="white-space: nowrap;">
+                                                @if (!user.Roles.Contains("Admin"))
+                                                {
+                                                    <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@user.Id" 
+                                                       class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                        <i class="bi bi-eye-fill"></i> Details
+                                                    </a>
+                                                    <a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" 
+                                                       class="btn btn-outline-warning btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                        <i class="bi bi-pencil-fill"></i> Edit
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted fw-bold">Cannot edit Admin</span>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
                             {
                                 <tr>
-                                    <td class="align-middle">@user.Email</td>
-                                    <td class="align-middle">
-                                        @foreach (var role in user.Roles)
-                                        {
-                                            <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill me-1">@role</span>
-                                        }
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-                                            @if (!user.Roles.Contains("Admin"))
-                                            {
-                                                <select id="roleDropdown-@user.Id" class="form-select form-select-sm w-auto me-2">
-                                                    @foreach (IdentityRole role in roleManager.Roles.ToList())
-                                                    {
-                                                        <option value="@role.Name" selected="@(user.Roles.Contains(role.Name) ? "selected" : null)">@role.Name</option>
-                                                    }
-                                                </select>
-
-                                                <form method="post" asp-action="AssignRole" asp-controller="UserManagement" asp-area="Admin" class="d-inline">
-                                                    <input type="hidden" name="userId" value="@user.Id" />
-                                                    <input type="hidden" name="role" id="assignRoleInput-@user.Id" />
-                                                    <button type="submit" class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 rounded-pill"
-                                                            onclick="setRoleValue('@user.Id', 'assignRoleInput')">
-                                                        <i class="bi bi-person-plus-fill"></i> Assign
-                                                    </button>
-                                                </form>
-
-                                                <form method="post" asp-action="RemoveRole" asp-controller="UserManagement" asp-area="Admin" class="d-inline">
-                                                    <input type="hidden" name="userId" value="@user.Id" />
-                                                    <input type="hidden" name="role" id="removeRoleInput-@user.Id" />
-                                                    <button type="submit" class="btn btn-outline-warning btn-sm fw-bold px-3 py-2 rounded-pill"
-                                                            onclick="setRoleValue('@user.Id', 'removeRoleInput')">
-                                                        <i class="bi bi-person-x-fill"></i> Remove
-                                                    </button>
-                                                </form>
-
-                                                <form method="post" asp-action="DeleteUser" asp-controller="UserManagement" asp-area="Admin" class="d-inline">
-                                                    <input type="hidden" name="userId" value="@user.Id" />
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm fw-bold px-3 py-2 rounded-pill">
-                                                        <i class="bi bi-trash-fill"></i> Delete
-                                                    </button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted fw-bold">Cannot edit Admin</span>
-                                            }
+                                    <td colspan="4" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="bi bi-people display-4 d-block mb-3"></i>
+                                            <p class="mb-0">No users found.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -110,7 +132,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.Pagination != null)
+        {
+            <div class="row justify-content-center mt-4">
+                <div class="col-auto">
+                    <partial name="_PaginationPartial" model="ViewBag.Pagination" />
+                </div>
+            </div>
+        }
     </div>
 </section>
-
-<script src="~/js/userManagement.js" asp-append-version="true"></script>ersion="true"></script>

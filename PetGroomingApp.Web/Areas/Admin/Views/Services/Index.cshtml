@@ -1,0 +1,147 @@
+@using PetGroomingApp.Web.ViewModels.Service
+@model IEnumerable<AllServicesIndexViewModel>
+
+@{
+    ViewData["Title"] = "Service Management";
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-5 mb-2 text-danger fw-bold">
+                    <i class="bi bi-scissors me-2"></i>@ViewData["Title"]
+                </h1>
+                <hr class="w-25 mx-auto border-warning mb-0">
+            </div>
+        </div>
+
+        <div class="row justify-content-between mb-3">
+            <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+            <div class="col-auto">
+                <a asp-area="" asp-controller="Service" asp-action="Create" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                    <i class="bi bi-plus-circle-fill me-2"></i> Add New Service
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-between mb-3">
+            <div class="col-auto">
+                @if (!string.IsNullOrEmpty(successMessage))
+                {
+                    <span class="alert alert-success py-2 px-4 rounded-pill fw-semibold">@successMessage</span>
+                }
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <span class="alert alert-danger py-2 px-4 rounded-pill fw-semibold">@errorMessage</span>
+                }
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <form method="get" class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="searchTerm" class="form-control rounded-pill" placeholder="Search by service name or description..." value="@ViewBag.SearchTerm">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary-custom rounded-pill w-100">
+                            <i class="fa fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-pill w-100">Clear</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead style="background-color: #f14437; color: #fff;">
+                            <tr class="text-center">
+                                <th class="py-3">Image</th>
+                                <th class="py-3">Name</th>
+                                <th class="py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var service in Model)
+                                {
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            @if (!string.IsNullOrWhiteSpace(service.ImageUrl))
+                                            {
+                                                var imageSrc = service.ImageUrl.StartsWith("http") ? service.ImageUrl : (service.ImageUrl.StartsWith("/") ? service.ImageUrl : $"~/{service.ImageUrl}");
+                                                <img src="@Url.Content(imageSrc)" alt="@service.Name" 
+                                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" />
+                                            }
+                                            else
+                                            {
+                                                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f14437 0%, #ff6b5a 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="bi bi-scissors text-white" style="font-size: 2rem;"></i>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="fw-bold fs-5">@service.Name</span>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="d-flex justify-content-center align-items-center gap-2" style="white-space: nowrap;">
+                                                <a asp-area="Admin" asp-controller="Services" asp-action="Details" asp-route-id="@service.Id" 
+                                                   class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                    <i class="bi bi-eye-fill"></i> Details
+                                                </a>
+                                                <a asp-area="" asp-controller="Service" asp-action="Edit" asp-route-id="@service.Id" 
+                                                   class="btn btn-outline-warning btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                    <i class="bi bi-pencil-fill"></i> Edit
+                                                </a>
+                                                <a asp-area="" asp-controller="Service" asp-action="Delete" asp-route-id="@service.Id" 
+                                                   class="btn btn-outline-danger btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                    <i class="bi bi-trash-fill"></i> Delete
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="bi bi-scissors display-4 d-block mb-3"></i>
+                                            <p class="mb-0">No services found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.Pagination != null)
+        {
+            <div class="row justify-content-center mt-4">
+                <div class="col-auto">
+                    <partial name="_PaginationPartial" model="ViewBag.Pagination" />
+                </div>
+            </div>
+        }
+    </div>
+</section>
+

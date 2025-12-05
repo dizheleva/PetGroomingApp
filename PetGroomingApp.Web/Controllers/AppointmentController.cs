@@ -1,5 +1,6 @@
 ﻿namespace PetGroomingApp.Web.Controllers
 {
+    using Microsoft.AspNetCore.Antiforgery;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using PetGroomingApp.Data.Models.Enums;
@@ -12,26 +13,52 @@
         private readonly IGroomerService _groomerService;
         private readonly IPetService _petService;
         private readonly IServiceService _serviceService;
+        private readonly ILogger<AppointmentController> _logger;
 
-        public AppointmentController(IAppointmentService appointmentService, IGroomerService groomerService, IPetService petService, IServiceService serviceService)
+        public AppointmentController(
+            IAppointmentService appointmentService, 
+            IGroomerService groomerService, 
+            IPetService petService, 
+            IServiceService serviceService,
+            ILogger<AppointmentController> logger)
         {
             _appointmentService = appointmentService;
             _groomerService = groomerService;
             _petService = petService;
             _serviceService = serviceService;
+            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, string? searchTerm = null, string? statusFilter = null)
         {
-            if (User.IsInRole("Manager"))
+            const int pageSize = 6;
+            IEnumerable<AppointmentListViewModel> appointments = await _appointmentService.GetByUserAsync(GetUserId());
+
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                return View(await _appointmentService.GetAllAsync());
+                appointments = appointments.Where(a => 
+                    a.PetName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    a.Id.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
             }
 
-            var appointments = await _appointmentService.GetByUserAsync(GetUserId());
+            // Apply status filter
+            if (!string.IsNullOrWhiteSpace(statusFilter))
+            {
+                appointments = appointments.Where(a => a.Status.Equals(statusFilter, StringComparison.OrdinalIgnoreCase));
+            }
 
-            return View(appointments);
+            // Pagination
+            var totalItems = appointments.Count();
+            var pagination = Infrastructure.Helpers.PaginationHelper.CreatePagination(page, totalItems, pageSize);
+            var paginatedAppointments = Infrastructure.Helpers.PaginationHelper.Paginate(appointments, page, pageSize);
+
+            ViewBag.Pagination = pagination;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.StatusFilter = statusFilter;
+
+            return View(paginatedAppointments);
         }
 
         [HttpGet]
@@ -41,15 +68,10 @@
             {
                 AppointmentDetailsViewModel? appointment = null;
                 
-                if (User.IsInRole("Manager"))
-                {
-                    appointment = await _appointmentService.GetDetailsAsManagerAsync(id);
-                }
-                else if (User.Identity?.IsAuthenticated == true)
+                if (User.Identity?.IsAuthenticated == true)
                 {
                     appointment = await _appointmentService.GetDetailsAsync(id, GetUserId());
                 }
-
 
                 if (appointment == null)
                 {
@@ -60,8 +82,8 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the appointment details: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving appointment details for ID: {AppointmentId}", id);
+                ModelState.AddModelError(string.Empty, "An error occurred while retrieving the appointment details.");
                 return View(nameof(Index));
             }
         }
@@ -69,23 +91,14 @@
         [HttpGet]
         public async Task<IActionResult> Create()
         {     
-            if (User.IsInRole("Manager"))
-            {
-                var model = new AppointmentManagerFormViewModel();
-                await PopulateManagerSelectListsAsync(model);
+            var model = new AppointmentUserFormViewModel();
+            await PopulateUserSelectListsAsync(model);
 
-                return View(model);
-            }
-            else
-            {
-                var model = new AppointmentUserFormViewModel();
-                await PopulateUserSelectListsAsync(model);
-
-                return View(model);
-            }
+            return View(model);
         }
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppointmentUserFormViewModel model)
         {            
             if(User.Identity?.IsAuthenticated != true)
@@ -97,6 +110,7 @@
             if (model.SelectedServiceIds == null || model.SelectedServiceIds.Count == 0)
             {
                 ModelState.AddModelError("", "You must select at least one service.");
+                await PopulateUserSelectListsAsync(model);
                 return View(model);
             }
 
@@ -104,28 +118,26 @@
 
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState)
-                {
-                    Console.WriteLine($"Key: {error.Key}");
-                    foreach (var err in error.Value.Errors)
-                    {
-                        Console.WriteLine($"  Error: {err.ErrorMessage}");
-                    }
-                }
-
+                _logger.LogWarning("Model validation failed for appointment creation");
                 return View(model);
             }
 
             try
             {
-                var ownerId = User.IsInRole("Manager") ? null : GetUserId();
-                await _appointmentService.CreateAsync(model, ownerId);
+                await _appointmentService.CreateAsync(model, GetUserId());
                 return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex, "Invalid operation while creating appointment");
+                ModelState.AddModelError(string.Empty, ex.Message);
+                await PopulateUserSelectListsAsync(model);
+                return View(model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while creating the appointment: {ex.Message}");
+                _logger.LogError(ex, "Unexpected error while creating appointment");
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the appointment. Please try again.");
                 await PopulateUserSelectListsAsync(model);
                 return View(model);
             }
@@ -149,14 +161,14 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the appointment for editing: {ex.Message}");
-
+                _logger.LogError(ex, "Error retrieving appointment for editing. ID: {AppointmentId}", id);
+                TempData["ErrorMessage"] = "An error occurred while retrieving the appointment for editing.";
                 return this.RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, AppointmentUserFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -171,19 +183,30 @@
                 bool editSuccess = await _appointmentService.EditAsync(id, model, GetUserId());
                 if (!editSuccess)
                 {
-                    return NotFound();
+                    TempData["ErrorMessage"] = "Failed to update appointment.";
+                    return RedirectToAction(nameof(Index));
                 }
 
-                return this.RedirectToAction(nameof(Details), new { id = model.Id });
+                TempData["SuccessMessage"] = "Appointment updated successfully.";
+                return this.RedirectToAction(nameof(Details), new { id = id });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to edit this appointment.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                await PopulateUserSelectListsAsync(model);
+                return View(model);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while editing the appointment: {e.Message}");
-
+                _logger.LogError(e, "Unexpected error while editing appointment. ID: {AppointmentId}", id);
+                TempData["ErrorMessage"] = "An error occurred while editing the appointment. Please try again.";
                 await PopulateUserSelectListsAsync(model);
-
-                return this.RedirectToAction(nameof(Index));
+                return View(model);
             }
         }
 
@@ -201,13 +224,14 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while retrieving the appointment for cancelation: {ex.Message}");
+                _logger.LogError(ex, "Error retrieving appointment for cancellation. ID: {AppointmentId}", id);
+                TempData["ErrorMessage"] = "An error occurred while retrieving the appointment.";
                 return RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelConfirmed(string id)
         {
             try
@@ -222,8 +246,8 @@
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                ModelState.AddModelError(string.Empty, $"An error occurred while canceling the appointment: {e.Message}");
+                _logger.LogError(e, "Error canceling appointment. ID: {AppointmentId}", id);
+                TempData["ErrorMessage"] = "An error occurred while canceling the appointment. Please try again.";
                 return this.RedirectToAction(nameof(Index));
             }
 
@@ -250,36 +274,5 @@
             }).ToList();
         }
 
-        private async Task PopulateManagerSelectListsAsync(AppointmentManagerFormViewModel model)
-        {
-            model.Groomers = (await _groomerService.GetAllAsync()).Select(g => new SelectListItem
-            {
-                Value = g.Id.ToString(),
-                Text = g.Name
-            }).ToList();
-            model.Users = (await _appointmentService.GetAllUsersAsync()).Select(u => new SelectListItem
-            {
-                Value = u.Id,
-                Text = u.UserName
-            }).ToList();
-            model.Pets = (await _petService.GetAllPetsAsync()).Select(p => new SelectListItem
-            {
-                Value = p?.Id.ToString() ?? null,
-                Text = p?.Name ?? "No Pets Available"
-            }).ToList();
-            model.Services = (await _serviceService.GetAllAsync()).Select(s => new SelectListItem
-            {
-                Value = s.Id,
-                Text = s.Name,
-            }).ToList();
-
-            model.Statuses = Enum.GetValues(typeof(AppointmentStatus))
-                .Cast<AppointmentStatus>()
-                .Select(s => new SelectListItem
-                {
-                    Value = s.ToString(),
-                    Text = s.ToString()
-                }).ToList();
-        }
     }
 }

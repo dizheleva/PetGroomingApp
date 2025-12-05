@@ -1,6 +1,7 @@
 
 namespace PetGroomingApp.WebApi
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using PetGroomingApp.Data;

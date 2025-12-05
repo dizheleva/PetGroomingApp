@@ -1,0 +1,152 @@
+/* Pet Cards Styling */
+.pet-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pet-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.pet-card:hover .pet-image-container img {
+    transform: scale(1.05);
+}
+
+.pet-card .btn-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(241, 68, 55, 0.4) !important;
+}
+
+.pet-card .btn-details:active {
+    transform: translateY(0);
+}
+
+/* Pet Details Page Styling */
+.pet-details-card,
+.groomer-details-card,
+.service-details-card {
+    transition: all 0.3s ease;
+}
+
+.pet-details-card:hover,
+.groomer-details-card:hover,
+.service-details-card:hover {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+.pet-detail-image,
+.groomer-detail-image,
+.service-detail-image {
+    transition: all 0.3s ease;
+}
+
+.pet-detail-content .detail-item,
+.groomer-detail-content .detail-item,
+.service-detail-content .detail-item {
+    transition: all 0.3s ease;
+}
+
+.pet-detail-content .detail-item:hover,
+.groomer-detail-content .detail-item:hover,
+.service-detail-content .detail-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pet-detail-content .btn-back:hover,
+.pet-detail-content .btn-edit:hover,
+.pet-detail-content .btn-delete:hover,
+.groomer-detail-content .btn-back:hover,
+.groomer-detail-content .btn-edit:hover,
+.groomer-detail-content .btn-delete:hover,
+.service-detail-content .btn-back:hover,
+.service-detail-content .btn-edit:hover,
+.service-detail-content .btn-delete:hover {
+    transform: translateY(-2px);
+}
+
+.pet-detail-content .btn-back:hover,
+.groomer-detail-content .btn-back:hover,
+.service-detail-content .btn-back:hover {
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4) !important;
+}
+
+.pet-detail-content .btn-edit:hover,
+.groomer-detail-content .btn-edit:hover,
+.service-detail-content .btn-edit:hover {
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4) !important;
+}
+
+.pet-detail-content .btn-delete:hover,
+.groomer-detail-content .btn-delete:hover,
+.service-detail-content .btn-delete:hover {
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4) !important;
+}
+
+.pet-detail-content .btn-back:active,
+.pet-detail-content .btn-edit:active,
+.pet-detail-content .btn-delete:active,
+.groomer-detail-content .btn-back:active,
+.groomer-detail-content .btn-edit:active,
+.groomer-detail-content .btn-delete:active,
+.service-detail-content .btn-back:active,
+.service-detail-content .btn-edit:active,
+.service-detail-content .btn-delete:active {
+    transform: translateY(0);
+}
+
+/* Service Cards Styling */
+.service-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.service-card:hover .service-image-container img {
+    transform: scale(1.05);
+}
+
+.service-card .btn-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(241, 68, 55, 0.4) !important;
+}
+
+.service-card .btn-details:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pet-card,
+    .service-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .pet-image-container,
+    .service-image-container {
+        height: 200px !important;
+    }
+    
+    .pet-detail-image,
+    .groomer-detail-image,
+    .service-detail-image {
+        min-height: 300px !important;
+    }
+    
+    .pet-detail-content,
+    .groomer-detail-content,
+    .service-detail-content {
+        min-height: auto !important;
+        padding: 2rem !important;
+    }
+    
+    .pet-detail-content h1,
+    .groomer-detail-content h1,
+    .service-detail-content h1 {
+        font-size: 2rem !important;
+    }
+}
+

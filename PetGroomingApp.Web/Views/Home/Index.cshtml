@@ -12,8 +12,23 @@
                     <div class="col-lg-5 col-md-6">
                         <div class="slider_text">
                             <h3>We Groom <br> <span>Your Pets</span></h3>
-                            <p>Give your precious pets <br> the love and care they deserve</p>
-                            <a asp-controller="Appointment" asp-action="Create" class="boxed-btn4">Book Now</a>
+                            <p>Give your precious pets the love and care they deserve</p>
+                            <div class="text-end mt-3">
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    <a asp-controller="Appointment" asp-action="Create" class="btn btn-light rounded-pill fw-bold shadow-lg d-flex align-items-center justify-content-center ms-auto" style="transition: all 0.3s ease; transform: translateY(0); color: #f14437 !important; padding: 12px 32px; width: auto; display: inline-flex; font-size: 15px;">
+                                        <i class="fa fa-calendar-check me-2" style="font-size: 1.1rem;"></i>
+                                        <span>Book Now</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-light rounded-pill fw-bold shadow-lg d-flex align-items-center justify-content-center ms-auto" style="transition: all 0.3s ease; transform: translateY(0); color: #f14437 !important; padding: 12px 32px; width: auto; display: inline-flex; font-size: 15px;">
+                                        <i class="fa fa-calendar-check me-2" style="font-size: 1.1rem;"></i>
+                                        <span>Book Now</span>
+                                    </a>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -47,7 +62,18 @@
                             </p>
                             <p>The consultation allows us to understand your dog’s personality, find out more about their grooming history and allows us to form a relationship of trust with the owner. We know that no two dogs are the same and animals react differently to their surroundings and to the stress that grooming can place on them, especially if they haven’t been groomed before. This first visit allows us to put them at ease.</p>
                             
-                            <a href="appointment.html" class="boxed-btn3">Appointment</a>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <a asp-controller="Appointment" asp-action="Create" class="btn btn-primary-custom rounded-pill px-4 fw-bold shadow-sm" style="transition: all 0.3s ease;">
+                                    <i class="fa fa-calendar-check me-2"></i> Book Appointment
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary-custom rounded-pill px-4 fw-bold shadow-sm" style="transition: all 0.3s ease;">
+                                    <i class="fa fa-calendar-check me-2"></i> Book Appointment
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -56,131 +82,171 @@
     </div>
 </section>
 
-<!-- service_area_start  -->
-<div class="service_area">
+<!-- Services Preview Section - Modern Design -->
+<section class="services-preview py-5">
     <div class="container">
-        <div class="row justify-content-center ">
-            <div class="col-lg-7 col-md-10">
-                <div class="section_title text-center mb-95">
-                    <h3>Services for every dog</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
-                </div>
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Our Services</h2>
+                <p class="text-muted lead">Professional grooming services for every pet</p>
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-6">
-                <div class="single_service">
-                    <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
-                        <div class="service_icon">
-                            <img src="img/service/service_icon_1.png" alt="">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="card-body p-4 text-center d-flex flex-column">
+                        <div class="service-icon-wrapper mb-4">
+                            <div class="service-icon-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 100px; height: 100px;">
+                                <i class="fa fa-cut fa-3x" style="color: #ffffff !important;"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="service_content text-center">
-                        <h3>Pet Boarding</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut</p>
+                        <h4 class="fw-bold mb-3">Professional Grooming</h4>
+                        <p class="text-muted mb-auto">Expert grooming services to keep your pet looking and feeling their best.</p>
+                        <a asp-controller="Service" asp-action="Index" class="btn btn-outline-primary rounded-pill px-4 mt-3">
+                            View Services <i class="fa fa-arrow-right ms-2"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="single_service active">
-                    <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
-                        <div class="service_icon">
-                            <img src="img/service/service_icon_2.png" alt="">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="card-body p-4 text-center d-flex flex-column">
+                        <div class="service-icon-wrapper mb-4">
+                            <div class="service-icon-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 100px; height: 100px;">
+                                <i class="fa fa-heart fa-3x" style="color: #ffffff !important;"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="service_content text-center">
-                        <h3>Healthy Meals</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut</p>
+                        <h4 class="fw-bold mb-3">Pet Care</h4>
+                        <p class="text-muted mb-auto">Comprehensive care services including bathing, nail trimming, and more.</p>
+                        <a asp-controller="Service" asp-action="Index" class="btn btn-outline-success rounded-pill px-4 mt-3">
+                            View Services <i class="fa fa-arrow-right ms-2"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="single_service">
-                    <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center">
-                        <div class="service_icon">
-                            <img src="img/service/service_icon_3.png" alt="">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="card-body p-4 text-center d-flex flex-column">
+                        <div class="service-icon-wrapper mb-4">
+                            <div class="service-icon-circle bg-info bg-opacity-10 d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 100px; height: 100px;">
+                                <i class="fa fa-users fa-3x" style="color: #ffffff !important;"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="service_content text-center">
-                        <h3>Pet Spa</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut</p>
+                        <h4 class="fw-bold mb-3">Expert Team</h4>
+                        <p class="text-muted mb-auto">Our experienced groomers are dedicated to providing the best care for your pets.</p>
+                        <a asp-controller="Groomer" asp-action="Index" class="btn btn-outline-info rounded-pill px-4 mt-3">
+                            Meet Our Team <i class="fa fa-arrow-right ms-2"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- service_area_end -->
+</section>
 
 
 
-<!-- Testmonial Section  -->
-<div class="testmonial_area">
+<!-- Testimonials Section - Modern Design -->
+<section class="testimonials-section py-5 bg-light">
     <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">What Our Clients Say</h2>
+                <p class="text-muted">Read testimonials from our happy pet owners</p>
+            </div>
+        </div>
         <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="textmonial_active owl-carousel">
-                    <div class="testmonial_wrap">
-                        <div class="single_testmonial d-flex align-items-center">
-                            <div class="test_thumb">
-                                <img src="img/testmonial/1.png" alt="">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="testimonial-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                <i class="fa fa-user fa-2x"></i>
                             </div>
-                            <div class="test_content">
-                                <h4>Jhon Walker</h4>
-                                <span>Client</span>
-                                <p>Here my dog had his best experiance with taking a bath! He enjoyed the procedure and I was happy with him.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testmonial_wrap">
-                        <div class="single_testmonial d-flex align-items-center">
-                            <div class="test_thumb">
-                                <img src="img/testmonial/1.png" alt="">
-                            </div>
-                            <div class="test_content">
-                                <h4>Jhon Walker</h4>
-                                <span>Client</span>
-                                <p>Very good customer service! I recomment. They even gave me good advices for home care!</p>
+                            <div>
+                                <h5 class="mb-0 fw-bold">John Walker</h5>
+                                <small class="text-muted">Pet Owner</small>
                             </div>
                         </div>
+                        <p class="mb-0">"Here my dog had his best experience with taking a bath! He enjoyed the procedure and I was happy with him."</p>
+                        <div class="mt-3">
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                        </div>
                     </div>
-                    <div class="testmonial_wrap">
-                        <div class="single_testmonial d-flex align-items-center">
-                            <div class="test_thumb">
-                                <img src="img/testmonial/1.png" alt="">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="testimonial-avatar bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                <i class="fa fa-user fa-2x"></i>
                             </div>
-                            <div class="test_content">
-                                <h4>Jhon Walker</h4>
-                                <span>Client</span>
-                                <p>We experianced very gentle nail clipping. As a plus they do not use sedation. I recommend!</p>
+                            <div>
+                                <h5 class="mb-0 fw-bold">Sarah Johnson</h5>
+                                <small class="text-muted">Pet Owner</small>
                             </div>
+                        </div>
+                        <p class="mb-0">"Very good customer service! I recommend. They even gave me good advice for home care!"</p>
+                        <div class="mt-3">
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="testimonial-avatar bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                <i class="fa fa-user fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold">Mike Davis</h5>
+                                <small class="text-muted">Pet Owner</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"We experienced very gentle nail clipping. As a plus they do not use sedation. I recommend!"</p>
+                        <div class="mt-3">
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
+                            <i class="fa fa-star text-warning"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+</section>
 
-<!--  Apeal Section  -->
-<div class="contact_anipat anipat_bg_1">
+<!-- Call to Action Section - Modern Design -->
+<section class="cta-section py-5" style="background: linear-gradient(135deg, #f14437 0%, #ed5b0d 100%);">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="contact_text text-center">
-                    <div class="section_title text-center">
-                        <h3>Why go with our Pet Grooming salon?</h3>
-                        <p>Because we know that even the best care is only as good as the people behind it. Our team is always here to support your pet.</p>
-                    </div>
-                    <div class="contact_btn d-flex align-items-center justify-content-center">
-                        <a href="contact.html" class="boxed-btn4">Contact Us</a>
-                        <p>Or  <a href="#"> +359 88 123 4567</a></p>
-                    </div>
+            <div class="col-lg-8 text-center text-white">
+                <h2 class="display-5 fw-bold mb-3">Why Choose Our Pet Grooming Salon?</h2>
+                <p class="lead mb-4">Because we know that even the best care is only as good as the people behind it. Our team is always here to support your pet.</p>
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-3">
+                    <a asp-controller="Home" asp-action="Contact" class="btn btn-light btn-lg px-5 rounded-pill fw-bold" style="color: #f14437 !important;">
+                        <i class="fa fa-envelope me-2" style="color: #f14437 !important;"></i> Contact Us
+                    </a>
+                    <a href="tel:+359881234567" class="btn btn-outline-light btn-lg px-5 rounded-pill fw-bold">
+                        <i class="fa fa-phone me-2"></i> +359 88 123 4567
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Add remaining sections here -->

@@ -10,12 +10,16 @@
         [Display(Name = "Appointment Time")]
         public DateTime AppointmentTime { get; set; } = DateTime.Today.AddHours(9);
 
-        public string UserId { get; set; } = string.Empty;
+        [Display(Name = "User (optional - for unregistered customers)")]
+        public string? UserId { get; set; }
+        public List<SelectListItem> Users { get; set; } = new();
 
-        [Required]
         [Display(Name = "Pet")]
         public Guid? SelectedPetId { get; set; }
         public List<SelectListItem> Pets { get; set; } = new();
+
+        [Display(Name = "Pet Name (required if no pet selected)")]
+        public string? PetName { get; set; }
 
         [Display(Name = "Groomer")]
         public Guid? SelectedGroomerId { get; set; }

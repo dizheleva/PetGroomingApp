@@ -1,0 +1,216 @@
+@using PetGroomingApp.Web.ViewModels.Appointment
+@model IEnumerable<AppointmentListViewModel>
+
+@{
+    ViewData["Title"] = "Appointment Management";
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-5 mb-2 text-danger fw-bold">
+                    <i class="bi bi-calendar-check-fill me-2"></i>@ViewData["Title"]
+                </h1>
+                <hr class="w-25 mx-auto border-warning mb-0">
+            </div>
+        </div>
+
+        <div class="row justify-content-between mb-3">
+            <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+            <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Appointments" asp-action="Create" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                    <i class="bi bi-plus-circle-fill me-2"></i> Add New Appointment
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-between mb-3">
+            <div class="col-auto">
+                @if (!string.IsNullOrEmpty(successMessage))
+                {
+                    <span class="alert alert-success py-2 px-4 rounded-pill fw-semibold">@successMessage</span>
+                }
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <span class="alert alert-danger py-2 px-4 rounded-pill fw-semibold">@errorMessage</span>
+                }
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="searchTerm" class="form-control rounded-pill" placeholder="Search by pet, owner, groomer..." value="@ViewBag.SearchTerm">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="statusFilter" class="form-select rounded-pill">
+                            <option value="">All Statuses</option>
+                            <option value="Pending" selected="@(ViewBag.StatusFilter == "Pending")">Pending</option>
+                            <option value="Confirmed" selected="@(ViewBag.StatusFilter == "Confirmed")">Confirmed</option>
+                            <option value="Completed" selected="@(ViewBag.StatusFilter == "Completed")">Completed</option>
+                            <option value="Canceled" selected="@(ViewBag.StatusFilter == "Canceled")">Canceled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary-custom rounded-pill w-100">
+                            <i class="fa fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-pill w-100">Clear</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead style="background-color: #f14437; color: #fff;">
+                            <tr class="text-center">
+                                <th class="py-3">Date & Time</th>
+                                <th class="py-3">Pet</th>
+                                <th class="py-3">Owner</th>
+                                <th class="py-3">Groomer</th>
+                                <th class="py-3">Status</th>
+                                <th class="py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var appointment in Model)
+                                {
+                                    <tr>
+                                        <td class="align-middle">
+                                            <div class="fw-bold">@appointment.AppointmentTime.ToString("MMM dd, yyyy")</div>
+                                            <div class="text-muted small">@appointment.AppointmentTime.ToString("HH:mm")</div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge bg-info text-dark fw-bold px-3 py-2 rounded-pill">
+                                                <i class="bi bi-heart-fill me-1"></i>@appointment.PetName
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="fw-semibold">
+                                                <i class="bi bi-person me-1 text-primary"></i>@appointment.OwnerName
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="fw-semibold">@appointment.GroomerName</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            @{
+                                                var statusBadgeClass = appointment.Status switch
+                                                {
+                                                    "Pending" => "bg-warning text-dark",
+                                                    "Confirmed" => "bg-success",
+                                                    "Completed" => "bg-primary",
+                                                    "Canceled" => "bg-danger",
+                                                    "Cancelled" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @statusBadgeClass fw-bold px-3 py-2 rounded-pill">@appointment.Status</span>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                                <a asp-area="Admin" asp-controller="Appointments" asp-action="Details" asp-route-id="@appointment.Id" 
+                                                   class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                    <i class="bi bi-eye-fill"></i> Details
+                                                </a>
+                                                <a asp-area="Admin" asp-controller="Appointments" asp-action="Edit" asp-route-id="@appointment.Id" 
+                                                   class="btn btn-outline-warning btn-sm fw-bold px-3 py-2 rounded-pill">
+                                                    <i class="bi bi-pencil-fill"></i> Edit
+                                                </a>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-info btn-sm fw-bold px-3 py-2 rounded-pill dropdown-toggle" type="button" id="statusDropdown-@appointment.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-flag-fill"></i> Status
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="statusDropdown-@appointment.Id">
+                                                        <li>
+                                                            <form asp-area="Admin" asp-controller="Appointments" asp-action="ChangeStatus" method="post" class="d-inline">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@appointment.Id" />
+                                                                <input type="hidden" name="status" value="Pending" />
+                                                                <button type="submit" class="dropdown-item @(appointment.Status == "Pending" ? "active" : "")">
+                                                                    <i class="bi bi-clock-history me-2"></i>Pending
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form asp-area="Admin" asp-controller="Appointments" asp-action="ChangeStatus" method="post" class="d-inline">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@appointment.Id" />
+                                                                <input type="hidden" name="status" value="Confirmed" />
+                                                                <button type="submit" class="dropdown-item @(appointment.Status == "Confirmed" ? "active" : "")">
+                                                                    <i class="bi bi-check-circle me-2"></i>Confirmed
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form asp-area="Admin" asp-controller="Appointments" asp-action="ChangeStatus" method="post" class="d-inline">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@appointment.Id" />
+                                                                <input type="hidden" name="status" value="Completed" />
+                                                                <button type="submit" class="dropdown-item @(appointment.Status == "Completed" ? "active" : "")">
+                                                                    <i class="bi bi-check2-all me-2"></i>Completed
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form asp-area="Admin" asp-controller="Appointments" asp-action="ChangeStatus" method="post" class="d-inline">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="id" value="@appointment.Id" />
+                                                                <input type="hidden" name="status" value="Canceled" />
+                                                                <button type="submit" class="dropdown-item @(appointment.Status == "Cancelled" || appointment.Status == "Canceled" ? "active" : "") text-danger">
+                                                                    <i class="bi bi-x-circle me-2"></i>Canceled
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="bi bi-calendar-x display-4 d-block mb-3"></i>
+                                            <p class="mb-0">No appointments found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.Pagination != null)
+        {
+            <div class="row justify-content-center mt-4">
+                <div class="col-auto">
+                    <partial name="_PaginationPartial" model="ViewBag.Pagination" />
+                </div>
+            </div>
+        }
+    </div>
+</section>
+

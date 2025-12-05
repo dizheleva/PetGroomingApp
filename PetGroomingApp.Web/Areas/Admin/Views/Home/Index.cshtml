@@ -6,56 +6,84 @@
     <div class="container">
         <div class="row justify-content-center mb-4">
             <div class="col-lg-8 text-center">
-                <h1 class="display-4 mb-2">Welcome to the <br /> <span class="text-primary">@ViewData["Title"]</span></h1>
+                <h1 class="display-4 mb-2">Welcome to the <br /> <span style="color: #f14437;">@ViewData["Title"]</span></h1>
                 <p class="lead text-muted mb-0">
                     Use the admin panel to manage users, appointments, services, or system settings.
                 </p>
-                <hr class="w-25 mx-auto border-primary mt-4">
+                <hr class="w-25 mx-auto mt-4" style="border-color: #f14437;">
             </div>
         </div>
         <div class="row mt-4 g-4 justify-content-center">
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow border-0 rounded-4 h-100 admin-card-hover">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-people-fill display-3 text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold mb-2">Users</h5>
-                        <p class="card-text mb-4">View and manage registered users.</p>
-                        <a asp-area="Admin"
-                           asp-controller="Users"
-                           asp-action="Index"
-                           class="btn btn-outline-primary rounded-pill px-4 fw-semibold">
-                            <i class="bi bi-person-gear"></i> Manage Users
-                        </a>
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                        <div>
+                            <i class="bi bi-people-fill display-3 text-primary mb-3"></i>
+                            <h5 class="card-title fw-bold mb-2">Users</h5>
+                            <p class="card-text mb-0">View and manage registered users.</p>
+                        </div>
+                        <div class="mt-auto pt-3">
+                            <a asp-area="Admin"
+                               asp-controller="Users"
+                               asp-action="Index"
+                               class="btn btn-outline-primary rounded-pill px-4 fw-semibold">
+                                <i class="bi bi-person-gear"></i> Manage Users
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow border-0 rounded-4 h-100 admin-card-hover">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-calendar-check-fill display-3 text-success mb-3"></i>
-                        <h5 class="card-title fw-bold mb-2">Appointments</h5>
-                        <p class="card-text mb-4">Monitor and update grooming appointments.</p>
-                        <a asp-area="Admin"
-                           asp-controller="Appointments"
-                           asp-action="Index"
-                           class="btn btn-outline-success rounded-pill px-4 fw-semibold">
-                            <i class="bi bi-calendar-event"></i> Manage Appointments
-                        </a>
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                        <div>
+                            <i class="bi bi-calendar-check-fill display-3 text-success mb-3"></i>
+                            <h5 class="card-title fw-bold mb-2">Appointments</h5>
+                            <p class="card-text mb-0">Monitor and update grooming appointments.</p>
+                        </div>
+                        <div class="mt-auto pt-3">
+                            <a asp-area="Admin" asp-controller="Appointments"
+                               asp-action="Index"
+                               class="btn btn-outline-success rounded-pill px-4 fw-semibold">
+                                <i class="bi bi-calendar-event"></i> Manage Appointments
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow border-0 rounded-4 h-100 admin-card-hover">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-scissors display-3 text-info mb-3"></i>
-                        <h5 class="card-title fw-bold mb-2">Services</h5>
-                        <p class="card-text mb-4">Edit and add grooming services.</p>
-                        <a asp-area="Admin"
-                           asp-controller="Services"
-                           asp-action="Index"
-                           class="btn btn-outline-info rounded-pill px-4 fw-semibold">
-                            <i class="bi bi-pencil-square"></i> Manage Services
-                        </a>
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                        <div>
+                            <i class="bi bi-scissors display-3 text-info mb-3"></i>
+                            <h5 class="card-title fw-bold mb-2">Services</h5>
+                            <p class="card-text mb-0">Edit and add grooming services.</p>
+                        </div>
+                        <div class="mt-auto pt-3">
+                            <a asp-area="Admin" asp-controller="Services"
+                               asp-action="Index"
+                               class="btn btn-outline-info rounded-pill px-4 fw-semibold">
+                                <i class="bi bi-pencil-square"></i> Manage Services
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow border-0 rounded-4 h-100 admin-card-hover">
+                    <div class="card-body text-center p-4 d-flex flex-column">
+                        <div>
+                            <i class="bi bi-person-badge-fill display-3 text-info mb-3"></i>
+                            <h5 class="card-title fw-bold mb-2">Groomers</h5>
+                            <p class="card-text mb-0">View and manage groomer information.</p>
+                        </div>
+                        <div class="mt-auto pt-3">
+                            <a asp-area="Admin" asp-controller="Groomers"
+                               asp-action="Index"
+                               class="btn btn-outline-info rounded-pill px-4 fw-semibold">
+                                <i class="bi bi-people"></i> Manage Groomers
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

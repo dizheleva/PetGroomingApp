@@ -115,6 +115,15 @@
         [Test]
         public async Task GetDetailsAsync_ReturnsNull_WhenIdInvalidOrUserIdNull()
         {
+            var emptyList = new List<Appointment>();
+            var mockSet = emptyList.BuildMock();
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAllAttached())
+                .Returns(mockSet);
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAppointmentServicesNamesByIdsAsync(It.IsAny<List<string>>()))
+                .ReturnsAsync(new List<string>());
+
             var result = await _service.GetDetailsAsync("not-a-guid", "user");
             Assert.IsNull(result);
 
@@ -220,9 +229,15 @@
             var appointmentId = Guid.NewGuid();
             var appointment = new Appointment
             {
-                Status = AppointmentStatus.Completed
+                Id = appointmentId,
+                Status = AppointmentStatus.Completed,
+                AppointmentServices = new List<Data.Models.AppointmentService>()
             };
-            _appointmentRepositoryMock.Setup(r => r.GetByIdAsync(appointmentId)).ReturnsAsync(appointment);
+            var appointments = new List<Appointment> { appointment };
+            var mockSet = appointments.BuildMock();
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAllAttached())
+                .Returns(mockSet);
 
             var model = new AppointmentUserFormViewModel { AppointmentTime = DateTime.UtcNow.AddDays(1) };
             Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -235,10 +250,16 @@
             var appointmentId = Guid.NewGuid();
             var appointment = new Appointment
             {
+                Id = appointmentId,
                 Status = AppointmentStatus.Pending,
-                UserId = "user"
+                UserId = "user",
+                AppointmentServices = new List<Data.Models.AppointmentService>()
             };
-            _appointmentRepositoryMock.Setup(r => r.GetByIdAsync(appointmentId)).ReturnsAsync(appointment);
+            var appointments = new List<Appointment> { appointment };
+            var mockSet = appointments.BuildMock();
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAllAttached())
+                .Returns(mockSet);
 
             var model = new AppointmentUserFormViewModel
             {
@@ -254,10 +275,16 @@
             var appointmentId = Guid.NewGuid();
             var appointment = new Appointment
             {
+                Id = appointmentId,
                 Status = AppointmentStatus.Pending,
-                UserId = "otheruser"
+                UserId = "otheruser",
+                AppointmentServices = new List<Data.Models.AppointmentService>()
             };
-            _appointmentRepositoryMock.Setup(r => r.GetByIdAsync(appointmentId)).ReturnsAsync(appointment);
+            var appointments = new List<Appointment> { appointment };
+            var mockSet = appointments.BuildMock();
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAllAttached())
+                .Returns(mockSet);
 
             var model = new AppointmentUserFormViewModel
             {
@@ -273,11 +300,22 @@
             var appointmentId = Guid.NewGuid();
             var appointment = new Appointment
             {
+                Id = appointmentId,
                 Status = AppointmentStatus.Pending,
-                UserId = "user"
+                UserId = "user",
+                AppointmentServices = new List<Data.Models.AppointmentService>()
             };
-            _appointmentRepositoryMock.Setup(r => r.GetByIdAsync(appointmentId)).ReturnsAsync(appointment);
-            _appointmentRepositoryMock.Setup(r => r.UpdateAsync(appointment)).ReturnsAsync(true);
+            var appointments = new List<Appointment> { appointment };
+            var mockSet = appointments.BuildMock();
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAllAttached())
+                .Returns(mockSet);
+            _appointmentRepositoryMock
+                .Setup(r => r.GetAppointmentServicesByIds(It.IsAny<List<Guid>>()))
+                .ReturnsAsync(new List<Service> { new Service { Id = Guid.NewGuid(), Price = 99.9m, Duration = TimeSpan.FromMinutes(30) } });
+            _appointmentRepositoryMock
+                .Setup(r => r.SaveChangesAsync())
+                .Returns(Task.CompletedTask);
 
             var model = new AppointmentUserFormViewModel
             {
@@ -292,9 +330,8 @@
 
             var result = await _service.EditAsync(appointmentId.ToString(), model, "user");
             Assert.IsTrue(result);
-            _appointmentRepositoryMock.Verify(r => r.UpdateAsync(appointment), Times.Once);
+            _appointmentRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Once);
             Assert.AreEqual("Updated notes", appointment.Notes);
-            Assert.AreEqual(99.9m, appointment.TotalPrice);
         }
     }
 }

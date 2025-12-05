@@ -1,4 +1,8 @@
-﻿
+﻿@using Microsoft.AspNetCore.Identity
+@using PetGroomingApp.Data.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+
 <header>
     <div class="header-area ">
         <div class="header-top_area">
@@ -36,7 +40,7 @@
                 <div class="row align-items-center">
                     <div class="col-xl-3 col-lg-3">
                         <div class="logo">
-                            <a asp-controller="Home" asp-action="Index">
+                            <a asp-area="" asp-controller="Home" asp-action="Index">
                                 <img src="~/img/logo.png" alt="Logo">
                             </a>
                         </div>
@@ -44,24 +48,29 @@
                     <div class="col-xl-9 col-lg-9">
                         <div class="main-menu  d-none d-lg-block">
                             <nav>
-                                <ul id="navigation">
-                                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                                    <li><a asp-controller="Groomer" asp-action="Index">Our Groomers</a></li>
+                                <ul id="navigation" class="navigation-two-rows">
+                                    <!-- First Row -->
+                                    <li><a asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-home"></i> Home</a></li>
+                                    <li><a asp-area="" asp-controller="Groomer" asp-action="Index"><i class="fa fa-user-tie"></i> Our Groomers</a></li>
                                     <li>
-                                        <a asp-controller="Service" asp-action="Index">Services <i class="ti-angle-down"></i></a>
-                                        <ul class="submenu">                 
-                                            <li><a href="#">Hair trimming</a></li>
-                                            <li><a href="#">Bathing</a></li>
-                                            <li><a href="#">Nail clipping</a></li>
-                                            <li><a href="#">Ear cleaning</a></li>
+                                        <a asp-area="" asp-controller="Service" asp-action="Index"><i class="fa fa-scissors"></i> Services <i class="ti-angle-down"></i></a>
+                                        <ul class="submenu">
+                                            @await Component.InvokeAsync("ServicesMenu")
                                         </ul>
                                     </li>
-                                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                                    @if (User?.Identity?.IsAuthenticated ?? false)
+                                    <li><a asp-area="" asp-controller="Home" asp-action="Contact"><i class="fa fa-envelope"></i> Contact</a></li>
+                                    
+                                    <li class="nav-break"></li>
+                                    <!-- Second Row -->
+                                    @if (SignInManager.IsSignedIn(User))
                                     {
-                                        <li><a asp-controller="Favorites" asp-action="Index">Favorites</a></li>
-                                        <li><a asp-controller="Pet" asp-action="Index">My Pets</a></li>
-                                        <li><a asp-controller="Appointment" asp-action="Index">Appointments</a></li>
+                                        <li>
+                                            <a href="javascript:void(0);"><i class="fa fa-star"></i> My Salon <i class="ti-angle-down"></i></a>
+                                            <ul class="submenu">
+                                                <li><a asp-area="" asp-controller="Pet" asp-action="Index"><i class="fa fa-paw"></i> My Pets</a></li>
+                                                <li><a asp-area="" asp-controller="Appointment" asp-action="Index"><i class="fa fa-calendar"></i> Appointments</a></li>
+                                            </ul>
+                                        </li>
                                     }
                                     <partial name="_LoginPartial" />
                                 </ul>                                
@@ -69,11 +78,19 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="mobile_menu d-block d-lg-none"></div>
+                        <div class="mobile_menu d-block d-lg-none">
+                            <button class="mobile-menu-toggle" type="button" aria-label="Toggle navigation">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay"></div>
     </div>    
 </header>
 

@@ -6,102 +6,205 @@
 
 <partial name="_PageTitle" />
 
-<section class="about_area">
+<section class="about_area py-5">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form asp-action="Edit" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="Id" />
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+            <div class="col-md-8">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header primary-header text-white text-center py-4 rounded-top-4">
+                        <h3 class="mb-0">
+                            <i class="fa fa-edit me-2"></i>Edit Appointment
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form asp-action="Edit" asp-route-id="@Model.Id.ToString()" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="Id" />
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                    <!-- Step 1: Services -->
-                    <div class="form-group mb-4">
-                        <label class="fw-bold">1. Select Services</label>
-                        <div class="d-flex flex-wrap gap-3 mt-2">
-                            @foreach (var service in Model.Services)
-                            {
-                                <div class="form-check">
-                                    <input id="@service.Value" type="checkbox" class="form-check-input" name="SelectedServiceIds" value="@service.Value"
-                                           @(Model.SelectedServiceIds != null && Model.SelectedServiceIds.Contains(Guid.Parse(service.Value)) ? "checked" : "") />
-                                    <label for="@service.Value" class="form-check-label">@service.Text</label>
+                            <!-- Step 1: Services -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa fa-list-check me-2"></i>1. Select Services
+                                </label>
+                                <div class="d-flex flex-wrap gap-3 mt-2">
+                                    @foreach (var service in Model.Services)
+                                    {
+                                        <div class="form-check">
+                                            <input id="@service.Value" type="checkbox" class="form-check-input" name="SelectedServiceIds" value="@service.Value"
+                                                   @(Model.SelectedServiceIds != null && Model.SelectedServiceIds.Contains(Guid.Parse(service.Value)) ? "checked" : "") />
+                                            <label for="@service.Value" class="form-check-label">@service.Text</label>
+                                        </div>
+                                    }
                                 </div>
-                            }
-                        </div>
-                        <span asp-validation-for="SelectedServiceIds" class="text-danger"></span>
-                    </div>
+                                <span asp-validation-for="SelectedServiceIds" class="text-danger small"></span>
+                            </div>
 
-                    <!-- Step 2: Groomer -->
-                    <div class="form-group mb-4">
-                        <label class="fw-bold">2. Select Groomer</label>
-                        <select id="SelectedGroomerId" asp-for="SelectedGroomerId" asp-items="Model.Groomers" class="form-select">
-                            <option value="">Any Available Groomer</option>
-                        </select>
-                        <span asp-validation-for="SelectedGroomerId" class="text-danger"></span>
-                    </div>
+                            <!-- Step 2: Groomer -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa fa-user-tie me-2"></i>2. Select Groomer
+                                </label>
+                                <select id="SelectedGroomerId" asp-for="SelectedGroomerId" asp-items="Model.Groomers" class="form-select rounded-pill">
+                                    <option value="">Any Available Groomer</option>
+                                </select>
+                                <span asp-validation-for="SelectedGroomerId" class="text-danger small"></span>
+                            </div>
 
-                    <!-- Step 3: Appointment Time -->
-                    @* <div class="form-group mb-4">
-                        <label class="fw-bold">3. Choose Date</label>
-                        <input id="AppointmentDate" name="AppointmentDate" type="date" class="form-control" disabled />
-                    </div>
-                    <div class="form-group mb-4">
-                        <label class="fw-bold">4. Choose Time</label>
-                        <select id="AppointmentTime" name="AppointmentTime" class="form-select" disabled>
-                            <option value="">Select time...</option>
-                        </select>
-                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-                    </div> *@
-                    <div class="form-group mb-4">
-                        <label class="fw-bold">3. Choose Available Time</label>
-                        <select id="AppointmentTime" name="AppointmentTime" class="form-select" disabled>
-                            <option value="">Select time...</option>
-                        </select>
-                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-                    </div>
-                    @* <div class="form-group mb-4">
-                        <label class="fw-bold">3. Choose Available Time</label>
-                        <input id="AppointmentTime" asp-for="AppointmentTime" class="form-control" type="datetime-local" step="1800" disabled />
-                        <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-                    </div> *@
+                            <!-- Step 3: Appointment Time -->
+                            <div class="mb-4">
+                                <label asp-for="AppointmentTime" class="form-label fw-semibold">
+                                    <i class="fa fa-clock me-2"></i>3. Appointment Time <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="AppointmentTime" id="AppointmentTime" class="form-control rounded-pill" type="datetime-local" />
+                                <span asp-validation-for="AppointmentTime" class="text-danger small"></span>
+                            </div>
 
-                    <!-- Step 4: Pet -->
-                    <div class="form-group mb-4">
-                        <label class="fw-bold">4. Select Pet</label>
-                        <select asp-for="SelectedPetId" asp-items="Model.Pets" class="form-select"></select>
-                        <span asp-validation-for="SelectedPetId" class="text-danger"></span>
-                    </div>
+                            <!-- Step 4: Pet -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa fa-paw me-2"></i>4. Select Pet
+                                </label>
+                                <select asp-for="SelectedPetId" asp-items="Model.Pets" class="form-select rounded-pill"></select>
+                                <span asp-validation-for="SelectedPetId" class="text-danger small"></span>
+                            </div>
 
-                    <!-- Step 5: Notes -->
-                    <div class="form-group mb-4">
-                        <label asp-for="Notes" class="fw-bold">5. Additional Notes</label>
-                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Notes (optional)"></textarea>
-                        <span asp-validation-for="Notes" class="text-danger"></span>
-                    </div>
+                            <!-- Step 5: Notes -->
+                            <div class="mb-4">
+                                <label asp-for="Notes" class="form-label fw-semibold">
+                                    <i class="fa fa-sticky-note me-2"></i>5. Additional Notes
+                                </label>
+                                <textarea asp-for="Notes" class="form-control rounded-3" rows="3" placeholder="Notes (optional)"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger small"></span>
+                            </div>
 
-                    <!-- Summary -->
-                    <div class="text-info mb-2">
-                        Duration: <span id="durationValue">@Model.TotalDuration.ToString(@"hh\:mm")</span> hours
-                    </div>
-                    <div class="text-info mb-4">
-                        Total Price: <span id="priceValue">@Model.TotalPrice.ToString("0.00")</span> €
-                    </div>
+                            <!-- Summary -->
+                            <div class="border rounded-3 p-3 mb-4 bg-light">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong><i class="fa fa-hourglass-half me-2"></i>Duration:</strong>
+                                        <span id="durationValue" class="text-primary">@Model.TotalDuration.ToString(@"hh\:mm")</span> hours
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong><i class="fa fa-euro-sign me-2"></i>Total Price:</strong>
+                                        <span id="priceValue" class="text-primary fw-bold">@Model.TotalPrice.ToString("0.00")</span> €
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="d-flex justify-content-center gap-3">
-                        <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
-                            <i class="bi bi-plus-circle"></i> Edit
-                        </button>
-                        <a asp-action="Index" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
-                            <i class="bi bi-arrow-left-circle"></i> Cancel
-                        </a>
+                            <div class="d-flex justify-content-between gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                                    <i class="fa fa-save me-2"></i>Save Changes
+                                </button>
+                                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+                                    <i class="fa fa-arrow-left me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 @section Scripts {
-    <script src="~/js/appointment-booking.js"></script>
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing appointment edit script...');
+            
+            // Calculate duration and price when services are selected
+            const serviceCheckboxes = document.querySelectorAll("input[name='SelectedServiceIds']");
+            const durationValue = document.getElementById("durationValue");
+            const priceValue = document.getElementById("priceValue");
+            const baseUrl = '/api';
+
+            let selectedDuration = 0;
+
+            // Format duration as HH:mm
+            const formatMinutesToHHMM = (minutes) => {
+                if (!minutes || isNaN(minutes)) return "00:00";
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+            };
+
+            // Update duration and price UI
+            const updateTotals = (duration, price) => {
+                if (durationValue) {
+                    durationValue.textContent = formatMinutesToHHMM(duration) + " hours";
+                }
+                if (priceValue) {
+                    priceValue.textContent = price.toFixed(2);
+                }
+            };
+
+            // Fetch totals (duration and price)
+            const fetchTotals = async () => {
+                console.log('fetchTotals called');
+                const selectedIds = Array.from(serviceCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                console.log('Selected service IDs:', selectedIds);
+
+                if (selectedIds.length === 0) {
+                    updateTotals(0, 0);
+                    selectedDuration = 0;
+                    return;
+                }
+
+                try {
+                    const apiUrl = `${baseUrl}/AppointmentApi/CalculateTotals`;
+                    console.log('Fetching totals from:', apiUrl);
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ SelectedServiceIds: selectedIds })
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        console.error("❌ Server error:", errText);
+                        return;
+                    }
+
+                    const data = await response.json();
+                    console.log('Totals data:', data);
+                    const { totalDuration, totalPrice } = data;
+                    selectedDuration = totalDuration || 0;
+                    updateTotals(totalDuration, totalPrice);
+                    console.log('Updated totals - Duration:', totalDuration, 'Price:', totalPrice);
+
+                } catch (error) {
+                    console.error("⚠️ Failed to calculate totals:", error);
+                }
+            };
+
+            // Event listeners
+            console.log('Setting up event listeners...');
+            console.log('Service checkboxes found:', serviceCheckboxes.length);
+            
+            serviceCheckboxes.forEach((cb, index) => {
+                console.log(`Adding listener to checkbox ${index}`);
+                cb.addEventListener("change", () => {
+                    console.log(`Service checkbox ${index} changed`);
+                    fetchTotals();
+                });
+            });
+
+            // Initial calculation if services are pre-selected
+            console.log('Running initial fetchTotals...');
+            fetchTotals();
+            
+            console.log('Appointment edit script initialized');
+        });
+    </script>
 }

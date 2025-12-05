@@ -38,30 +38,6 @@
             return await _appointmentRepository.UpdateAsync(appointment);
         }
 
-        public async Task<string> CreateAsManagerAsync(AppointmentManagerFormViewModel model, string? id)
-        {
-            var appoinmentId = Guid.NewGuid();
-            var appointment = new Appointment
-            {
-                Id = appoinmentId,
-                AppointmentTime = model.AppointmentTime,
-                Duration = TimeSpan.FromMinutes(model.TotalDuration),
-                Notes = model.Notes,
-                GroomerId = model.SelectedGroomerId,
-                UserId = id,
-                Status = AppointmentStatus.Pending,
-                TotalPrice = model.TotalPrice,
-                AppointmentServices = model.SelectedServiceIds.Select(s => new Data.Models.AppointmentService
-                {
-                    AppointmentId = appoinmentId,
-                    ServiceId = s
-                }).ToList()
-            };
-
-            await _appointmentRepository.AddAsync(appointment);
-            return appointment.Id.ToString();
-        }
-
         public async Task<string> CreateAsync(AppointmentUserFormViewModel model, string? id)
         {
             if (model.SelectedServiceIds == null || !model.SelectedServiceIds.Any())
@@ -84,14 +60,36 @@
 
             var appoinmentId = Guid.NewGuid();
 
+            // Build notes: include pet name if provided but no pet selected
+            var notes = model.Notes ?? string.Empty;
+            if (!model.SelectedPetId.HasValue && !string.IsNullOrWhiteSpace(model.PetName))
+            {
+                notes = string.IsNullOrWhiteSpace(notes) 
+                    ? $"Pet Name: {model.PetName}" 
+                    : $"{notes}\nPet Name: {model.PetName}";
+            }
+
+            // Convert local time to UTC for storage (datetime-local sends local time)
+            var appointmentTimeUtc = model.AppointmentTime;
+            if (model.AppointmentTime.Kind == DateTimeKind.Unspecified)
+            {
+                // Assume it's local time and convert to UTC
+                appointmentTimeUtc = DateTime.SpecifyKind(model.AppointmentTime, DateTimeKind.Local).ToUniversalTime();
+            }
+            else if (model.AppointmentTime.Kind == DateTimeKind.Local)
+            {
+                appointmentTimeUtc = model.AppointmentTime.ToUniversalTime();
+            }
+
             var appointment = new Appointment
             {
                 Id = appoinmentId,
-                AppointmentTime = model.AppointmentTime,
+                AppointmentTime = appointmentTimeUtc,
                 Duration = TimeSpan.FromMinutes(totalDuration),
-                Notes = model.Notes,
+                Notes = notes,
+                PetId = model.SelectedPetId,
                 GroomerId = model.SelectedGroomerId,
-                UserId = id,
+                UserId = string.IsNullOrWhiteSpace(id) ? null : id,
                 Status = appointmentStatus,
                 TotalPrice = totalPrice,
                 AppointmentServices = model.SelectedServiceIds.Select(s => new Data.Models.AppointmentService
@@ -114,11 +112,11 @@
                 throw new InvalidOperationException();
             }
 
-            var appointment = await _appointmentRepository
+            var appointmentData = await _appointmentRepository
                 .GetAllAttached()
                 .AsNoTracking()
                 .Where(a => a.Id == appointmentGuid && a.Status != AppointmentStatus.Canceled)
-                .Select(a => new AppointmentUserFormViewModel
+                .Select(a => new
                 {
                     Id = a.Id,
                     AppointmentTime = a.AppointmentTime,
@@ -132,40 +130,34 @@
                     TotalPrice = a.TotalPrice
                 }).FirstOrDefaultAsync();
 
-            return appointment;
-        }
+            if (appointmentData == null)
+                return null;
 
-        public async Task<bool> EditAsManagerAsync(string appointmentId, AppointmentUserFormViewModel model)
-        {
-            if (!Guid.TryParse(appointmentId, out var id))
-                return false;
-
-            var appointment = await _appointmentRepository.GetByIdAsync(id);
-            if (appointment == null || appointment.Status == AppointmentStatus.Completed)
-                throw new InvalidOperationException(NotEditableMessage);
-
-            if (model.AppointmentTime < DateTime.UtcNow)
-                throw new InvalidOperationException(NotPastTimeMessage);
-
-            if (Enum.TryParse<AppointmentStatus>(model.Status, true, out var statusEnum))
+            // Convert UTC to local time for display in datetime-local input
+            var appointmentTime = appointmentData.AppointmentTime;
+            if (appointmentTime.Kind == DateTimeKind.Utc)
             {
-                appointment.Status = statusEnum;
+                appointmentTime = appointmentTime.ToLocalTime();
             }
-            else
+            else if (appointmentTime.Kind == DateTimeKind.Unspecified)
             {
-                appointment.Status = AppointmentStatus.Pending; // or throw exception
+                // Assume it's UTC if unspecified
+                appointmentTime = DateTime.SpecifyKind(appointmentTime, DateTimeKind.Utc).ToLocalTime();
             }
 
-            appointment.AppointmentTime = model.AppointmentTime;
-            appointment.Duration = model.TotalDuration;
-            appointment.Notes = model.Notes;
-            appointment.GroomerId = model.SelectedGroomerId;
-            appointment.PetId = model.SelectedPetId;
-            appointment.UserId = model.UserId;
-            appointment.TotalPrice = model.TotalPrice;
-            UpdateAppointmentServices(appointment, model.SelectedServiceIds);
-
-            return await _appointmentRepository.UpdateAsync(appointment);
+            return new AppointmentUserFormViewModel
+            {
+                Id = appointmentData.Id,
+                AppointmentTime = appointmentTime,
+                SelectedServiceIds = appointmentData.SelectedServiceIds,
+                Notes = appointmentData.Notes,
+                SelectedPetId = appointmentData.SelectedPetId,
+                SelectedGroomerId = appointmentData.SelectedGroomerId,
+                Status = appointmentData.Status,
+                UserId = appointmentData.UserId,
+                TotalDuration = appointmentData.TotalDuration,
+                TotalPrice = appointmentData.TotalPrice
+            };
         }
 
         public async Task<bool> EditAsync(string appointmentId, AppointmentUserFormViewModel model, string userId)
@@ -173,25 +165,63 @@
             if (!Guid.TryParse(appointmentId, out var id) || userId == null)
                 return false;
 
-            var appointment = await _appointmentRepository.GetByIdAsync(id);
+            // Load appointment with all navigation properties for proper update
+            var appointment = await _appointmentRepository.GetAllAttached()
+                .Include(a => a.AppointmentServices)
+                .FirstOrDefaultAsync(a => a.Id == id);
+            
             if (appointment == null || appointment.Status == AppointmentStatus.Completed || appointment.Status == AppointmentStatus.Canceled)
                 throw new InvalidOperationException(NotEditableMessage);
 
-            if (model.AppointmentTime < DateTime.UtcNow)
+            // Convert local time to UTC for storage (datetime-local sends local time)
+            var appointmentTimeUtc = model.AppointmentTime;
+            if (model.AppointmentTime.Kind == DateTimeKind.Unspecified)
+            {
+                // Assume it's local time and convert to UTC
+                appointmentTimeUtc = DateTime.SpecifyKind(model.AppointmentTime, DateTimeKind.Local).ToUniversalTime();
+            }
+            else if (model.AppointmentTime.Kind == DateTimeKind.Local)
+            {
+                appointmentTimeUtc = model.AppointmentTime.ToUniversalTime();
+            }
+
+            if (appointmentTimeUtc < DateTime.UtcNow)
                 throw new InvalidOperationException(NotPastTimeMessage);
 
             if (appointment.UserId != userId)
                 throw new UnauthorizedAccessException();
 
-            appointment.AppointmentTime = model.AppointmentTime;
-            appointment.Duration = model.TotalDuration;
+            // Recalculate duration and price from selected services
+            if (model.SelectedServiceIds == null || !model.SelectedServiceIds.Any())
+            {
+                throw new InvalidOperationException("At least one service must be selected.");
+            }
+
+            var selectedServices = await _appointmentRepository.GetAppointmentServicesByIds(model.SelectedServiceIds);
+            if (selectedServices == null || !selectedServices.Any())
+            {
+                throw new InvalidOperationException("Invalid services selected.");
+            }
+
+            var totalDuration = selectedServices.Sum(s => s.Duration.TotalMinutes);
+            var totalPrice = selectedServices.Sum(s => s.Price);
+
+            // Update appointment properties
+            appointment.AppointmentTime = appointmentTimeUtc;
+            appointment.Duration = TimeSpan.FromMinutes(totalDuration);
             appointment.Notes = model.Notes;
             appointment.GroomerId = model.SelectedGroomerId;
             appointment.PetId = model.SelectedPetId;
-            appointment.TotalPrice = model.TotalPrice;
+            appointment.TotalPrice = totalPrice;
+            
+            // Update appointment services
             UpdateAppointmentServices(appointment, model.SelectedServiceIds);
 
-            return await _appointmentRepository.UpdateAsync(appointment);
+            // Save changes - appointment is already tracked since we loaded it with GetAllAttached().Include()
+            // Use SaveChangesAsync directly instead of UpdateAsync to avoid Attach() conflict
+            await _appointmentRepository.SaveChangesAsync();
+            
+            return true;
         }
 
         public async Task<List<ApplicationUser>> GetAllUsersAsync()
@@ -217,6 +247,7 @@
                     AppointmentTime = a.AppointmentTime,
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
+                    OwnerName = a.User != null ? a.User.UserName ?? a.User.Email ?? "Unknown" : "Unknown",
                     Status = a.Status.ToString()
                 })
                 .ToListAsync();
@@ -233,6 +264,7 @@
                     AppointmentTime = a.AppointmentTime,
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
+                    OwnerName = a.User != null ? a.User.UserName ?? a.User.Email ?? "Unknown" : "Unknown",
                     Status = a.Status.ToString()
                 })
                 .ToListAsync();
@@ -249,6 +281,7 @@
                     AppointmentTime = a.AppointmentTime,
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
+                    OwnerName = a.User != null ? a.User.UserName ?? a.User.Email ?? "Unknown" : "Unknown",
                     Status = a.Status.ToString()
                 })
                 .ToListAsync();
@@ -265,6 +298,7 @@
                     AppointmentTime = a.AppointmentTime,
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
+                    OwnerName = a.User != null ? a.User.UserName ?? a.User.Email ?? "Unknown" : "Unknown",
                     Status = a.Status.ToString()
                 })
                 .ToListAsync();
@@ -272,57 +306,32 @@
 
         public async Task<AppointmentDetailsViewModel?> GetDetailsAsync(string appointmentId, string userId)
         {
-            if (!Guid.TryParse(appointmentId, out var id) || userId == null)
-                return null;
-
-            var appointmentServicesIds = await _appointmentRepository
-                .GetAllAttached()
-                .Where(a => a.Id == id && a.UserId == userId)
-                .Select(a => a.AppointmentServices.Select(s => s.ServiceId.ToString()))
-                .ToListAsync();
-
-            var appointmentServicesNames = await _appointmentRepository
-                .GetAppointmentServicesNamesByIdsAsync(appointmentServicesIds.SelectMany(s => s).ToList());
-
-            var appointment = await _appointmentRepository
-                .GetAllAttached()
-                .Where(a => a.Id == id && a.UserId == userId)
-                .Select(a => new AppointmentDetailsViewModel
-                {
-                    Id = a.Id.ToString(),
-                    AppointmentTime = a.AppointmentTime,
-                    Duration = (int)a.Duration.TotalMinutes,
-                    Notes = a.Notes,
-                    GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
-                    PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
-                    Services = appointmentServicesNames,
-                    Status = a.Status.ToString(),
-                    OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : "",
-                    Price = a.TotalPrice
-                })
-                .FirstOrDefaultAsync();
-
-            return appointment;
-        }
-
-        public async Task<AppointmentDetailsViewModel?> GetDetailsAsManagerAsync(string appointmentId)
-        {
             if (!Guid.TryParse(appointmentId, out var id))
                 return null;
 
-            var appointmentServicesIds = await _appointmentRepository
-                .GetAllAttached()
-                .Where(a => a.Id == id)
+            // Build query - if userId is empty, admin can see all appointments
+            var query = _appointmentRepository.GetAllAttached().Where(a => a.Id == id);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                query = query.Where(a => a.UserId == userId);
+            }
+
+            var appointmentServicesIds = await query
+                .Include(a => a.AppointmentServices)
                 .Select(a => a.AppointmentServices.Select(s => s.ServiceId.ToString()))
                 .ToListAsync();
 
             var appointmentServicesNames = await _appointmentRepository
                 .GetAppointmentServicesNamesByIdsAsync(appointmentServicesIds.SelectMany(s => s).ToList());
 
-            return await _appointmentRepository
-                .GetAllAttached()
-                .Where(a => a.Id == id)
-                .Select(a => new AppointmentDetailsViewModel
+            var appointmentQuery = _appointmentRepository.GetAllAttached().Where(a => a.Id == id);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                appointmentQuery = appointmentQuery.Where(a => a.UserId == userId);
+            }
+
+            var appointmentData = await appointmentQuery
+                .Select(a => new
                 {
                     Id = a.Id.ToString(),
                     AppointmentTime = a.AppointmentTime,
@@ -330,12 +339,40 @@
                     Notes = a.Notes,
                     GroomerName = a.Groomer != null ? $"{a.Groomer.FirstName} {a.Groomer.LastName}" : "Not selected",
                     PetName = a.Pet != null ? a.Pet.Name : NotChosenPetName,
-                    Services = appointmentServicesNames,
                     Status = a.Status.ToString(),
                     OwnerName = a.User != null ? $"{a.User.FirstName} {a.User.LastName}" : "",
                     Price = a.TotalPrice
                 })
                 .FirstOrDefaultAsync();
+
+            if (appointmentData == null)
+                return null;
+
+            // Convert UTC to local time for display
+            var appointmentTime = appointmentData.AppointmentTime;
+            if (appointmentTime.Kind == DateTimeKind.Utc)
+            {
+                appointmentTime = appointmentTime.ToLocalTime();
+            }
+            else if (appointmentTime.Kind == DateTimeKind.Unspecified)
+            {
+                // Assume it's UTC if unspecified
+                appointmentTime = DateTime.SpecifyKind(appointmentTime, DateTimeKind.Utc).ToLocalTime();
+            }
+
+            return new AppointmentDetailsViewModel
+            {
+                Id = appointmentData.Id,
+                AppointmentTime = appointmentTime,
+                Duration = appointmentData.Duration,
+                Notes = appointmentData.Notes,
+                GroomerName = appointmentData.GroomerName,
+                PetName = appointmentData.PetName,
+                Services = appointmentServicesNames,
+                Status = appointmentData.Status,
+                OwnerName = appointmentData.OwnerName,
+                Price = appointmentData.Price
+            };
         }
 
         public async Task<bool> IsOwnerAsync(string appointmentId, string userId)
@@ -353,6 +390,35 @@
 
             appointment.Status = AppointmentStatus.Completed;
             return await _appointmentRepository.UpdateAsync(appointment);
+        }
+
+        public async Task<int> UpdateExpiredAppointmentsStatusAsync()
+        {
+            var now = DateTime.UtcNow;
+            var expiredAppointments = await _appointmentRepository
+                .GetAllAttached()
+                .Where(a => a.AppointmentTime < now && 
+                           a.Status != AppointmentStatus.Completed && 
+                           a.Status != AppointmentStatus.Canceled)
+                .ToListAsync();
+
+            int updatedCount = 0;
+            foreach (var appointment in expiredAppointments)
+            {
+                if (appointment.Status == AppointmentStatus.Pending)
+                {
+                    appointment.Status = AppointmentStatus.Canceled;
+                }
+                else if (appointment.Status == AppointmentStatus.Confirmed)
+                {
+                    appointment.Status = AppointmentStatus.Completed;
+                }
+
+                await _appointmentRepository.UpdateAsync(appointment);
+                updatedCount++;
+            }
+
+            return updatedCount;
         }
 
         public async Task<bool> IsOverlappingAsync(Guid groomerId, DateTime startTime, TimeSpan duration, Guid? excludeAppointmentId = null)

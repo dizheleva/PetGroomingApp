@@ -10,22 +10,27 @@
 .bradcam_area{
     background-size: cover;
     background-position: center center;
-    padding: 160px 0;
+    padding: 40px 0;
     background-position: bottom;
     background-repeat: no-repeat;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    /* Ensure dark background for white text visibility */
+    background-color: #f14437;
     @media #{$mobile_device} {
-        padding: 150px 0;
+        padding: 38px 0;
     }
     @media #{$tablet_device} {
-        padding: 150px 0;
+        padding: 38px 0;
     }
     h3{
         font-size: 50px;
-        color: #fff;
+        color: #fff !important;
         font-weight: 900;
         margin-bottom: 0;
         font-family: $font1;
         text-transform: capitalize;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         @media #{$mobile_device} {
             font-size: 30px;
         }

@@ -9,10 +9,12 @@ namespace PetGroomingApp.Web.Controllers
     public class HomeController : BaseController
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<HomeController> _logger;
 
         public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -39,6 +41,7 @@ namespace PetGroomingApp.Web.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode)
         {

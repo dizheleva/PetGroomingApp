@@ -12,7 +12,6 @@
         Task<bool> IsOwnerAsync(string? petId, string? userId);
         Task<IEnumerable<AllPetsViewModel?>> GetAllPetsAsync(); 
         Task<IEnumerable<AllPetsViewModel?>> GetPetsByUserAsync(string? userId);
-        Task<bool> EditAsManagerAsync(string? petId, PetFormViewModel? model);
     }
 
 }

@@ -1,0 +1,130 @@
+@using PetGroomingApp.Web.ViewModels.Appointment
+@model AppointmentDetailsViewModel
+
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-5 mb-2 text-danger fw-bold">
+                    <i class="bi bi-calendar-check-fill me-2"></i>@ViewData["Title"]
+                </h1>
+                <hr class="w-25 mx-auto border-warning mb-0">
+            </div>
+        </div>
+
+        <div class="row justify-content-start mb-3">
+            <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+                    <i class="bi bi-arrow-left"></i> Back to Appointments
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-calendar3 me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small">Date & Time</div>
+                                <div class="fw-bold fs-5">@Model.AppointmentTime.ToString("MMM dd, yyyy 'at' HH:mm")</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-clock me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small">Duration</div>
+                                <div class="fw-bold fs-5">@Model.Duration minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-heart-fill me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small">Pet</div>
+                                <div class="fw-bold fs-5">@Model.PetName</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-person-badge me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small">Groomer</div>
+                                <div class="fw-bold fs-5">@Model.GroomerName</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-person me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small">Owner</div>
+                                <div class="fw-bold fs-5">@Model.OwnerName</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            @{
+                                var statusBadgeClass = Model.Status switch
+                                {
+                                    "Pending" => "bg-warning text-dark",
+                                    "Confirmed" => "bg-success",
+                                    "Completed" => "bg-primary",
+                                    "Cancelled" => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @statusBadgeClass fw-bold px-3 py-2 rounded-pill fs-6">@Model.Status</span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <div class="col-12 mb-3">
+                            <div class="d-flex align-items-start mb-2">
+                                <i class="bi bi-sticky me-2 text-danger" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <div class="text-muted small">Notes</div>
+                                    <div class="fw-semibold">@Model.Notes</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-start mb-2">
+                            <i class="bi bi-scissors me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small mb-2">Services</div>
+                                <div>
+                                    @foreach (var service in Model.Services)
+                                    {
+                                        <span class="badge bg-info text-dark fw-bold px-3 py-2 rounded-pill me-2 mb-2">@service</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-currency-dollar me-2 text-danger" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div class="text-muted small">Total Price</div>
+                                <div class="fw-bold fs-4 text-danger">$@Model.Price.ToString("F2")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -10,26 +10,38 @@
 <section class="about_area py-5">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-lg-6">
+            <div class="col-md-8">
                 <div class="card shadow border-0 rounded-4">
-                    <div class="card-body py-5 px-4 text-center">
+                    <div class="card-header text-white text-center py-4 rounded-top-4" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                        <h3 class="mb-0">
+                            <i class="fa fa-exclamation-triangle me-2"></i>Cancel Appointment
+                        </h3>
+                    </div>
+                    <div class="card-body p-4 text-center">
                         <div class="mb-4">
-                            <i class="bi bi-exclamation-octagon-fill text-danger" style="font-size: 3rem;"></i>
+                            <i class="fa fa-calendar-times text-danger" style="font-size: 4rem;"></i>
                         </div>
-                        <h3 class="mb-3 text-danger">Cancel Appointment</h3>
-                        <p class="fs-5 mb-4">
-                            Are you sure you want to cancel the appointment for
-                            <strong class="text-primary">@Model.PetName</strong> on
-                            <strong>@Model.AppointmentTime.ToString("dd MMM yyyy, HH:mm")</strong>?
-                        </p>
-                        <form asp-action="CancelConfirmed" method="post" class="d-flex justify-content-center gap-3">
+                        <h4 class="mb-3 text-danger">Are you sure you want to cancel this appointment?</h4>
+                        <div class="border rounded-3 p-4 mb-4 bg-light">
+                            <p class="fs-5 mb-2">
+                                <strong class="text-primary">@Model.PetName</strong>
+                            </p>
+                            <p class="mb-0">
+                                <i class="fa fa-calendar me-2"></i>
+                                <strong>@Model.AppointmentTime.ToString("dd MMM yyyy, HH:mm")</strong>
+                            </p>
+                        </div>
+                        <form asp-action="CancelConfirmed" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
                             <input type="hidden" asp-for="Id" />
-                            <button type="submit" class="btn btn-danger fw-bold rounded-pill px-4">
-                                <i class="bi bi-x-circle"></i> Yes, Cancel Appointment
-                            </button>
-                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary fw-semibold rounded-pill px-4">
-                                <i class="bi bi-arrow-left-circle"></i> No, Go Back
-                            </a>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">
+                                    <i class="fa fa-times-circle me-2"></i>Yes, Cancel Appointment
+                                </button>
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+                                    <i class="fa fa-arrow-left me-2"></i>No, Go Back
+                                </a>
+                            </div>
                         </form>
                     </div>
                 </div>

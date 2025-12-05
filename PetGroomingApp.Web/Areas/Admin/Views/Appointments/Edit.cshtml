@@ -1,0 +1,165 @@
+@using PetGroomingApp.Web.ViewModels.Appointment
+@using PetGroomingApp.Data.Models.Enums
+@model AppointmentUserFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Appointment";
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-5 mb-2 text-danger fw-bold">
+                    <i class="bi bi-pencil-fill me-2"></i>@ViewData["Title"]
+                </h1>
+                <hr class="w-25 mx-auto border-warning mb-0">
+            </div>
+        </div>
+
+        <div class="row justify-content-start mb-3">
+            <div class="col-auto">
+                <a asp-area="Admin" asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+                    <i class="bi bi-arrow-left"></i> Back to Appointments
+                </a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-pill" role="alert">
+                @successMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-pill" role="alert">
+                @errorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header primary-header text-white text-center py-4 rounded-top-4">
+                        <h3 class="mb-0">
+                            <i class="bi bi-calendar-check-fill me-2"></i>Edit Appointment
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form asp-area="Admin" asp-controller="Appointments" asp-action="Edit" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="UserId" />
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                            <!-- Status -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-flag-fill me-2"></i>Status
+                                </label>
+                                <select asp-for="Status" class="form-select rounded-pill">
+                                    @foreach (AppointmentStatus status in Enum.GetValues(typeof(AppointmentStatus)))
+                                    {
+                                        <option value="@status.ToString()" selected="@(Model.Status == status.ToString())">@status.ToString()</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Appointment Time -->
+                            <div class="mb-4">
+                                <label asp-for="AppointmentTime" class="form-label fw-semibold">
+                                    <i class="bi bi-clock me-2"></i>Appointment Date & Time
+                                </label>
+                                <input asp-for="AppointmentTime" class="form-control rounded-pill" type="datetime-local" />
+                                <span asp-validation-for="AppointmentTime" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Services -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-list-check me-2"></i>Services
+                                </label>
+                                <div class="d-flex flex-wrap gap-3 mt-2">
+                                    @foreach (var service in Model.Services)
+                                    {
+                                        <div class="form-check">
+                                            <input id="@service.Value" type="checkbox" class="form-check-input" name="SelectedServiceIds" value="@service.Value"
+                                                   @(Model.SelectedServiceIds != null && Model.SelectedServiceIds.Contains(Guid.Parse(service.Value)) ? "checked" : "") />
+                                            <label for="@service.Value" class="form-check-label">@service.Text</label>
+                                        </div>
+                                    }
+                                </div>
+                                <span asp-validation-for="SelectedServiceIds" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Groomer -->
+                            <div class="mb-4">
+                                <label asp-for="SelectedGroomerId" class="form-label fw-semibold">
+                                    <i class="bi bi-person-badge me-2"></i>Groomer
+                                </label>
+                                <select asp-for="SelectedGroomerId" asp-items="Model.Groomers" class="form-select rounded-pill">
+                                    <option value="">Any Available Groomer</option>
+                                </select>
+                                <span asp-validation-for="SelectedGroomerId" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Pet -->
+                            <div class="mb-4">
+                                <label asp-for="SelectedPetId" class="form-label fw-semibold">
+                                    <i class="bi bi-heart-fill me-2"></i>Pet
+                                </label>
+                                <select asp-for="SelectedPetId" asp-items="Model.Pets" class="form-select rounded-pill">
+                                    <option value="">Select Pet</option>
+                                </select>
+                                <span asp-validation-for="SelectedPetId" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="mb-4">
+                                <label asp-for="Notes" class="form-label fw-semibold">
+                                    <i class="bi bi-sticky me-2"></i>Notes
+                                </label>
+                                <textarea asp-for="Notes" class="form-control rounded-3" rows="3" placeholder="Notes (optional)"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="border rounded-3 p-3 mb-4 bg-light">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong><i class="bi bi-hourglass-split me-2"></i>Duration:</strong>
+                                        <span id="durationValue" class="text-primary">@Model.TotalDuration.ToString(@"hh\:mm")</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong><i class="bi bi-currency-dollar me-2"></i>Total Price:</strong>
+                                        <span id="priceValue" class="text-primary fw-bold">@Model.TotalPrice.ToString("0.00")</span> €
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                                    <i class="bi bi-save-fill me-2"></i>Save Changes
+                                </button>
+                                <a asp-area="Admin" asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+                                    <i class="bi bi-x-circle me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -167,34 +167,5 @@
                 })
                 .ToListAsync();
         }
-
-        public async Task<bool> EditAsManagerAsync(string? petId, PetFormViewModel? model)
-        {
-            bool isGuidValid = Guid.TryParse(petId, out Guid petGuid);
-            Pet? pet = null;
-
-            if (isGuidValid)
-            {
-                pet = await _petRepository.GetByIdAsync(petGuid);
-            }
-
-            if (pet == null || model == null)
-            {
-                throw new InvalidOperationException(PetNotFoundMessage);
-            }
-
-            pet.Name = model.Name;
-            pet.Type = model.Type;
-            pet.Breed = model.Breed;
-            pet.Size = model.Size;
-            pet.Gender = model.Gender;
-            pet.Age = model.Age;
-            pet.ImageUrl = model.ImageUrl;
-            pet.Notes = model.Notes;
-            pet.OwnerId = model.OwnerId;
-
-            return await _petRepository.UpdateAsync(pet);
-        }
-                
     }
 }

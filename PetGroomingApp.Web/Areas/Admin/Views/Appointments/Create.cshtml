@@ -1,0 +1,352 @@
+@model PetGroomingApp.Web.ViewModels.Appointment.AppointmentUserFormViewModel
+
+@{
+    ViewData["Title"] = "Create Appointment";
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header primary-header text-white text-center py-4 rounded-top-4">
+                        <h3 class="mb-0">
+                            <i class="fa fa-calendar-plus me-2"></i>Create Appointment
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="alert alert-danger rounded-pill mb-3">@errorMessage</div>
+                        }
+                        <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="Id" />
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                            <!-- Step 1: User Selection (Optional for unregistered customers) -->
+                            <div class="mb-4 position-relative">
+                                <label asp-for="UserId" class="form-label fw-semibold">
+                                    <i class="fa fa-user me-2"></i>Customer (Optional - for unregistered customers leave empty)
+                                </label>
+                                <input type="text" id="userSearchInput" class="form-control rounded-pill" placeholder="Type to search users..." autocomplete="off" />
+                                <select id="UserId" name="UserId" asp-for="UserId" class="form-select rounded-pill d-none">
+                                    <option value="">Unregistered Customer (No User)</option>
+                                    @foreach (var user in Model.Users)
+                                    {
+                                        <option value="@user.Value" data-text="@user.Text">@user.Text</option>
+                                    }
+                                </select>
+                                <input type="hidden" id="selectedUserId" name="UserId" value="@Model.UserId" />
+                                <div id="userDropdown" class="list-group position-absolute w-100 bg-white border rounded shadow" style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none; top: 100%; margin-top: 2px;"></div>
+                                <small class="text-muted d-block mt-1">Type to search users or leave empty for unregistered customer</small>
+                                <span asp-validation-for="UserId" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Step 2: Services -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa fa-list-check me-2"></i>Services <span class="text-danger">*</span>
+                                </label>
+                                <div class="d-flex flex-wrap gap-3 mt-2">
+                                    @foreach (var service in Model.Services)
+                                    {
+                                        <div class="form-check">
+                                            <input id="@service.Value" type="checkbox" class="form-check-input" name="SelectedServiceIds" value="@service.Value"
+                                                   @(Model.SelectedServiceIds != null && Model.SelectedServiceIds.Contains(Guid.Parse(service.Value)) ? "checked" : "") />
+                                            <label for="@service.Value" class="form-check-label">@service.Text</label>
+                                        </div>
+                                    }
+                                </div>
+                                <span asp-validation-for="SelectedServiceIds" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Step 3: Groomer -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa fa-user-tie me-2"></i>Groomer
+                                </label>
+                                <select id="SelectedGroomerId" asp-for="SelectedGroomerId" asp-items="Model.Groomers" class="form-select rounded-pill">
+                                    <option value="">Any Available Groomer</option>
+                                </select>
+                                <span asp-validation-for="SelectedGroomerId" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Step 4: Pet -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="fa fa-paw me-2"></i>Pet <span class="text-danger">*</span>
+                                </label>
+                                <div id="petSelectionContainer">
+                                    <select id="SelectedPetId" name="SelectedPetId" class="form-select rounded-pill">
+                                        <option value="">Select Pet...</option>
+                                        @foreach (var pet in Model.Pets)
+                                        {
+                                            <option value="@pet.Value" selected="@pet.Selected">@pet.Text</option>
+                                        }
+                                    </select>
+                                    <span class="text-muted small d-block mt-1">Or enter pet name manually below if no pet is selected</span>
+                                </div>
+                                <div class="mt-3">
+                                    <label asp-for="PetName" class="form-label fw-semibold">
+                                        <i class="fa fa-paw me-2"></i>Pet Name (Required if no pet selected)
+                                    </label>
+                                    <input asp-for="PetName" class="form-control rounded-pill" placeholder="Enter pet name..." />
+                                    <span asp-validation-for="PetName" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Appointment Time -->
+                            <div class="mb-4">
+                                <label asp-for="AppointmentTime" class="form-label fw-semibold">
+                                    <i class="fa fa-clock me-2"></i>Appointment Time <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="AppointmentTime" class="form-control rounded-pill" type="datetime-local" />
+                                <span asp-validation-for="AppointmentTime" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Step 6: Status -->
+                            <div class="mb-4">
+                                <label asp-for="Status" class="form-label fw-semibold">
+                                    <i class="fa fa-flag me-2"></i>Status
+                                </label>
+                                <select asp-for="Status" class="form-select rounded-pill">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Canceled">Canceled</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Step 7: Notes -->
+                            <div class="mb-4">
+                                <label asp-for="Notes" class="form-label fw-semibold">
+                                    <i class="fa fa-sticky-note me-2"></i>Notes
+                                </label>
+                                <textarea asp-for="Notes" class="form-control rounded-3" rows="3" placeholder="Notes (optional)"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger small"></span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                                    <i class="fa fa-calendar-check me-2"></i>Create Appointment
+                                </button>
+                                <a asp-area="Admin" asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+                                    <i class="fa fa-arrow-left me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Calculate duration and price when services are selected
+        const serviceCheckboxes = document.querySelectorAll("input[name='SelectedServiceIds']");
+        const durationValue = document.getElementById("durationValue");
+        const priceValue = document.getElementById("priceValue");
+        const baseUrl = window.location.origin.replace(/:\d+$/, ':7116') + '/api';
+
+        // User search functionality
+        const userSearchInput = document.getElementById("userSearchInput");
+        const userDropdown = document.getElementById("userDropdown");
+        const selectedUserId = document.getElementById("selectedUserId");
+        const userIdSelect = document.getElementById("UserId");
+        const allUsers = Array.from(userIdSelect.options).map(opt => ({
+            value: opt.value,
+            text: opt.textContent,
+            dataText: opt.getAttribute('data-text') || opt.textContent
+        }));
+
+        // Pet selection
+        const selectedPetId = document.getElementById("SelectedPetId");
+        const petNameInput = document.getElementById("PetName");
+
+        async function updateSummary() {
+            const selectedIds = Array.from(serviceCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            if (selectedIds.length === 0) {
+                if (durationValue) durationValue.textContent = "00:00 hours";
+                if (priceValue) priceValue.textContent = "0.00";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/AppointmentApi/CalculateTotals`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ SelectedServiceIds: selectedIds })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (durationValue) {
+                        const hours = Math.floor(data.totalDuration / 60);
+                        const minutes = data.totalDuration % 60;
+                        durationValue.textContent = `${hours}:${minutes.toString().padStart(2, '0')} hours`;
+                    }
+                    if (priceValue) {
+                        priceValue.textContent = data.totalPrice.toFixed(2);
+                    }
+                } else {
+                    console.error("Failed to calculate totals", response.status);
+                }
+            } catch (error) {
+                console.error("Error calculating totals:", error);
+            }
+        }
+
+        // User search and filter
+        function filterUsers(searchTerm) {
+            if (!searchTerm || searchTerm.trim() === '') {
+                userDropdown.style.display = 'none';
+                return;
+            }
+
+            const filtered = allUsers.filter(u => 
+                u.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                u.dataText.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                userDropdown.innerHTML = '<div class="list-group-item">No users found</div>';
+                userDropdown.style.display = 'block';
+                return;
+            }
+
+            userDropdown.innerHTML = filtered.map(u => 
+                `<a href="#" class="list-group-item list-group-item-action" data-value="${u.value}">${u.text}</a>`
+            ).join('');
+
+            userDropdown.style.display = 'block';
+
+            // Add click handlers
+            userDropdown.querySelectorAll('a').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const value = item.getAttribute('data-value');
+                    const text = item.textContent;
+                    userSearchInput.value = text;
+                    selectedUserId.value = value;
+                    userDropdown.style.display = 'none';
+                    loadPetsForUser(value);
+                });
+            });
+        }
+
+        // Load pets for selected user
+        async function loadPetsForUser(userId) {
+            if (!userId || userId === '') {
+                selectedPetId.innerHTML = '<option value="">No Pet</option>';
+                selectedPetId.disabled = true;
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/PetApi/GetByUser/${userId}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const pets = await response.json();
+                    selectedPetId.innerHTML = '<option value="">Select Pet...</option>';
+                    pets.forEach(pet => {
+                        const option = document.createElement('option');
+                        option.value = pet.id;
+                        option.textContent = pet.name;
+                        selectedPetId.appendChild(option);
+                    });
+                    selectedPetId.disabled = false;
+                } else {
+                    selectedPetId.innerHTML = '<option value="">Error loading pets</option>';
+                    selectedPetId.disabled = true;
+                }
+            } catch (error) {
+                console.error("Error loading pets:", error);
+                selectedPetId.innerHTML = '<option value="">Error loading pets</option>';
+                selectedPetId.disabled = true;
+            }
+        }
+
+        // Handle pet selection change
+        selectedPetId.addEventListener('change', function() {
+            if (this.value) {
+                petNameInput.value = '';
+                petNameInput.required = false;
+                petNameInput.classList.remove('is-invalid');
+            } else {
+                petNameInput.required = true;
+            }
+        });
+
+        // Handle pet name input
+        petNameInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                selectedPetId.value = '';
+            }
+        });
+
+        // Form validation before submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const petId = selectedPetId.value;
+            const petName = petNameInput.value.trim();
+            
+            if (!petId && !petName) {
+                e.preventDefault();
+                petNameInput.classList.add('is-invalid');
+                petNameInput.setCustomValidity('Either select a pet or enter a pet name.');
+                petNameInput.reportValidity();
+                return false;
+            } else {
+                petNameInput.classList.remove('is-invalid');
+                petNameInput.setCustomValidity('');
+            }
+        });
+
+        // User search input event
+        userSearchInput.addEventListener('input', function() {
+            filterUsers(this.value);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userSearchInput.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        if (selectedUserId.value) {
+            const selectedUser = allUsers.find(u => u.value === selectedUserId.value);
+            if (selectedUser) {
+                userSearchInput.value = selectedUser.text;
+                loadPetsForUser(selectedUserId.value);
+            }
+        } else {
+            selectedPetId.disabled = true;
+        }
+
+        serviceCheckboxes.forEach(cb => cb.addEventListener("change", updateSummary));
+        
+        // Initial calculation if services are pre-selected
+        updateSummary();
+    </script>
+}
+

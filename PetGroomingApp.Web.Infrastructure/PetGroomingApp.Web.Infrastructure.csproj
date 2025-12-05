@@ -9,11 +9,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PetGroomingApp.Data\PetGroomingApp.Data.csproj" />
     <ProjectReference Include="..\PetGroomingApp.GCommon\PetGroomingApp.GCommon.csproj" />
+    <ProjectReference Include="..\PetGroomingApp.Services.Core\PetGroomingApp.Services.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,8 +6,14 @@
     {
         Task<IEnumerable<UserIndexViewModel>> GetUserManagementBoardDataAsync(string userId);
 
-        Task<IEnumerable<string>> GetManagerEmailsAsync();
-
         Task<bool> AssignUserToRoleAsync(RoleSelectionInputModel inputModel);
+
+        Task<UserFormViewModel?> GetForEditByIdAsync(string userId);
+
+        Task<bool> CreateAsync(UserFormViewModel model);
+
+        Task<bool> EditAsync(string userId, UserFormViewModel model);
+
+        Task<UserFormViewModel?> GetByIdAsync(string userId);
     }
 }

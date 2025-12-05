@@ -6,57 +6,76 @@
 
 <partial name="_PageTitle"/>
 
-<section class="service_content py-5 bg-light">
+<section class="about_area py-5">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form asp-action="Edit" method="post" class="bg-light p-4 rounded-4 shadow-sm border">
-                    <input type="hidden" asp-for="Id" />
-
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label fw-bold">Service Name</label>
-                        <input asp-for="Name" class="form-control" placeholder="Enter Service Name">
-                        <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="col-md-8">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header primary-header text-white text-center py-4 rounded-top-4">
+                        <h3 class="mb-0">
+                            <i class="fa fa-edit me-2"></i>Edit Service
+                        </h3>
                     </div>
+                    <div class="card-body p-4">
+                        <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="Id" />
+                            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Duration" class="form-label fw-bold">Duration</label>
-                        <input asp-for="Duration" class="form-control" type="time">
-                        <span asp-validation-for="Duration" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label fw-bold">Description (optional)</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="ImageUrl" class="form-label fw-bold">Image URL</label>
-                        <input asp-for="ImageUrl" class="form-control" placeholder="Enter image URL">
-                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Price" class="form-label fw-bold">Price</label>
-                        <div class="input-group">
-                            <input asp-for="Price" class="form-control" aria-label="Price">
-                            <div class="input-group-append">
-                                <span class="input-group-text">€</span>
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label fw-semibold">
+                                    <i class="fa fa-tag me-2"></i>Service Name
+                                </label>
+                                <input asp-for="Name" class="form-control rounded-pill" placeholder="Enter Service Name">
+                                <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
-                        </div>
-                        <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
 
-                    <div class="text-center mt-4 d-flex justify-content-center gap-2">
-                        <button type="submit" class="btn btn-success fw-bold px-4 rounded-pill">
-                            <i class="bi bi-plus-circle"></i> Save Changes
-                        </button>
-                        <a asp-action="Manage" class="btn btn-outline-secondary fw-semibold px-4 rounded-pill">
-                            <i class="bi bi-arrow-left-circle"></i> Cancel
-                        </a>
+                            <div class="mb-3">
+                                <label asp-for="Duration" class="form-label fw-semibold">
+                                    <i class="fa fa-clock me-2"></i>Duration
+                                </label>
+                                <input asp-for="Duration" class="form-control rounded-pill" type="time">
+                                <span asp-validation-for="Duration" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label fw-semibold">
+                                    <i class="fa fa-file-text me-2"></i>Description (optional)
+                                </label>
+                                <textarea asp-for="Description" class="form-control rounded-3" rows="3" placeholder="Enter description"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ImageUrl" class="form-label fw-semibold">
+                                    <i class="fa fa-image me-2"></i>Image URL
+                                </label>
+                                <input asp-for="ImageUrl" class="form-control rounded-pill" placeholder="Enter image URL">
+                                <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Price" class="form-label fw-semibold">
+                                    <i class="fa fa-euro-sign me-2"></i>Price
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Price" class="form-control rounded-start" aria-label="Price">
+                                    <span class="input-group-text rounded-end">€</span>
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-between gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary-custom rounded-pill px-4 fw-bold">
+                                    <i class="fa fa-save me-2"></i>Save Changes
+                                </button>
+                                <a asp-area="Admin" asp-controller="Services" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+                                    <i class="fa fa-arrow-left me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

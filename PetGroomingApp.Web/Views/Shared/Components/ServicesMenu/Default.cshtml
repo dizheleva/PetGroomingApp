@@ -1,0 +1,19 @@
+@using PetGroomingApp.Web.ViewModels.Service
+@model IEnumerable<AllServicesIndexViewModel>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var service in Model)
+    {
+        <li>
+            <a asp-area="" asp-controller="Service" asp-action="Details" asp-route-id="@service.Id">
+                <i class="fa fa-scissors"></i> @service.Name
+            </a>
+        </li>
+    }
+}
+else
+{
+    <li><a href="#"><i class="fa fa-info-circle"></i> No services available</a></li>
+}
+

@@ -1,0 +1,48 @@
+/* Fix for service icons visibility */
+.service-icon-circle {
+    position: relative;
+    min-height: 100px;
+    min-width: 100px;
+}
+
+.service-icon-circle i {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 3rem !important;
+    line-height: 1 !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.service-icon-circle i.fas,
+.service-icon-circle i.fa {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "FontAwesome" !important;
+    font-weight: 900 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    speak: none;
+    text-transform: none;
+}
+
+/* Force icon content - Unicode values for Font Awesome 6 */
+.service-icon-circle i.fa-scissors::before {
+    content: "\f0c4" !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+
+.service-icon-circle i.fa-paw::before {
+    content: "\f1b0" !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+
+.service-icon-circle i.fa-user-tie::before {
+    content: "\f508" !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}

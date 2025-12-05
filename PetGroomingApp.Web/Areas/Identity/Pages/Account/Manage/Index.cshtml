@@ -1,0 +1,127 @@
+@page
+@using Microsoft.AspNetCore.Identity
+@using PetGroomingApp.Data.Models
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "Manage Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<partial name="_PageTitle" />
+
+<section class="about_area py-5">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header primary-header text-white text-center py-4 rounded-top-4">
+                        <h2 class="mb-0">
+                            <i class="fa fa-user-circle me-2"></i>Manage Your Account
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <!-- Account Information -->
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded-3 p-4 h-100">
+                                    <h4 class="text-primary mb-3">
+                                        <i class="fa fa-info-circle me-2"></i>Account Information
+                                    </h4>
+                                    <dl class="row">
+                                        <dt class="col-sm-5">Username:</dt>
+                                        <dd class="col-sm-7 fw-semibold">@user?.UserName</dd>
+
+                                        <dt class="col-sm-5">Email:</dt>
+                                        <dd class="col-sm-7">@user?.Email</dd>
+
+                                        <dt class="col-sm-5">Email Confirmed:</dt>
+                                        <dd class="col-sm-7">
+                                            @if (user?.EmailConfirmed == true)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fa fa-check-circle me-1"></i>Confirmed
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="fa fa-exclamation-circle me-1"></i>Not Confirmed
+                                                </span>
+                                            }
+                                        </dd>
+
+                                        <dt class="col-sm-5">Phone Number:</dt>
+                                        <dd class="col-sm-7">@(user?.PhoneNumber ?? "Not set")</dd>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <!-- Account Actions -->
+                            <div class="col-md-6 mb-4">
+                                <div class="border rounded-3 p-4 h-100">
+                                    <h4 class="text-primary mb-3">
+                                        <i class="fa fa-cog me-2"></i>Account Actions
+                                    </h4>
+                                    <div class="d-grid gap-2">
+                                        <a asp-page="./ChangePassword" class="btn btn-outline-primary rounded-pill px-4 fw-semibold">
+                                            <i class="fa fa-key me-2"></i>Change Password
+                                        </a>
+                                        <a asp-page="./Email" class="btn btn-outline-info rounded-pill px-4 fw-semibold">
+                                            <i class="fa fa-envelope me-2"></i>Change Email
+                                        </a>
+                                        <a asp-page="./PersonalData" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+                                            <i class="fa fa-download me-2"></i>Download Personal Data
+                                        </a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <hr class="my-3">
+                                            <p class="text-muted small mb-2">Administrative Access</p>
+                                            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-outline-danger rounded-pill px-4 fw-semibold">
+                                                <i class="fa fa-cog me-2"></i>Admin Dashboard
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="border rounded-3 p-4 bg-light">
+                                    <h4 class="text-primary mb-3">
+                                        <i class="fa fa-chart-bar me-2"></i>Quick Links
+                                    </h4>
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <a asp-controller="Pet" asp-action="Index" class="btn btn-primary-custom w-100 rounded-pill">
+                                                <i class="fa fa-paw me-2"></i>My Pets
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a asp-controller="Appointment" asp-action="Index" class="btn btn-primary-custom w-100 rounded-pill">
+                                                <i class="fa fa-calendar me-2"></i>Appointments
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary w-100 rounded-pill">
+                                                <i class="fa fa-home me-2"></i>Home
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

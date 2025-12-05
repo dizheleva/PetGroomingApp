@@ -18,45 +18,50 @@
             </p>
         </div>
 
+        <!-- Search -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6">
+                <form method="get" class="d-flex gap-2">
+                    <input type="text" name="searchTerm" class="form-control rounded-pill" placeholder="Search services..." value="@ViewBag.SearchTerm">
+                    <button type="submit" class="btn btn-primary-custom rounded-pill">Search</button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary rounded-pill">Clear</a>
+                </form>
+            </div>
+        </div>
+
         <div class="row justify-content-center">
-            @if(User.IsInRole("Manager"))
-            {
-                <div class="container justify-content-center">
-                    <div style="margin-bottom: 20px">
-                        <a asp-controller="Service" asp-action="Create" class="boxed-btn3"><i class="fa fa-plus"> Add New Service</i></a>
-                    </div>
-                </div>
-            }
             @foreach (var service in Model)
             {
                 <div class="col-lg-4 col-md-6 d-flex align-items-stretch mb-4">
-                    <div class="single_service shadow-sm d-flex flex-column w-100">
-                        <div class="service_thumb service_icon_bg_1 d-flex align-items-center justify-content-center" style="height: 160px;">
-                            <div class="service_icon" style="max-width: 100px; max-height: 100px;">
-                                <img src="@service.ImageUrl" alt="@service.Name" class="img-fluid" />
+                    <div class="service-card shadow-lg d-flex flex-column w-100" style="background: white; border-radius: 16px; overflow: hidden; transition: all 0.3s ease; border: none;">
+                        <div class="service-image-container d-flex align-items-center justify-content-center" style="height: 240px; border-radius: 16px 16px 0 0; overflow: hidden; position: relative; background: url('/img/service/service_icon_bg_1.png') center center no-repeat; background-size: 70%;">
+                            <div class="service_icon" style="max-width: 120px; max-height: 120px; position: relative; z-index: 2;">
+                                @{
+                                    var serviceImageSrc = service.ImageUrl.StartsWith("http") ? service.ImageUrl : (service.ImageUrl.StartsWith("/") ? service.ImageUrl : $"~/{service.ImageUrl}");
+                                }
+                                <img src="@Url.Content(serviceImageSrc)" alt="@service.Name" class="img-fluid" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));" />
                             </div>
                         </div>
-                        <div class="service_content text-center p-3 d-flex flex-column flex-grow-1 justify-content-between">
+                        <div class="service-content text-center p-4 d-flex flex-column flex-grow-1 justify-content-between" style="background: white;">
                             <div>
-                                <h5 class="fw-bold">@service.Name</h5>
-                                <p class="text-muted mb-3">@service.Description</p>
+                                <h5 class="fw-bold mb-2" style="color: #2c3e50; font-size: 1.5rem; letter-spacing: -0.5px;">@service.Name</h5>
+                                <p class="text-muted mb-3" style="line-height: 1.5;">@service.Description</p>
                             </div>
-                            <div style="margin-bottom: 20px">
-                                <a asp-controller="Service" asp-action="Details" asp-route-id="@service.Id" class="boxed-btn3">Details</a>
+                            <div class="mt-3">
+                                <a asp-controller="Service" asp-action="Details" asp-route-id="@service.Id" class="btn btn-details rounded-pill px-4 py-2 fw-bold" style="background: linear-gradient(135deg, #f14437 0%, #ff6b5a 100%); color: white; border: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(241, 68, 55, 0.3);">
+                                    <i class="fa fa-info-circle me-2"></i> View Details
+                                </a>
                             </div>
-                            @if (User?.Identity?.IsAuthenticated ?? false)
-                            {
-                                <form asp-controller="Favorites" asp-action="Add" asp-route-id="@service.Id" method="post" class="d-inline">
-                                    <input type="hidden" name="serviceId" value="@service.Id" />
-                                    <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill px-4 fw-bold">
-                                        <i class="fa fa-bookmark"></i> Add to favorites
-                                    </button>
-                                </form>
-                            }
                         </div>
                     </div>
                 </div>
             }
         </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.Pagination != null)
+        {
+            <partial name="_PaginationPartial" model="ViewBag.Pagination" />
+        }
     </div>
 </section>

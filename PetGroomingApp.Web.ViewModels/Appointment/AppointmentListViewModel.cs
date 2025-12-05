@@ -10,6 +10,8 @@
 
         public string? PetName { get; set; }
 
+        public string? OwnerName { get; set; }
+
         public string Status { get; set; } = null!;
     }
 

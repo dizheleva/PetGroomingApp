@@ -1,0 +1,14 @@
+/* Force white icon colors in service cards - all icons should be white */
+.service-icon-circle.bg-primary i,
+.service-icon-circle.bg-success i,
+.service-icon-circle.bg-info i {
+    color: #ffffff !important;
+}
+
+/* Ensure icons are visible */
+.service-icon-circle i {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+

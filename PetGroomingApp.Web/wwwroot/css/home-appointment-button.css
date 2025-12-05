@@ -1,0 +1,68 @@
+/* Enhanced styling for appointment booking buttons on home page */
+/* Hero button - White style */
+.banner-area .btn-light.shadow-lg {
+    background: #ffffff !important;
+    color: #f14437 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3) !important;
+    gap: 4px !important;
+    width: auto !important;
+    min-width: auto !important;
+    max-width: fit-content !important;
+    padding: 16px 43px !important;
+}
+
+.banner-area .btn-light.shadow-lg:hover {
+    background: #f8f9fa !important;
+    color: #ed5b0d !important;
+    border-color: #f8f9fa !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4) !important;
+}
+
+.banner-area .btn-light.shadow-lg span {
+    color: #f14437 !important;
+    font-weight: bold !important;
+}
+
+.banner-area .btn-light.shadow-lg:hover span {
+    color: #ed5b0d !important;
+}
+
+.banner-area .btn-light.shadow-lg i {
+    color: #f14437 !important;
+    display: block !important;
+}
+
+.banner-area .btn-light.shadow-lg:hover i {
+    color: #ed5b0d !important;
+}
+
+/* Animation for hero button */
+.banner-area .btn-light.shadow-lg {
+    animation: pulse-glow-white 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow-white {
+    0%, 100% {
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(255, 255, 255, 0.5);
+    }
+}
+
+.banner-area .btn-light.shadow-lg:hover {
+    animation: none;
+}
+
+/* About section button - Keep original style */
+.btn-primary-custom.shadow-sm {
+    box-shadow: 0 4px 15px rgba(241, 68, 55, 0.3) !important;
+}
+
+.btn-primary-custom.shadow-sm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(241, 68, 55, 0.4) !important;
+}
+
